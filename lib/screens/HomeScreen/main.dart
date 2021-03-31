@@ -1,6 +1,6 @@
-import 'package:app_client/screens/Feedback/main.dart';
-import 'package:app_client/screens/ViewComplaints/main.dart';
-import 'package:app_client/screens/NewComplaint/main.dart';
+import 'package:app_client/screens/HomeScreen/Feedback/main.dart';
+import 'package:app_client/screens/HomeScreen/ViewComplaints/main.dart';
+import 'package:app_client/screens/HomeScreen/NewComplaint/main.dart';
 import "package:flutter/material.dart";
 
 // class HomeScreen extends StatelessWidget {

@@ -1,5 +1,5 @@
 import 'package:app_client/models/complaint.dart';
-import 'package:app_client/screens/ViewComplaints/complaint_tile.dart';
+import 'package:app_client/screens/HomeScreen/ViewComplaints/complaint_tile.dart';
 import "package:flutter/material.dart";
 
 class ViewComplaintScreen extends StatefulWidget {
