@@ -2,6 +2,7 @@ import 'package:app_client/screens/HomeScreen/Feedback/main.dart';
 import 'package:app_client/screens/HomeScreen/ViewComplaints/main.dart';
 import 'package:app_client/screens/HomeScreen/NewComplaint/main.dart';
 import "package:flutter/material.dart";
+import 'package:shared_preferences/shared_preferences.dart';
 
 // class HomeScreen extends StatelessWidget {
 //
@@ -39,6 +40,8 @@ import "package:flutter/material.dart";
 // }
 
 class HomeScreen extends StatefulWidget {
+  final Function changeUser;
+  HomeScreen({this.changeUser});
   static const routeName = "/home";
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -53,6 +56,12 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void _logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.remove('userId');
+    widget.changeUser();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,6 +74,11 @@ class _HomeScreenState extends State<HomeScreen> {
               onPressed: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => FeedbackScreen()));
+              }),
+          IconButton(
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () {
+                _logout();
               })
         ],
       ),

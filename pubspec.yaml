@@ -23,6 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  shared_preferences:
   multi_image_picker:
   path_provider:
   fluttertoast:

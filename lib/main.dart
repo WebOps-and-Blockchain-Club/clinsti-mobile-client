@@ -1,7 +1,7 @@
+import 'package:app_client/screens/wrapper.dart';
 import "package:flutter/material.dart";
 
 // Import packages
-import "./screens/HomeScreen/main.dart";
 
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,10 +14,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "IITM Complaints",
-      home: HomeScreen(),
-      routes: {
-        HomeScreen.routeName: (_) => HomeScreen(),
-      },
+      // home: HomeScreen(),
+      // routes: {
+      //   HomeScreen.routeName: (_) => HomeScreen(),
+      // },
+      home: Wrapper(),
     );
   }
 }
