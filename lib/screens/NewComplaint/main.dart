@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:fluttertoast/fluttertoast.dart';
@@ -11,10 +10,9 @@ class NewComplaintScreen extends StatefulWidget {
 }
 
 class _NewComplaintScreenState extends State<NewComplaintScreen> {
-
   TextEditingController compLocation = TextEditingController();
   TextEditingController compDescription = TextEditingController();
-  String dropdownValue = 'Type of Waste';
+  String dropdownValue;
   List<Asset> images = [];
   String error;
 
@@ -42,12 +40,11 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           child: TextField(
             decoration: InputDecoration(
-              labelText: 'Location',
-              suffixIcon: IconButton(
-                icon: Icon(Icons.location_on),
-                onPressed: null,
-              )
-            ),
+                labelText: 'Location',
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.location_on),
+                  onPressed: null,
+                )),
             controller: compLocation,
             maxLines: null,
           ),
@@ -64,48 +61,54 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
             elevation: 16,
             isExpanded: true,
             style: const TextStyle(color: Colors.deepPurple),
-              underline: Container(
+            underline: Container(
               height: 2,
               color: Colors.deepPurpleAccent,
             ),
             onChanged: (String newValue) {
               setState(() {
-               dropdownValue = newValue;
+                dropdownValue = newValue;
               });
             },
-            items: <String>['Type of Waste', 'Bio-degradable', 'Plastic'].map<DropdownMenuItem<String>>((String value) {
+            items: <String>['Bio-degradable', 'Plastic']
+                .map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 child: Text(value),
                 value: value,
               );
             }).toList(),
+            hint: Text(
+              'Type of Waste',
+              style: TextStyle(color: Colors.grey, fontSize: 14),
+            ),
           ),
         ),
         SizedBox(
-        height: 40,
+          height: 40,
         ),
         if (images.length != 0) dispImages(),
         SizedBox(
           height: 40,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              child: Text('Add Images'),
-              onPressed: loadAssets,
+        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+          ElevatedButton(
+            child: Text('Add Images'),
+            onPressed: loadAssets,
+          ),
+          if (images.length != 0)
+            SizedBox(
+              width: 10,
             ),
-            if(images.length != 0)SizedBox(width: 10,),
-            if(images.length != 0)ElevatedButton(
+          if (images.length != 0)
+            ElevatedButton(
               child: Text('Clear'),
-              onPressed: (){
+              onPressed: () {
                 setState(() {
                   images.removeRange(0, images.length);
                 });
               },
             ),
-          ]
-        ),
+        ]),
         SizedBox(
           height: 40,
         ),
@@ -170,8 +173,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
           toastLength: Toast.LENGTH_SHORT,
           backgroundColor: Colors.white,
           textColor: Colors.black,
-          fontSize: 14.0
-      );
+          fontSize: 14.0);
     }
 
     // If the widget was removed from the tree while the asynchronous platform
@@ -180,7 +182,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
     if (!mounted) return;
 
     setState(() {
-      if(resultList.length==0){
+      if (resultList.length == 0) {
         print('No image selected');
         Fluttertoast.showToast(
             msg: 'No Image Selected',
@@ -188,7 +190,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
             backgroundColor: Colors.white,
             textColor: Colors.black,
             fontSize: 14.0);
-      }else{
+      } else {
         images = resultList;
       }
     });

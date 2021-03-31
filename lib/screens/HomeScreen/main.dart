@@ -1,3 +1,4 @@
+import 'package:app_client/screens/Feedback/main.dart';
 import 'package:app_client/screens/ViewComplaints/main.dart';
 import 'package:app_client/screens/NewComplaint/main.dart';
 import "package:flutter/material.dart";
@@ -44,10 +45,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   int index = 0;
 
-  void _onItemTap(int i){
+  void _onItemTap(int i) {
     setState(() {
       index = i;
     });
@@ -59,21 +59,25 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text("App Name"),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.feedback),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => FeedbackScreen()));
+              })
+        ],
       ),
       body: Center(
         child: (index == 0) ? NewComplaintScreen() : ViewComplaintScreen(),
       ),
       bottomNavigationBar: BottomNavigationBar(
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-                icon: Icon(Icons.edit_outlined),
-                label: "New Complaint"
-            ),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.list_alt),
-                label: "My Complaints"
-            )
-          ],
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+              icon: Icon(Icons.edit_outlined), label: "New Complaint"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.list_alt), label: "My Complaints")
+        ],
         currentIndex: index,
         onTap: _onItemTap,
         selectedItemColor: Colors.amber[800],
