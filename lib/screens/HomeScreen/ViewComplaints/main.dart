@@ -1,4 +1,5 @@
 import 'package:app_client/models/complaint.dart';
+import 'package:app_client/screens/HomeScreen/ShowComplaint/main.dart';
 import 'package:app_client/screens/HomeScreen/ViewComplaints/complaint_tile.dart';
 import "package:flutter/material.dart";
 
@@ -120,7 +121,10 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
             child: ListView.builder(
               itemCount: _complaints.length,
               itemBuilder: (context, i) {
-                return ComplaintTile(complaint: _complaints[i]);
+                return InkWell(
+                  child: ComplaintTile(complaint: _complaints[i]),
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (context) => ShowComplaintScreen(complaint: _complaints[i]))),
+                );
               },
             ),
           ),
