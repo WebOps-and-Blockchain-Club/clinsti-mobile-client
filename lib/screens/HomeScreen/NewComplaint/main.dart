@@ -69,7 +69,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                 dropdownValue = newValue;
               });
             },
-            items: <String>['Bio-degradable', 'Plastic']
+            items: <String>['Bio-degradable', 'Plastic', 'Other']
                 .map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 child: Text(value),
@@ -91,7 +91,10 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
         ),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           ElevatedButton(
-            child: Text('Add Images'),
+            child: Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Text('Add Images', style: TextStyle(fontSize: 18)),
+            ),
             onPressed: loadAssets,
           ),
           if (images.length != 0)
@@ -100,7 +103,10 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
             ),
           if (images.length != 0)
             ElevatedButton(
-              child: Text('Clear'),
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Text('Clear', style: TextStyle(fontSize: 18)),
+              ),
               onPressed: () {
                 setState(() {
                   images.removeRange(0, images.length);
@@ -113,7 +119,10 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
         ),
         Center(
           child: ElevatedButton(
-            child: Text('Submit Complaint'),
+            child: Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Text('Submit Complaint', style: TextStyle(fontSize: 18)),
+            ),
             onPressed: null,
           ),
         ),
@@ -131,9 +140,9 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
           Asset image = images[index];
           return Card(
             child: AssetThumb(
-              asset: image,
               width: 300,
               height: 300,
+              asset: image,
             ),
           );
         },
