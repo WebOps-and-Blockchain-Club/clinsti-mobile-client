@@ -1,8 +1,9 @@
 import 'package:app_client/screens/HomeScreen/Feedback/main.dart';
 import 'package:app_client/screens/HomeScreen/ViewComplaints/main.dart';
 import 'package:app_client/screens/HomeScreen/NewComplaint/main.dart';
+import 'package:app_client/services/auth.dart';
 import "package:flutter/material.dart";
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 // class HomeScreen extends StatelessWidget {
 //
@@ -40,8 +41,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 // }
 
 class HomeScreen extends StatefulWidget {
-  final Function changeUser;
-  HomeScreen({this.changeUser});
+  final AuthService auth;
+  HomeScreen({this.auth});
   static const routeName = "/home";
   @override
   _HomeScreenState createState() => _HomeScreenState();
@@ -57,9 +58,22 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _logout() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('userId');
-    widget.changeUser();
+    widget.auth.signOut();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    widget.auth.verifyToken().then((value) {
+      if (!value) {
+        Fluttertoast.showToast(
+            msg: 'Login expired',
+            toastLength: Toast.LENGTH_SHORT,
+            backgroundColor: Colors.white,
+            textColor: Colors.black,
+            fontSize: 14.0);
+      }
+    });
   }
 
   @override

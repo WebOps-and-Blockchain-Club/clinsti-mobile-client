@@ -1,10 +1,10 @@
+import 'package:app_client/services/auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class SignUp extends StatefulWidget {
   final Function toggleView;
-  final Function changeUser;
-  SignUp({this.toggleView, this.changeUser});
+  final AuthService auth;
+  SignUp({this.toggleView, this.auth});
   @override
   _SignUpState createState() => _SignUpState();
 }
@@ -14,9 +14,7 @@ class _SignUpState extends State<SignUp> {
   String password = '';
   String name = '';
   _signUp() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString('userId', 'Hello');
-    widget.changeUser();
+    widget.auth.signUp('email', 'password', 'name');
   }
 
   @override

@@ -2,8 +2,8 @@ import 'package:app_client/screens/AuthScreen/main.dart';
 import 'package:app_client/screens/HomeScreen/main.dart';
 import 'package:app_client/screens/shared/loading.dart';
 import 'package:app_client/screens/shared/message.dart';
+import 'package:app_client/services/auth.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class Wrapper extends StatefulWidget {
   @override
@@ -11,24 +11,29 @@ class Wrapper extends StatefulWidget {
 }
 
 class _WrapperState extends State<Wrapper> {
-  String userId;
-  SharedPreferences prefs;
   bool error = false;
+  bool loading;
+  AuthService auth = new AuthService();
+  String token;
 
-  changeUser() {
+  notifyAuth(String tk) {
     setState(() {
-      userId = prefs.getString('userId');
+      token = tk;
     });
   }
 
   init() {
-    SharedPreferences.getInstance().then((value) {
+    setState(() {
+      loading = true;
+    });
+    auth.init(notifyAuth).then((value) {
       setState(() {
-        prefs = value;
-        userId = prefs.getString('userId');
+        token = value;
+        loading = false;
       });
     }).catchError((e) {
       setState(() {
+        loading = false;
         error = true;
       });
     });
@@ -42,7 +47,7 @@ class _WrapperState extends State<Wrapper> {
 
   @override
   Widget build(BuildContext context) {
-    if (prefs == null) {
+    if (loading == true) {
       return Loading(
         label: 'Checking user...',
       );
@@ -50,10 +55,10 @@ class _WrapperState extends State<Wrapper> {
     if (error == true) {
       return Message('Sorry, some error ocured', textColor: Colors.red);
     }
-    if (userId == null) {
-      return Authenticate(changeUser: changeUser);
+    if (token == null) {
+      return Authenticate(auth: auth);
     } else {
-      return HomeScreen(changeUser: changeUser);
+      return HomeScreen(auth: auth);
     }
   }
 }
