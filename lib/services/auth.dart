@@ -1,82 +1,79 @@
-import 'dart:convert';
-import 'package:http/http.dart';
+import 'package:app_client/services/server.dart';
 import 'package:app_client/models/user.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// class User {
-//   final String name;
-//   final String email;
-//   final String token;
-//   User({this.userId, this.name, this.email, this.token});
-// }
-
 class AuthService {
   SharedPreferences _auth;
-  Function notifyAuth;
+  Function notifyWrapper;
+  Server http = new Server();
 
-  Future<String> init(Function notifyAuth) async {
+  Future<String> init(Function notifyWrapp) async {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       _auth = prefs;
-      this.notifyAuth = notifyAuth;
+      this.notifyWrapper = notifyWrapp;
       return _auth.getString('token');
     } catch (e) {
-      throw ('error');
+      throw (e);
     }
   }
 
   void notify() {
-    notifyAuth(_auth.getString('token'));
+    notifyWrapper(getToken());
   }
 
-  User _userHTTP(Response res) {
-    Map resp = jsonDecode(res.body);
-    return resp != null
-        ? User(
-            name: resp['name'],
-            email: resp['email'],
-            token: resp['userjwtToken'],
-          )
-        : null;
+  String getToken() {
+    return _auth != null ? _auth.getString('token') : null;
+  }
+
+  void setToken(String token) {
+    try {
+      _auth.setString('token', token);
+    } catch (e) {
+      throw (e);
+    }
   }
 
   Future<bool> verifyToken() async {
-    if (true) {
+    return true;
+    // ignore: dead_code
+    try {
+      await getUserInfo();
       return true;
-    } else {
+    } catch (e) {
       signOut();
       return false;
     }
   }
 
-  String checkToken() {
-    return _auth != null ? _auth.getString('token') : null;
-  }
-
-  Future<User> getUser() async {
-    String token = _auth.getString('token');
-    return token != null
-        ? User(email: 'abc@abc.com', name: 'abc', token: token)
-        : null;
+  Future<User> getUserInfo() async {
+    String token = getToken();
+    try {
+      dynamic obj = await http.getUserInfo(token);
+      return User(email: obj['email'], name: obj['name'], token: token);
+    } catch (e) {
+      throw (e);
+    }
   }
 
   Future signIn(String email, String password) async {
     try {
-      String token = 'newToken';
+      dynamic obj = await http.signIn(email, password);
+      String token = obj['userjwtToken'];
       _auth.setString('token', token);
       notify();
     } catch (e) {
-      throw ('error1');
+      throw (e);
     }
   }
 
   Future signUp(String email, String password, String name) async {
     try {
-      String token = 'newToken';
-      _auth.setString('token', token);
+      dynamic obj = await http.signUp(email, password, name);
+      setToken(obj['userjwtToken']);
       notify();
     } catch (e) {
-      throw ('error2');
+      throw (e);
     }
   }
 
@@ -85,7 +82,7 @@ class AuthService {
       _auth.remove('token');
       notify();
     } catch (e) {
-      throw ('error3');
+      print(e);
     }
   }
 }
