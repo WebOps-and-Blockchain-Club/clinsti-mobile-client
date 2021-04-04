@@ -16,7 +16,7 @@ class _WrapperState extends State<Wrapper> {
   AuthService auth = new AuthService();
   String token;
 
-  notifyAuth(String tk) {
+  notifyWrapp(String tk) {
     setState(() {
       token = tk;
     });
@@ -26,7 +26,7 @@ class _WrapperState extends State<Wrapper> {
     setState(() {
       loading = true;
     });
-    auth.init(notifyAuth).then((value) {
+    auth.init(notifyWrapp).then((value) {
       setState(() {
         token = value;
         loading = false;

@@ -5,41 +5,6 @@ import 'package:app_client/services/auth.dart';
 import "package:flutter/material.dart";
 import 'package:fluttertoast/fluttertoast.dart';
 
-// class HomeScreen extends StatelessWidget {
-//
-//
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     // return Scaffold(
-//     //   appBar: AppBar(
-//     //     title: Text("App"),
-//     //     actions: <Widget>[
-//     //       IconButton(
-//     //           icon: Icon(Icons.list_alt),
-//     //           onPressed: () {
-//     //             Navigator.push(
-//     //                 context,
-//     //                 MaterialPageRoute(
-//     //                     builder: (context) => ViewComplaintScreen()));
-//     //           }),
-//     //       IconButton(
-//     //         icon: Icon(Icons.edit_outlined),
-//     //         onPressed: (){
-//     //           Navigator.push(context, MaterialPageRoute(builder: (context) => NewComplaintScreen()));
-//     //         }
-//     //       )
-//     //     ],
-//     //   ),
-//     //   body: Center(
-//     //     child: Text("Hello world"),
-//     //   ),
-//     // );
-//
-//
-//   }
-// }
-
 class HomeScreen extends StatefulWidget {
   final AuthService auth;
   HomeScreen({this.auth});
