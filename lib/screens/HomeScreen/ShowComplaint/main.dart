@@ -1,11 +1,12 @@
 import 'package:app_client/models/complaint.dart';
 import 'package:app_client/screens/HomeScreen/Feedback/main.dart';
+import 'package:app_client/screens/HomeScreen/ShowComplaint/resolveComplaintScreen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ShowComplaintScreen extends StatefulWidget {
 
-  final Complaint complaint;
-
+  Complaint complaint;
   ShowComplaintScreen({this.complaint});
 
   @override
@@ -13,15 +14,17 @@ class ShowComplaintScreen extends StatefulWidget {
 }
 
 class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
-  bool isEditable = false;
+  bool showSubmitButton = false;
   TextEditingController location = TextEditingController();
   TextEditingController description = TextEditingController();
-
+  TextEditingController feedback = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     location.text = widget.complaint.location;
     description.text = widget.complaint.description;
-
+    feedback.text = widget.complaint.fbReview ?? null;
+    var width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: Text('Complaint ID: ' + widget.complaint.complaintId),
@@ -32,7 +35,6 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
           children: <Widget>[
             TextField(
               controller: location,
-              enabled: isEditable,
               maxLines: null,
               decoration: InputDecoration(
                 suffixIcon: IconButton(
@@ -46,7 +48,6 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
             ),
             TextField(
               controller: description,
-              enabled: isEditable,
               maxLines: null,
             ),
             SizedBox(
@@ -98,7 +99,9 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
               'Status: ' + widget.complaint.status,
               style: TextStyle(
                 fontSize: 20,
-                color: (widget.complaint.status == 'completed') ? Colors.green : Colors.redAccent,
+                color: (widget.complaint.status == 'completed')
+                    ? Colors.green
+                    : Colors.redAccent,
               ),
             ),
             SizedBox(
@@ -106,96 +109,85 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
             ),
             if(widget.complaint.status == 'completed')
               Center(
-                child: ElevatedButton(
-                  child: Text(
-                    'Feedback',
-                    style: TextStyle(
-                      fontSize: 18,
+                child: Container(
+                  width: 0.67*width,
+                  height: 50,
+                  child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: 5,
+                      itemBuilder: (context, int index) {
+                        return IconButton(
+                            icon: (index < (widget.complaint.fbRating ?? 0)) ? Icon(Icons.star) : Icon(Icons.star_border),
+                            color: (index < (widget.complaint.fbRating ?? 0)) ? Colors.yellowAccent : Colors.grey,
+                            onPressed: () {
+                              if((widget.complaint.fbRating == null && widget.complaint.fbRating == 0) || widget.complaint.fbReview == null || showSubmitButton) {
+                                setState(() {
+                                  widget.complaint.fbRating = index + 1;
+                                  showSubmitButton = true;
+                                });
+                              }
+                            }
+                        );
+                      },
                     ),
+                ),
+              ),
+            if(widget.complaint.fbRating != null && widget.complaint.fbRating != 0)
+              Form(
+                key: _formKey,
+                child: TextFormField(
+                  maxLines: null,
+                  controller: feedback,
+                  validator: (value){
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                  enabled: (widget.complaint.fbReview == null),
+                  decoration: InputDecoration(
+                    hintText: 'Feedback',
                   ),
-                  onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (context) => FeedbackScreen())),
+                ),
+              ),
+            SizedBox(height: 20,),
+            if(showSubmitButton)
+              Center(
+                child: ElevatedButton(
+                  child: Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: Text('Submit Feedback', style: TextStyle(fontSize: 18)),
+                  ),
+                  onPressed: (){
+                    if (_formKey.currentState.validate()) {
+                      setState(() {
+                        showSubmitButton = false;
+                        widget.complaint.fbReview = feedback.text;
+                      });
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text('Feedback Submitted')));
+                    }
+                  },
                 ),
               ),
             if(widget.complaint.status != 'completed')
               Row(
                   mainAxisAlignment: MainAxisAlignment.center, children: [
+
                 ElevatedButton(
                   child: Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: Text(
-                      isEditable ? 'Submit Complaint' : 'Edit Complaint',
+                      'Resolve Complaint',
                       style: TextStyle(
                         fontSize: 18,
                       ),
                     ),
                   ),
-                  onPressed: (){
-                    if(isEditable){
-                      return showDialog(
-                        context: context,
-                        builder: (context){
-                          return AlertDialog(
-                            title: Text('Submit Complaint?'),
-                            actions: <Widget>[
-                              TextButton(
-                                child: Text('Yes'),
-                                onPressed: () async {
-                                  setState(() {
-                                    isEditable = false;
-                                  });
-                                  Navigator.pop(context);
-                                },
-                              ),
-                              TextButton(
-                                child: Text('Cancel'),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                              )
-                            ],
-                          );
-                        },
-                      );
-                    }
-                    return showDialog(
-                      context: context,
-                      builder: (context){
-                        return AlertDialog(
-                          title: Text('Edit Complaint?'),
-                          actions: <Widget>[
-                            TextButton(
-                              child: Text('Yes'),
-                              onPressed: () async {
-                                setState(() {
-                                  isEditable = true;
-                                });
-                                Navigator.pop(context);
-                              },
-                            ),
-                            TextButton(
-                              child: Text('Cancel'),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            )
-                          ],
-                        );
-                      },
-                    );
-                  },
-                ),
-                SizedBox(width: 10,),
-                ElevatedButton(
-                  child: Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: Text(
-                      'Delete Complaint',
-                      style: TextStyle(
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                  onPressed: null,
+                  onPressed: () => Navigator.push(context, MaterialPageRoute(
+                      builder: (context) =>
+                          ResolveComplaintScreen(complaintId: widget.complaint
+                              .complaintId,))),
                 ),
               ]),
           ],

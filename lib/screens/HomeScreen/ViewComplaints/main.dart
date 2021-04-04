@@ -11,13 +11,16 @@ class ViewComplaintScreen extends StatefulWidget {
 class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
   final complaints = [
     Complaint(
-        complaintId: "1",
-        description:
-            "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        location: "IITM-himalaya",
-        timestamp: "2021,01,3",
-        status: "completed",
-        imageUrl: []),
+      complaintId: "1",
+      description:
+          "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      location: "IITM-himalaya",
+      timestamp: "2021,01,3",
+      status: "completed",
+      imageUrl: [],
+      fbRating: 3,
+      fbReview: 'ddd',
+    ),
     Complaint(
         complaintId: "2",
         description:
