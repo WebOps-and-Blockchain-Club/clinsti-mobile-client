@@ -6,6 +6,7 @@ class EditPasswordScreen extends StatefulWidget {
 }
 
 class _EditPasswordScreenState extends State<EditPasswordScreen> {
+  String error;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,6 +79,12 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                 ),
               ),
               SizedBox(height: 10.0),
+              error != null
+                  ? Text(
+                      error,
+                      style: TextStyle(color: Colors.red),
+                    )
+                  : SizedBox()
             ],
           ))),
     );

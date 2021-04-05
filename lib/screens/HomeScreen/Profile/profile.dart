@@ -7,6 +7,7 @@ class MyProfileScreen extends StatefulWidget {
 }
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
+  String error;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -82,12 +83,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                 ),
               ),
               SizedBox(height: 10.0),
-              // Row(
-              //   children: <Widget>[
-
-              //     SizedBox(height: 6.0),
-              //   ],
-              // )
+              error != null
+                  ? Text(
+                      error,
+                      style: TextStyle(color: Colors.red),
+                    )
+                  : SizedBox()
             ],
           ))),
     );

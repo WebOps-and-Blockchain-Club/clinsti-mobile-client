@@ -48,13 +48,13 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: Text("App Name"),
+        leading: IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => MyProfileScreen()));
+            }),
         actions: [
-          IconButton(
-              icon: Icon(Icons.person),
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MyProfileScreen()));
-              }),
           IconButton(
               icon: Icon(Icons.feedback),
               onPressed: () {
