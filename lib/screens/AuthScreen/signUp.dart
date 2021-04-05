@@ -106,7 +106,7 @@ class _SignUpState extends State<SignUp> {
                   SizedBox(height: 15.0),
                   // ignore: deprecated_member_use
                   RaisedButton(
-                    color: Colors.red,
+                    color: Colors.blue,
                     child: Text(
                       'Register',
                       style: TextStyle(color: Colors.white),

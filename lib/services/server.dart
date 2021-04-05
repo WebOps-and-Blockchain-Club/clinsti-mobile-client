@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 
 class Server {
   final String link =
-      "http://192.168.42.136:3000"; //TODO: put your local netwok config here
+      "http://192.168.43.1:3000"; //TODO: put your local netwok config here
 
   ////Account Requests
   ///SignUp

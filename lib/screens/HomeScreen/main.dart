@@ -1,6 +1,7 @@
 import 'package:app_client/screens/HomeScreen/Feedback/main.dart';
 import 'package:app_client/screens/HomeScreen/ViewComplaints/main.dart';
 import 'package:app_client/screens/HomeScreen/NewComplaint/main.dart';
+import 'package:app_client/screens/HomeScreen/Profile/profile.dart';
 import 'package:app_client/services/auth.dart';
 import "package:flutter/material.dart";
 import 'package:fluttertoast/fluttertoast.dart';
@@ -48,6 +49,12 @@ class _HomeScreenState extends State<HomeScreen> {
         automaticallyImplyLeading: false,
         title: Text("App Name"),
         actions: [
+          IconButton(
+              icon: Icon(Icons.person),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MyProfileScreen()));
+              }),
           IconButton(
               icon: Icon(Icons.feedback),
               onPressed: () {
