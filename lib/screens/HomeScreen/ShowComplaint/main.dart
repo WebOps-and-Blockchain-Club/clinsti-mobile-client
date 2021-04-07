@@ -184,10 +184,11 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
                       ),
                     ),
                   ),
-                  onPressed: () => Navigator.push(context, MaterialPageRoute(
-                      builder: (context) =>
-                          ResolveComplaintScreen(complaintId: widget.complaint
-                              .complaintId,))),
+                  onPressed: () {
+                    setState(() {
+                      widget.complaint.status = "completed";
+                    });
+                  },
                 ),
               ]),
           ],

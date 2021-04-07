@@ -3,7 +3,7 @@ class Complaint {
   final String description;
   final String location;
   final String timestamp;
-  final String status;
+  String status;
   final List<String> imageUrl;
   String fbReview;
   int fbRating;

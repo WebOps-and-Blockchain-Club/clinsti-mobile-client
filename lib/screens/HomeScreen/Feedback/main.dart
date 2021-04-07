@@ -22,7 +22,12 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         child: Form(
           key: _formKey,
           child: ListView(
+
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
             children: [
+              SizedBox(
+                height: 20,
+              ),
               DropdownButtonFormField(
                 hint: Text(
                   'feedbackTo',
@@ -48,17 +53,20 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                 }).toList(),
                 validator: (val) => val == null ? 'Please select' : null,
               ),
-              Padding(
-                padding: const EdgeInsets.only(bottom: 20.0),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Feedback',
-                  ),
-                  maxLines: null,
-                  controller: _feedbackText,
-                  validator: (val) =>
-                      val.length < 10 ? 'Please write few more' : null,
+              SizedBox(
+                height: 10,
+              ),
+              TextFormField(
+                decoration: InputDecoration(
+                  labelText: 'Feedback',
                 ),
+                maxLines: null,
+                controller: _feedbackText,
+                validator: (val) =>
+                    val.length < 10 ? 'Please write few more' : null,
+              ),
+              SizedBox(
+                height: 40,
               ),
               Center(
                   child: ElevatedButton(
@@ -67,7 +75,10 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           Navigator.pop(context);
                         }
                       },
-                      child: Text('Submit')))
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: Text('Submit', style: TextStyle(fontSize: 18),),
+                      )))
             ],
           ),
         ),
