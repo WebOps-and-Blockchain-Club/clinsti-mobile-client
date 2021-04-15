@@ -48,92 +48,94 @@ class _SignUpState extends State<SignUp> {
       ),
       body: Container(
           padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
-          child: Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  SizedBox(height: 10.0),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        icon: Icon(Icons.person),
-                        hintText: 'Name',
-                        //helperText: 'Enter your Name',
-                        border: OutlineInputBorder(),
+          child: SingleChildScrollView(
+            child: Form(
+                key: _formKey,
+                child: Column(
+                  children: <Widget>[
+                    SizedBox(height: 10.0),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          icon: Icon(Icons.person),
+                          hintText: 'Name',
+                          //helperText: 'Enter your Name',
+                          border: OutlineInputBorder(),
+                        ),
+                        maxLines: null,
+                        controller: _name,
+                        validator: (val) =>
+                            val.isEmpty ? 'Please enter your name' : null,
                       ),
-                      maxLines: null,
-                      controller: _name,
-                      validator: (val) =>
-                          val.isEmpty ? 'Please enter your name' : null,
                     ),
-                  ),
 
-                  SizedBox(height: 15.0),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        icon: Icon(Icons.email),
-                        hintText: 'Email',
-                        //helperText: 'Enter your email',
-                        border: OutlineInputBorder(),
+                    SizedBox(height: 15.0),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          icon: Icon(Icons.email),
+                          hintText: 'Email',
+                          //helperText: 'Enter your email',
+                          border: OutlineInputBorder(),
+                        ),
+                        maxLines: null,
+                        controller: _email,
+                        validator: (val) =>
+                            val.isEmpty ? 'Please enter your email' : null,
                       ),
-                      maxLines: null,
-                      controller: _email,
-                      validator: (val) =>
-                          val.isEmpty ? 'Please enter your email' : null,
                     ),
-                  ),
 
-                  SizedBox(height: 15.0),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: TextFormField(
-                      decoration: InputDecoration(
-                        icon: Icon(Icons.create_rounded),
-                        hintText: 'Create Password',
-                        //helperText: 'Create a password',
-                        border: OutlineInputBorder(),
+                    SizedBox(height: 15.0),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          icon: Icon(Icons.create_rounded),
+                          hintText: 'Create Password',
+                          //helperText: 'Create a password',
+                          border: OutlineInputBorder(),
+                        ),
+                        controller: _password,
+                        validator: (val) => val.length < 7
+                            ? 'Enter a password 8+ chars long'
+                            : null,
+                        obscureText: true,
                       ),
-                      controller: _password,
-                      validator: (val) => val.length < 7
-                          ? 'Enter a password 8+ chars long'
-                          : null,
-                      obscureText: true,
                     ),
-                  ),
-                  SizedBox(height: 15.0),
-                  // ignore: deprecated_member_use
-                  RaisedButton(
-                    color: Colors.blue,
-                    child: Text(
-                      'Register',
-                      style: TextStyle(color: Colors.white),
+                    SizedBox(height: 15.0),
+                    // ignore: deprecated_member_use
+                    RaisedButton(
+                      color: Colors.blue,
+                      child: Text(
+                        'Register',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      onPressed: () async {
+                        if (_formKey.currentState.validate()) {
+                          Navigator.of(context).push(PageRouteBuilder(
+                              opaque: false,
+                              pageBuilder: (BuildContext context, _, __) {
+                                return Loading(
+                                  backgroundColor: Color.fromRGBO(0, 0, 2, 0.4),
+                                );
+                              }));
+                          await _signUp();
+                          Navigator.pop(context);
+                        }
+                      },
                     ),
-                    onPressed: () async {
-                      if (_formKey.currentState.validate()) {
-                        Navigator.of(context).push(PageRouteBuilder(
-                            opaque: false,
-                            pageBuilder: (BuildContext context, _, __) {
-                              return Loading(
-                                backgroundColor: Color.fromRGBO(0, 0, 2, 0.4),
-                              );
-                            }));
-                        await _signUp();
-                        Navigator.pop(context);
-                      }
-                    },
-                  ),
-                  SizedBox(height: 6.0),
-                  error != null
-                      ? Text(
-                          error,
-                          style: TextStyle(color: Colors.red),
-                        )
-                      : SizedBox()
-                ],
-              ))),
+                    SizedBox(height: 6.0),
+                    error != null
+                        ? Text(
+                            error,
+                            style: TextStyle(color: Colors.red),
+                          )
+                        : SizedBox()
+                  ],
+                )),
+          )),
       floatingActionButton: IconButton(
         icon: Icon(Icons.arrow_right_alt),
         onPressed: () async {
