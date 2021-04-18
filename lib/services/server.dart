@@ -65,8 +65,7 @@ class Server {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json'
     };
-    var request =
-        http.Request('PATCH', Uri.parse('http://$link/api/editprofile'));
+    var request = http.Request('PATCH', Uri.parse('$link/api/editprofile'));
     if (name == null) {
       request.body = '{"email":"$email"}';
     } else if (email == null) {
@@ -92,8 +91,7 @@ class Server {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json'
     };
-    var request =
-        http.Request('POST', Uri.parse('http://$link/api/changePassword'));
+    var request = http.Request('POST', Uri.parse('$link/api/changePassword'));
     request.body = '{"oldPassword": "$oldPass","newPassword":"$newPass"}';
     request.headers.addAll(headers);
 

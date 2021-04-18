@@ -14,10 +14,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: "IITM Complaints",
-      // home: HomeScreen(),
-      // routes: {
-      //   HomeScreen.routeName: (_) => HomeScreen(),
-      // },
       home: Wrapper(),
     );
   }

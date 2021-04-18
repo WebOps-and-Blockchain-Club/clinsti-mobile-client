@@ -1,42 +1,46 @@
 import 'package:app_client/services/server.dart';
 import 'package:app_client/models/user.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AuthService {
+class AuthService extends ChangeNotifier {
   SharedPreferences _auth;
-  Function notifyWrapper;
+  String _token;
   Server http = new Server();
 
-  Future<String> init(Function notifyWrapp) async {
-    try {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      _auth = prefs;
-      this.notifyWrapper = notifyWrapp;
-      return _auth.getString('token');
-    } catch (e) {
-      throw (e);
-    }
+  String get token => _token;
+
+  AuthService() {
+    _token = null;
+    _loadToken();
   }
 
-  void notify() {
-    notifyWrapper(getToken());
+  _initAuth() async {
+    if (_auth == null) _auth = await SharedPreferences.getInstance();
   }
 
-  String getToken() {
-    return _auth != null ? _auth.getString('token') : null;
+  _loadToken() async {
+    await _initAuth();
+    _token = _auth.getString('token') ?? null;
+    notifyListeners();
   }
 
-  void setToken(String token) {
-    try {
-      _auth.setString('token', token);
-    } catch (e) {
-      throw (e);
-    }
+  _setToken(String token) async {
+    await _initAuth();
+    _auth.setString('token', token);
+    _loadToken();
+  }
+
+  _resetoken() async {
+    await _initAuth();
+    _auth.remove('token');
+    _loadToken();
   }
 
   Future<bool> verifyToken() async {
     return true;
     // ignore: dead_code
+    //
     try {
       await getUserInfo();
       return true;
@@ -47,10 +51,10 @@ class AuthService {
   }
 
   Future<User> getUserInfo() async {
-    String token = getToken();
+    _loadToken();
     try {
-      dynamic obj = await http.getUserInfo(token);
-      return User(email: obj['email'], name: obj['name'], token: token);
+      dynamic obj = await http.getUserInfo(_token);
+      return User(email: obj['email'], name: obj['name'], token: _token);
     } catch (e) {
       throw (e);
     }
@@ -59,9 +63,7 @@ class AuthService {
   Future signIn(String email, String password) async {
     try {
       dynamic obj = await http.signIn(email, password);
-      String token = obj['userjwtToken'];
-      _auth.setString('token', token);
-      notify();
+      _setToken(obj['userjwtToken']);
     } catch (e) {
       throw (e);
     }
@@ -70,19 +72,17 @@ class AuthService {
   Future signUp(String email, String password, String name) async {
     try {
       dynamic obj = await http.signUp(email, password, name);
-      setToken(obj['userjwtToken']);
-      notify();
+      _setToken(obj['userjwtToken']);
     } catch (e) {
       throw (e);
     }
   }
 
+  Future signAnon() async {
+    _setToken('asdasdas');
+  }
+
   Future signOut() async {
-    try {
-      _auth.remove('token');
-      notify();
-    } catch (e) {
-      print(e);
-    }
+    await _resetoken();
   }
 }
