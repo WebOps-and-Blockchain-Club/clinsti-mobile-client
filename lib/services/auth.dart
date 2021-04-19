@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app_client/services/server.dart';
 import 'package:app_client/models/user.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,16 +9,21 @@ class AuthService extends ChangeNotifier {
   SharedPreferences _auth;
   String _token;
   Server http = new Server();
+  User _user;
 
   String get token => _token;
+  bool get loading => _auth == null;
+  User get user => _user;
 
   AuthService() {
+    notifyListeners();
     _token = null;
     _loadToken();
   }
 
   _initAuth() async {
     if (_auth == null) _auth = await SharedPreferences.getInstance();
+    notifyListeners();
   }
 
   _loadToken() async {
@@ -37,16 +44,19 @@ class AuthService extends ChangeNotifier {
     _loadToken();
   }
 
-  Future<bool> verifyToken() async {
-    return true;
+  Future<User> verifyToken() async {
+    return User(email: 'abc@xyz.com', name: 'Hello', token: _token);
     // ignore: dead_code
-    //
     try {
-      await getUserInfo();
-      return true;
+      User user = await getUserInfo();
+      return user;
+    } on SocketException {
+      print('connection');
+      throw SocketException('Connection Error');
     } catch (e) {
+      print(e);
       signOut();
-      return false;
+      throw 'Session expired';
     }
   }
 
@@ -55,6 +65,7 @@ class AuthService extends ChangeNotifier {
       dynamic obj = await http.signIn(email, password);
       _setToken(obj['userjwtToken']);
     } catch (e) {
+      print(e);
       throw (e);
     }
   }
@@ -64,6 +75,7 @@ class AuthService extends ChangeNotifier {
       dynamic obj = await http.signUp(email, password, name);
       _setToken(obj['userjwtToken']);
     } catch (e) {
+      print(e);
       throw (e);
     }
   }
@@ -71,21 +83,22 @@ class AuthService extends ChangeNotifier {
   Future<User> getUserInfo() async {
     _loadToken();
     try {
-      User user = await http.getUserInfo(_token);
-      return user;
+      _user = await http.getUserInfo(_token);
+      notifyListeners();
+      return _user;
     } catch (e) {
+      print(e);
       throw (e);
     }
   }
 
   Future<User> getUpdatedProfile({String name, String email}) async {
     _loadToken();
-    try{
+    try {
       User user = await http.updateProfile(token, name: name, email: email);
       return user;
-    }
-    catch (e) {
-      throw(e);
+    } catch (e) {
+      throw (e);
     }
   }
 

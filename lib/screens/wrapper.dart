@@ -1,5 +1,6 @@
 import 'package:app_client/screens/AuthScreen/main.dart';
 import 'package:app_client/screens/HomeScreen/main.dart';
+import 'package:app_client/screens/shared/loading.dart';
 import 'package:app_client/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,7 +16,14 @@ class _WrapperState extends State<Wrapper> {
     return ChangeNotifierProvider(
         create: (_) => AuthService(),
         child: Consumer<AuthService>(builder: (context, auth, child) {
-          return auth.token == null ? Authenticate() : HomeScreen();
+          return auth.loading
+              ? Loading(
+                  backgroundColor: Color(0xFF000000),
+                  textColor: Colors.orange,
+                  spinningColor: Colors.black,
+                  label: 'CLinsti',
+                )
+              : (auth.token == null ? Authenticate() : HomeScreen());
         }));
   }
 }

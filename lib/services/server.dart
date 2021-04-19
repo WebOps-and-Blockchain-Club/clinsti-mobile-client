@@ -3,7 +3,8 @@ import 'package:app_client/models/user.dart';
 import 'package:http/http.dart' as http;
 
 class Server {
-  final String baseUrl = "http://192.168.101.13:3000"; //TODO: put your local netwok config here
+  final String baseUrl =
+      "http://192.168.101.13:3000"; //TODO: put your local netwok config here
   final String signup = "/client/accounts/signup";
   final String signin = '/client/accounts/signin';
 
@@ -21,15 +22,15 @@ class Server {
     if (response.statusCode == 201) {
       return jsonDecode(await response.stream.bytesToString());
     } else {
-      throw (response.reasonPhrase);
+      throw (response);
     }
-    
   }
 
   ///SignIn
   Future<dynamic> signIn(String email, String password) async {
     var headers = {'Content-Type': 'application/json'};
-    var request = http.Request('POST', Uri.parse('$baseUrl/client/accounts/signin'));
+    var request =
+        http.Request('POST', Uri.parse('$baseUrl/client/accounts/signin'));
     request.body = '{"email": "$email",   "password": "$password"}';
     request.headers.addAll(headers);
 
@@ -38,7 +39,7 @@ class Server {
     if (response.statusCode == 200) {
       return jsonDecode(await response.stream.bytesToString());
     } else {
-      throw (response.reasonPhrase);
+      throw (response);
     }
   }
 
@@ -52,11 +53,11 @@ class Server {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      var convertedData =  jsonDecode(await response.stream.bytesToString());
+      var convertedData = jsonDecode(await response.stream.bytesToString());
       User user = User.fromJson(convertedData, token);
       return user;
     } else {
-      throw (response.reasonPhrase);
+      throw (response);
     }
   }
 
@@ -82,11 +83,11 @@ class Server {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      var convertedData =  jsonDecode(await response.stream.bytesToString());
+      var convertedData = jsonDecode(await response.stream.bytesToString());
       User user = User.fromJson(convertedData, token);
       return user;
     } else {
-      throw (response.reasonPhrase);
+      throw (response);
     }
   }
 
@@ -97,7 +98,8 @@ class Server {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json'
     };
-    var request = http.Request('POST', Uri.parse('$baseUrl/api/changePassword'));
+    var request =
+        http.Request('POST', Uri.parse('$baseUrl/api/changePassword'));
     request.body = '{"oldPassword": "$oldPass","newPassword":"$newPass"}';
     request.headers.addAll(headers);
 
@@ -106,7 +108,7 @@ class Server {
     if (response.statusCode == 200) {
       return jsonDecode(await response.stream.bytesToString());
     } else {
-      throw (response.reasonPhrase);
+      throw (response);
     }
   }
 

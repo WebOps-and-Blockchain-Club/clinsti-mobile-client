@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app_client/models/user.dart';
 import 'package:app_client/screens/HomeScreen/Feedback/main.dart';
 import 'package:app_client/screens/HomeScreen/ViewComplaints/main.dart';
@@ -15,82 +17,94 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int index = 0;
-
+  AuthService _auth;
   void _onItemTap(int i) {
     setState(() {
       index = i;
     });
   }
 
-  void _logout(auth) async {
-    auth.signOut();
+  void _logout() async {
+    _auth.signOut();
   }
 
-  void _verifyToken(auth) async {
-    auth.verifyToken().then((value) => {
-          if (!value)
-            {
-              Fluttertoast.showToast(
-                  msg: 'Login expired',
-                  toastLength: Toast.LENGTH_SHORT,
-                  backgroundColor: Colors.cyan,
-                  textColor: Colors.black,
-                  fontSize: 14.0)
-            }
-        });
+  void _verifyToken() async {
+    _auth.verifyToken().then((user) => {}).catchError((e) {
+      if (e is SocketException) {
+        Fluttertoast.showToast(
+            msg: 'Server Error',
+            toastLength: Toast.LENGTH_SHORT,
+            backgroundColor: Colors.cyan,
+            textColor: Colors.black,
+            fontSize: 14.0);
+      } else {
+        Fluttertoast.showToast(
+            msg: 'Login expired',
+            toastLength: Toast.LENGTH_SHORT,
+            backgroundColor: Colors.cyan,
+            textColor: Colors.black,
+            fontSize: 14.0);
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _auth = Provider.of<AuthService>(context, listen: false);
+      _verifyToken();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AuthService>(builder: (context, auth, child) {
-      _verifyToken(auth);
-      return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Text("App Name"),
-          leading: IconButton(
-              icon: Icon(Icons.person),
-              onPressed: () async{
-                try{
-                  User user = await auth.getUserInfo();
-                  Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MyProfileScreen(user: user, auth: auth)));
-                }
-                catch (e){
-                  print(e.toString());
-                }
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text("App Name"),
+        leading: IconButton(
+            icon: Icon(Icons.person),
+            onPressed: () async {
+              try {
+                User user = await _auth.getUserInfo();
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            MyProfileScreen(user: user, auth: _auth)));
+              } catch (e) {
+                print(e.toString());
+              }
+            }),
+        actions: [
+          IconButton(
+              icon: Icon(Icons.feedback),
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => FeedbackScreen()));
               }),
-          actions: [
-            IconButton(
-                icon: Icon(Icons.feedback),
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => FeedbackScreen()));
-                }),
-            IconButton(
-                icon: Icon(Icons.exit_to_app),
-                onPressed: () {
-                  _logout(auth);
-                }),
-          ],
-        ),
-        body: Center(
-          child: (index == 0) ? NewComplaintScreen() : ViewComplaintScreen(),
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-                icon: Icon(Icons.edit_outlined), label: "New Complaint"),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.list_alt), label: "My Complaints")
-          ],
-          currentIndex: index,
-          onTap: _onItemTap,
-          selectedItemColor: Colors.amber[800],
-        ),
-      );
-    });
+          IconButton(
+              icon: Icon(Icons.exit_to_app),
+              onPressed: () {
+                _logout();
+              }),
+        ],
+      ),
+      body: Center(
+        child: (index == 0) ? NewComplaintScreen() : ViewComplaintScreen(),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+              icon: Icon(Icons.edit_outlined), label: "New Complaint"),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.list_alt), label: "My Complaints")
+        ],
+        currentIndex: index,
+        onTap: _onItemTap,
+        selectedItemColor: Colors.amber[800],
+      ),
+    );
   }
 }
