@@ -1,3 +1,4 @@
+import 'package:app_client/models/user.dart';
 import 'package:app_client/screens/HomeScreen/Feedback/main.dart';
 import 'package:app_client/screens/HomeScreen/ViewComplaints/main.dart';
 import 'package:app_client/screens/HomeScreen/NewComplaint/main.dart';
@@ -49,9 +50,15 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Text("App Name"),
           leading: IconButton(
               icon: Icon(Icons.person),
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MyProfileScreen()));
+              onPressed: () async{
+                try{
+                  User user = await auth.getUserInfo();
+                  Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MyProfileScreen(user: user, auth: auth)));
+                }
+                catch (e){
+                  print(e.toString());
+                }
               }),
           actions: [
             IconButton(

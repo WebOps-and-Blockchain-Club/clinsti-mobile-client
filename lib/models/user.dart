@@ -1,6 +1,15 @@
 class User {
-  final String name;
-  final String email;
+  String name;
+  String email;
   final String token;
+
   User({this.name, this.email, this.token});
+
+  factory User.fromJson(Map<String, dynamic> json, token){
+    return User(
+      email: json['email'],
+      name: json['name'],
+      token: token,
+      );
+  }
 }

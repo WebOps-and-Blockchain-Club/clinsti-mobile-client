@@ -50,16 +50,6 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  Future<User> getUserInfo() async {
-    _loadToken();
-    try {
-      dynamic obj = await http.getUserInfo(_token);
-      return User(email: obj['email'], name: obj['name'], token: _token);
-    } catch (e) {
-      throw (e);
-    }
-  }
-
   Future signIn(String email, String password) async {
     try {
       dynamic obj = await http.signIn(email, password);
@@ -75,6 +65,27 @@ class AuthService extends ChangeNotifier {
       _setToken(obj['userjwtToken']);
     } catch (e) {
       throw (e);
+    }
+  }
+
+  Future<User> getUserInfo() async {
+    _loadToken();
+    try {
+      User user = await http.getUserInfo(_token);
+      return user;
+    } catch (e) {
+      throw (e);
+    }
+  }
+
+  Future<User> getUpdatedProfile({String name, String email}) async {
+    _loadToken();
+    try{
+      User user = await http.updateProfile(token, name: name, email: email);
+      return user;
+    }
+    catch (e) {
+      throw(e);
     }
   }
 

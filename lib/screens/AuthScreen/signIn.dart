@@ -1,4 +1,4 @@
-import 'package:app_client/screens/shared/loading.dart';
+  import 'package:app_client/screens/shared/loading.dart';
 import 'package:app_client/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -23,7 +23,7 @@ class _SignInState extends State<SignIn> {
       await auth.signIn(_email.text, _password.text);
     } catch (e) {
       setState(() {
-        error = e;
+        error = e.toString();
       });
     }
   }
