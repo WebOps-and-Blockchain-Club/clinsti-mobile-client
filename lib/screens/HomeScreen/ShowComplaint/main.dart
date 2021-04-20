@@ -5,8 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ShowComplaintScreen extends StatefulWidget {
-
-  Complaint complaint;
+  final Complaint complaint;
   ShowComplaintScreen({this.complaint});
 
   @override
@@ -87,10 +86,7 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
             // ),
             Text(
               'Registered on: ' + widget.complaint.timestamp,
-              style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.blue
-              ),
+              style: TextStyle(fontSize: 20, color: Colors.blue),
             ),
             SizedBox(
               height: 20,
@@ -107,38 +103,45 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
             SizedBox(
               height: 30,
             ),
-            if(widget.complaint.status == 'completed')
+            if (widget.complaint.status == 'completed')
               Center(
                 child: Container(
-                  width: 0.67*width,
+                  width: 0.67 * width,
                   height: 50,
                   child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: 5,
-                      itemBuilder: (context, int index) {
-                        return IconButton(
-                            icon: (index < (widget.complaint.fbRating ?? 0)) ? Icon(Icons.star) : Icon(Icons.star_border),
-                            color: (index < (widget.complaint.fbRating ?? 0)) ? Colors.yellowAccent : Colors.grey,
-                            onPressed: () {
-                              if((widget.complaint.fbRating == null && widget.complaint.fbRating == 0) || widget.complaint.fbReview == null || showSubmitButton) {
-                                setState(() {
-                                  widget.complaint.fbRating = index + 1;
-                                  showSubmitButton = true;
-                                });
-                              }
+                    scrollDirection: Axis.horizontal,
+                    itemCount: 5,
+                    itemBuilder: (context, int index) {
+                      return IconButton(
+                          icon: (index < (widget.complaint.fbRating ?? 0))
+                              ? Icon(Icons.star)
+                              : Icon(Icons.star_border),
+                          color: (index < (widget.complaint.fbRating ?? 0))
+                              ? Colors.yellowAccent
+                              : Colors.grey,
+                          onPressed: () {
+                            if ((widget.complaint.fbRating == null &&
+                                    widget.complaint.fbRating == 0) ||
+                                widget.complaint.fbReview == null ||
+                                showSubmitButton) {
+                              setState(() {
+                                widget.complaint.fbRating = index + 1;
+                                showSubmitButton = true;
+                              });
                             }
-                        );
-                      },
-                    ),
+                          });
+                    },
+                  ),
                 ),
               ),
-            if(widget.complaint.fbRating != null && widget.complaint.fbRating != 0)
+            if (widget.complaint.fbRating != null &&
+                widget.complaint.fbRating != 0)
               Form(
                 key: _formKey,
                 child: TextFormField(
                   maxLines: null,
                   controller: feedback,
-                  validator: (value){
+                  validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter some text';
                     }
@@ -150,30 +153,31 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
                   ),
                 ),
               ),
-            SizedBox(height: 20,),
-            if(showSubmitButton)
+            SizedBox(
+              height: 20,
+            ),
+            if (showSubmitButton)
               Center(
                 child: ElevatedButton(
                   child: Padding(
                     padding: const EdgeInsets.all(2.0),
-                    child: Text('Submit Feedback', style: TextStyle(fontSize: 18)),
+                    child:
+                        Text('Submit Feedback', style: TextStyle(fontSize: 18)),
                   ),
-                  onPressed: (){
+                  onPressed: () {
                     if (_formKey.currentState.validate()) {
                       setState(() {
                         showSubmitButton = false;
                         widget.complaint.fbReview = feedback.text;
                       });
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(content: Text('Feedback Submitted')));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Feedback Submitted')));
                     }
                   },
                 ),
               ),
-            if(widget.complaint.status != 'completed')
-              Row(
-                  mainAxisAlignment: MainAxisAlignment.center, children: [
-
+            if (widget.complaint.status != 'completed')
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 ElevatedButton(
                   child: Padding(
                     padding: const EdgeInsets.all(2.0),

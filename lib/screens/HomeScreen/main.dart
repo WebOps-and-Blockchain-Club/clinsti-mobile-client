@@ -16,12 +16,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int index = 0;
+  int _index = 0;
+  PageController _pageController;
+
   AuthService _auth;
   void _onItemTap(int i) {
-    setState(() {
-      index = i;
-    });
+    _pageController.animateToPage(i,
+        duration: Duration(milliseconds: 500), curve: Curves.easeIn);
   }
 
   void _logout() async {
@@ -50,6 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    _pageController = PageController(initialPage: _index);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _auth = Provider.of<AuthService>(context, listen: false);
@@ -91,8 +93,14 @@ class _HomeScreenState extends State<HomeScreen> {
               }),
         ],
       ),
-      body: Center(
-        child: (index == 0) ? NewComplaintScreen() : ViewComplaintScreen(),
+      body: PageView(
+        controller: _pageController,
+        onPageChanged: (newpage) {
+          setState(() {
+            _index = newpage;
+          });
+        },
+        children: [NewComplaintScreen(), ViewComplaintScreen()],
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: <BottomNavigationBarItem>[
@@ -101,7 +109,7 @@ class _HomeScreenState extends State<HomeScreen> {
           BottomNavigationBarItem(
               icon: Icon(Icons.list_alt), label: "My Complaints")
         ],
-        currentIndex: index,
+        currentIndex: _index,
         onTap: _onItemTap,
         selectedItemColor: Colors.amber[800],
       ),
