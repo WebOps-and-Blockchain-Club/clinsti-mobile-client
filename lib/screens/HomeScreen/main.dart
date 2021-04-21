@@ -6,6 +6,7 @@ import 'package:app_client/screens/HomeScreen/ViewComplaints/main.dart';
 import 'package:app_client/screens/HomeScreen/NewComplaint/main.dart';
 import 'package:app_client/screens/HomeScreen/Profile/profile.dart';
 import 'package:app_client/services/auth.dart';
+import 'package:app_client/services/database.dart';
 import "package:flutter/material.dart";
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,8 @@ class _HomeScreenState extends State<HomeScreen> {
   PageController _pageController;
 
   AuthService _auth;
+  DatabaseService _db = new DatabaseService(); // use this type for db
+  // also use with changeNotifier for get complaintS
   void _onItemTap(int i) {
     _pageController.animateToPage(i,
         duration: Duration(milliseconds: 500), curve: Curves.easeIn);
