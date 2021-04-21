@@ -1,13 +1,11 @@
 import 'package:app_client/models/user.dart';
 import 'package:app_client/screens/HomeScreen/Profile/changepassword.dart';
 import 'package:app_client/services/auth.dart';
-import 'package:app_client/services/server.dart';
 import 'package:flutter/material.dart';
 
 class MyProfileScreen extends StatefulWidget {
-  final User user;
   final AuthService auth;
-  MyProfileScreen({this.user, this.auth});
+  MyProfileScreen({this.auth});
   @override
   _MyProfileScreenState createState() => _MyProfileScreenState();
 }
@@ -18,12 +16,14 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   String error;
   bool isEditable = false;
   FocusNode nameFocusNode;
-  Server http = new Server();
 
   @override
   void initState() {
     super.initState();
     nameFocusNode = FocusNode();
+    User user = widget.auth.useR;
+    _name.text = user.name;
+    _email.text = user.email;
   }
 
   @override
@@ -37,22 +37,18 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       setState(() {
         error = null;
       });
-      User user = await auth.getUpdatedProfile(email: email, name: name);
-      setState(() {
-        _name.text = user.name;
-        _email.text = user.email;
-      });
+      await auth.updateProfile(email: email, name: name);
+      setState(() {});
+
     } catch (e) {
       setState(() {
         error = e.toString();
       });
     }
   }
-
+  
   @override
   Widget build(BuildContext context) {
-    _name.text = widget.user.name;
-    _email.text = widget.user.email;
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Profile'),

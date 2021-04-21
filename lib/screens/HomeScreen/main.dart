@@ -72,12 +72,11 @@ class _HomeScreenState extends State<HomeScreen> {
             icon: Icon(Icons.person),
             onPressed: () async {
               try {
-                User user = await _auth.getUserInfo();
                 Navigator.push(
                     context,
                     MaterialPageRoute(
                         builder: (context) =>
-                            MyProfileScreen(user: user, auth: _auth)));
+                            MyProfileScreen(auth: _auth)));
               } catch (e) {
                 print(e.toString());
               }

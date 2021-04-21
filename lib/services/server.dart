@@ -79,12 +79,9 @@ class Server {
       request.body = '{"name":"$name", "email":"$email"}';
     }
     request.headers.addAll(headers);
-
     http.StreamedResponse response = await request.send();
-
     if (response.statusCode == 200) {
-      var convertedData = jsonDecode(await response.stream.bytesToString());
-      User user = User.fromJson(convertedData, token);
+      User user = User(token: token, email: email, name: name);
       return user;
     } else {
       throw (response);
