@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 
 class Server {
   final String baseUrl =
-      "http://192.168.101.13:3000"; //TODO: put your local netwok config here
+      "http://localhost:3000"; //TODO: put your local netwok config here
   final String signup = "/client/accounts/signup";
   final String signin = '/client/accounts/signin';
 

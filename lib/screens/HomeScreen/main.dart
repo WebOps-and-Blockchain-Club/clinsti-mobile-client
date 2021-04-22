@@ -66,34 +66,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Text("App Name"),
-        leading: IconButton(
-            icon: Icon(Icons.person),
-            onPressed: () async {
-              try {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            MyProfileScreen(auth: _auth)));
-              } catch (e) {
-                print(e.toString());
-              }
-            }),
-        actions: [
-          IconButton(
-              icon: Icon(Icons.feedback),
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => FeedbackScreen()));
-              }),
-          IconButton(
-              icon: Icon(Icons.exit_to_app),
-              onPressed: () {
-                _logout();
-              }),
-        ],
+        leading: Icon(Icons.celebration),
+        title: Text("CLinsti"),
       ),
       body: PageView(
         controller: _pageController,
@@ -115,6 +89,47 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: _onItemTap,
         selectedItemColor: Colors.amber[800],
       ),
+      endDrawer: Drawer(
+          child: ListView(
+        children: [
+          DrawerHeader(
+            child: ListTile(
+                leading: Icon(Icons.account_circle),
+                title: Text(_auth.useR.name)),
+            decoration: BoxDecoration(color: Colors.blue),
+          ),
+          ListTile(
+            leading: Icon(Icons.person),
+            title: Text('Profile'),
+            onTap: () {
+              Navigator.pop(context);
+              try {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => MyProfileScreen(auth: _auth)));
+              } catch (e) {
+                print(e.toString());
+              }
+            },
+          ),
+          ListTile(
+              leading: Icon(Icons.feedback),
+              title: Text('Feedback'),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => FeedbackScreen()));
+              }),
+          ListTile(
+              leading: Icon(Icons.exit_to_app),
+              title: Text('Logout'),
+              onTap: () {
+                Navigator.pop(context);
+                _logout();
+              }),
+        ],
+      )),
     );
   }
 }
