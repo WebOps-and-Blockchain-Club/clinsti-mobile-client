@@ -77,7 +77,7 @@ class AuthService extends ChangeNotifier {
   }
 
   Future<User> verifyToken() async {
-    //return User(email: 'abc@xyz.com', name: 'Hello', token: _token);
+    return User(email: 'abc@xyz.com', name: 'Hello', token: _token);
     // ignore: dead_code
     try {
       User user = await getUserInfo();
@@ -106,7 +106,8 @@ class AuthService extends ChangeNotifier {
   Future updateProfile({String name, String email}) async {
     await _loadToken();
     try {
-      await _setUser(await http.updateProfile(_token, name: name, email: email));
+      await _setUser(
+          await http.updateProfile(_token, name: name, email: email));
     } catch (e) {
       throw (e);
     }

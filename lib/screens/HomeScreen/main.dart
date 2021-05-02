@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:app_client/models/user.dart';
 import 'package:app_client/screens/HomeScreen/Feedback/main.dart';
 import 'package:app_client/screens/HomeScreen/ViewComplaints/main.dart';
@@ -94,8 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           DrawerHeader(
             child: ListTile(
-                leading: Icon(Icons.account_circle),
-                title: Text(_auth.useR.name)),
+                leading: Icon(Icons.account_circle), title: Text("User")),
             decoration: BoxDecoration(color: Colors.blue),
           ),
           ListTile(
