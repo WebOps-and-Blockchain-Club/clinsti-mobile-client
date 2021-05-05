@@ -93,7 +93,10 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           DrawerHeader(
             child: ListTile(
-                leading: Icon(Icons.account_circle), title: Text("User")),
+                // leading: Icon(Icons.account_circle),
+                // title: Text(_auth.useR.name)),
+                leading: Icon(Icons.account_circle),
+                title: Text("User")),
             decoration: BoxDecoration(color: Colors.blue),
           ),
           ListTile(

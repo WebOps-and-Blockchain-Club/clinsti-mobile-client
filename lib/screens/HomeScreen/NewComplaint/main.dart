@@ -1,18 +1,10 @@
+import 'package:app_client/screens/Map/main.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:app_client/services/google_map.dart';
-import 'package:google_maps_place_picker/google_maps_place_picker.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-//import 'package:place_picker/place_picker.dart';
 
 class NewComplaintScreen extends StatefulWidget {
-  const NewComplaintScreen({Key key}) : super(key: key);
-
-  static final kInitialPosition = LatLng(12.9915, 80.2337);
   @override
   _NewComplaintScreenState createState() => _NewComplaintScreenState();
 }
@@ -23,8 +15,16 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
   String dropdownValue;
   List<Asset> images = [];
   String error;
-  String apiKey = 'AIzaSyBx8CFPjFvy889_ejFVJctYruobAlziKZk';
-  PickResult selectedPlace;
+
+  _selectLocation(BuildContext context) async {
+    final result = await Navigator.push(
+        context, MaterialPageRoute(builder: (context) => MapSelect()));
+    if (result != null) {
+      setState(() {
+        compLocation.text = result;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -52,75 +52,11 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
             decoration: InputDecoration(
                 labelText: 'Location',
                 suffixIcon: IconButton(
-                    icon: Icon(Icons.location_on),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return PlacePicker(
-                              apiKey: apiKey,
-                              initialPosition:
-                                  NewComplaintScreen.kInitialPosition,
-                              useCurrentLocation: true,
-                              selectInitialPosition: true,
-
-                              //usePlaceDetailSearch: true,
-                              onPlacePicked: (result) {
-                                selectedPlace = result;
-                                Navigator.of(context).pop();
-                                setState(() {});
-                              },
-                              forceSearchOnZoomChanged: true,
-                              automaticallyImplyAppBarLeading: false,
-                              //autocompleteLanguage: "ko",
-                              //region: 'au',
-
-                              selectedPlaceWidgetBuilder: (_, selectedPlace,
-                                  state, isSearchBarFocused) {
-                                print(
-                                    "state: $state, isSearchBarFocused: $isSearchBarFocused");
-                                return isSearchBarFocused
-                                    ? Container()
-                                    : FloatingCard(
-                                        bottomPosition:
-                                            0.0, // MediaQuery.of(context) will cause rebuild. See MediaQuery document for the information.
-                                        leftPosition: 0.0,
-                                        rightPosition: 0.0,
-                                        width: 500,
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
-                                        child: state == SearchingState.Searching
-                                            ? Center(
-                                                child:
-                                                    CircularProgressIndicator())
-                                            // ignore: deprecated_member_use
-                                            : RaisedButton(
-                                                child: Text("Pick Here"),
-                                                onPressed: () {
-                                                  // IMPORTANT: You MUST manage selectedPlace data yourself as using this build will not invoke onPlacePicker as
-                                                  //            this will override default 'Select here' Button.
-                                                  // TO BE ADDED: Taking out the output address
-                                                  print(
-                                                      "do something with [selectedPlace] data");
-                                                  print(selectedPlace);
-                                                  Navigator.of(context).pop();
-                                                },
-                                              ),
-                                      );
-                              },
-                              pinBuilder: (context, state) {
-                                if (state == PinState.Idle) {
-                                  return Icon(Icons.favorite_border);
-                                } else {
-                                  return Icon(Icons.favorite);
-                                }
-                              },
-                            );
-                          },
-                        ),
-                      );
-                    })),
+                  icon: Icon(Icons.location_on),
+                  onPressed: () {
+                    _selectLocation(context);
+                  },
+                )),
             controller: compLocation,
             maxLines: null,
           ),
@@ -281,19 +217,3 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
     });
   }
 }
-
-// () => Navigator.push(
-//                       context,
-//                        MaterialPageRoute(
-//                          builder: (context) => GoogleMapScreen(),
-//                        ))
-
-// void showPlacePicker() async {
-//     LocationResult result = await Navigator.of(context).push(MaterialPageRoute(
-//         builder: (context) => PlacePicker(
-//               apiKey,
-//             )));
-
-//     // Handle the result in your way
-//     print(result);
-//   }
