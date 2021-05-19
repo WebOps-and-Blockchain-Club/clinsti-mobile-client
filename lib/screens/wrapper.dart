@@ -1,6 +1,7 @@
 import 'package:app_client/screens/AuthScreen/main.dart';
 import 'package:app_client/screens/HomeScreen/main.dart';
 import 'package:app_client/services/auth.dart';
+import 'package:app_client/services/database.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +16,10 @@ class _WrapperState extends State<Wrapper> {
     return ChangeNotifierProvider(
         create: (_) => AuthService(),
         child: Consumer<AuthService>(builder: (context, auth, child) {
-          return auth.tokeN == null ? Authenticate() : HomeScreen();
+          return auth.tokeN == null
+              ? Authenticate()
+              : ChangeNotifierProvider(
+                  create: (_) => DatabaseService(), child: HomeScreen());
         }));
   }
 }

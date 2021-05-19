@@ -4,17 +4,30 @@ import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DatabaseService extends ChangeNotifier {
+  // const zone = req.query.zone?.toString().split(',')
+  //   const status = req.query.status?.toString().split(',')
+  //   let dateFrom = req.query.dateFrom
+  //   let dateTo = req.query.dateTo + 'T23:59:59.999Z'
+
+  //   const reqLimit = req.query.limit?.toString()
+  //   const reqSkip = req.query.skip?.toString()
   SharedPreferences _prefs;
   String _token;
+  String _statusFilter;
+  String _zoneFilter;
+  int _skip = 0;
+  int _limit = 10;
+
   Server http = new Server();
   List<Complaint> _complaints = <Complaint>[];
 
-  List<Complaint> get complaintS => _complaints ?? null;
+  List<Complaint> get complaintS => _complaints ?? [];
 
   DatabaseService() {
     notifyListeners();
     _token = null;
     _loadToken();
+    _fetchComplaints();
   }
 
   _initDB() async {
@@ -41,9 +54,49 @@ class DatabaseService extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future fetchComplaints() async {
-    this._complaints = dummyComplaints;
+  setStatusFilter(String filt) async {
+    if (filt == "all") {
+      _statusFilter = null;
+    } else {
+      _statusFilter = filt;
+    }
+    _fetchComplaints();
+  }
+
+  setZoneFilter(String filt) async {
+    if (filt == "all") {
+      _zoneFilter = null;
+    } else {
+      _zoneFilter = filt;
+    }
+    _fetchComplaints();
+  }
+
+  setSkip(int x) {
+    _skip = x;
+  }
+
+  Future _fetchComplaints() async {
+    print(_statusFilter);
+    if (_statusFilter == null) {
+      print("in");
+      _complaints = dummyComplaints;
+    } else {
+      if (_statusFilter == "completed") {
+        _complaints =
+            dummyComplaints.where((c) => c.status == 'completed').toList();
+      } else if (_statusFilter == "pending") {
+        _complaints =
+            dummyComplaints.where((c) => c.status == 'processing').toList();
+      } else {
+        _complaints = dummyComplaints;
+      }
+    }
     notifyListeners();
+  }
+
+  Future synC() async {
+    await _fetchComplaints();
   }
 
   var dummyComplaints = [
