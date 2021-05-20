@@ -11,12 +11,11 @@ class MapSelect extends StatefulWidget {
 
 class MapSelectState extends State<MapSelect> {
   LatLng _currentLocation;
-  Circle _circleCurrent;
-  Set<Circle> _circles;
-
+  Marker _markerCurrent;
   LatLng _selectedLocation;
   Marker _markerSelected;
   Set<Marker> _markers;
+  BitmapDescriptor locationIcon;
 
   MapType _mapType = MapType.normal;
   Completer<GoogleMapController> _controller = Completer();
@@ -34,33 +33,42 @@ class MapSelectState extends State<MapSelect> {
     initMarkers();
     await getCurrentLocation();
     await gotoCurrentLocation();
-    _onTap(_currentLocation);
+    selectCurrentLocation();
   }
 
   initMarkers() {
-    _circleCurrent = Circle(circleId: CircleId('current'));
-    _circles = {_circleCurrent};
+    _markerCurrent = Marker(markerId: MarkerId('current'));
     _markerSelected = Marker(markerId: MarkerId('selected'));
-    _markers = {_markerSelected};
+    _markers = {_markerSelected, _markerCurrent};
+    BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(size: Size(48, 48)), 'assets/location.png')
+        .then((onValue) {
+      locationIcon = onValue;
+    });
   }
 
   Future getCurrentLocation() async {
     await Geolocator.getCurrentPosition().then((currentLocation) {
-      print(currentLocation);
       setState(() {
         _currentLocation =
-            new LatLng(currentLocation.latitude, currentLocation.longitude);
-        _circleCurrent = Circle(
-            circleId: CircleId('current'),
-            center: _currentLocation,
-            radius: 1,
-            strokeColor: Color(0x5F4CAF50),
-            fillColor: Colors.green,
-            strokeWidth: 20);
-        _circles.add(_circleCurrent);
+            LatLng(currentLocation.latitude, currentLocation.longitude);
+        _markerCurrent = Marker(
+            markerId: MarkerId('current'),
+            position: _currentLocation,
+            onTap: selectCurrentLocation,
+            icon: locationIcon);
+        Marker tempMarker = _markers.firstWhere(
+            (marker) => marker.markerId.value == "current",
+            orElse: () => null);
+        _markers.remove(tempMarker);
+        _markers.add(_markerCurrent);
       });
       return;
     });
+  }
+
+  selectCurrentLocation() {
+    _onTap(_currentLocation);
   }
 
   Future gotoCurrentLocation() async {
@@ -76,6 +84,10 @@ class MapSelectState extends State<MapSelect> {
       _selectedLocation = latLng;
       _markerSelected =
           Marker(markerId: MarkerId("selected"), position: latLng);
+      Marker tempMarker = _markers.firstWhere(
+          (marker) => marker.markerId.value == "selected",
+          orElse: () => null);
+      _markers.remove(tempMarker);
       _markers.add(_markerSelected);
     });
   }
@@ -107,12 +119,11 @@ class MapSelectState extends State<MapSelect> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(),
+      appBar: AppBar(),
       body: Column(
         children: [
           Expanded(
             child: GoogleMap(
-              circles: _circles == null ? {} : _circles,
               padding: EdgeInsets.all(1.0),
               onTap: _onTap,
               mapToolbarEnabled: false,
@@ -144,9 +155,10 @@ class MapSelectState extends State<MapSelect> {
                     child: Text('Select location')),
                 IconButton(
                     icon: Icon(Icons.my_location_rounded),
-                    onPressed: () {
+                    onPressed: () async {
+                      getCurrentLocation();
                       gotoCurrentLocation();
-                    })
+                    }),
               ],
             ),
           )
