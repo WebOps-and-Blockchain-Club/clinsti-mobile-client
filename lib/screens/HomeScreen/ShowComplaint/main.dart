@@ -1,12 +1,13 @@
-import 'package:app_client/models/complaint.dart';
 // import 'package:app_client/screens/HomeScreen/Feedback/main.dart';
 // import 'package:app_client/screens/HomeScreen/ShowComplaint/resolveComplaintScreen.dart';
+import 'package:app_client/services/database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ShowComplaintScreen extends StatefulWidget {
-  final Complaint complaint;
-  ShowComplaintScreen({this.complaint});
+  final dynamic complaint;
+  final DatabaseService db;
+  ShowComplaintScreen({this.complaint, this.db});
 
   @override
   _ShowComplaintScreenState createState() => _ShowComplaintScreenState();
@@ -17,16 +18,67 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
   TextEditingController location = TextEditingController();
   TextEditingController description = TextEditingController();
   TextEditingController feedback = TextEditingController();
+  int requestId;
   final _formKey = GlobalKey<FormState>();
+  dynamic _complaint;
+
+  @override
+  void initState() {
+    super.initState();
+    // {
+    //   "complaint_id": 27,
+    //   "_location": "IITMsa4csdsd",
+    //   "created_time": "2021-05-07T17:39:57.307Z",
+    //   "status": "Pending transmission"
+    // },
+    location.text = widget.complaint["_location"];
+    requestId = widget.complaint["complaint_id"];
+    // requestId = widget.complaint['complaint_id'];
+    getComplaint();
+    // {complaint_id: 33,
+    // description: hfhbebifwbuifw, _
+    // location: all Homes,
+    // waste_type: Furniture,
+    // zone: Academic Zone,
+    // status: Pending transmission,
+    // created_time: 2021-05-20T07:39:14.150Z,
+    // completed_time: null,
+    // images: null,
+    // feedback_rating: null,
+    // feedback_remark: null,
+    // admin_remark: null}
+  }
+
+  Future getComplaint() async {
+    _complaint = await widget.db.getComplaint(widget.complaint["complaint_id"]);
+    print(_complaint);
+    setState(() {
+      description.text = _complaint["description"];
+      location.text = _complaint["_location"];
+      feedback.text = _complaint["feedback_remark"] ?? "";
+    });
+    setState(() {});
+    // {complaint_id: 33,
+    // description: hfhbebifwbuifw,
+    // _location: locatiosdas,
+    // waste_type: Furniture,
+    // zone: Academic Zone,
+    // status: Pending transmission,
+    // created_time: 2021-05-20T07:39:14.150Z,
+    // completed_time: null,
+    // images: null,
+    // feedback_rating: null,
+    // feedback_remark: null,
+    // admin_remark: null}
+  }
+
   @override
   Widget build(BuildContext context) {
-    location.text = widget.complaint.location;
-    description.text = widget.complaint.description;
-    feedback.text = widget.complaint.fbReview ?? null;
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        title: Text('Complaint ID: ' + widget.complaint.complaintId),
+        title: Text(
+            'Complaint ID: ' + widget.complaint["complaint_id"].toString()),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -85,17 +137,17 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
             //   height: 30,
             // ),
             Text(
-              'Registered on: ' + widget.complaint.timestamp,
+              'Registered on: ' + widget.complaint["created_time"].toString(),
               style: TextStyle(fontSize: 20, color: Colors.blue),
             ),
             SizedBox(
               height: 20,
             ),
             Text(
-              'Status: ' + widget.complaint.status,
+              'Status: ' + widget.complaint["status"].toString(),
               style: TextStyle(
                 fontSize: 20,
-                color: (widget.complaint.status == 'completed')
+                color: (widget.complaint["status"] == 'completed')
                     ? Colors.green
                     : Colors.redAccent,
               ),
@@ -103,7 +155,7 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
             SizedBox(
               height: 30,
             ),
-            if (widget.complaint.status == 'completed')
+            if (widget.complaint["status"] == 'Work completed')
               Center(
                 child: Container(
                   width: 0.67 * width,
@@ -113,19 +165,26 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
                     itemCount: 5,
                     itemBuilder: (context, int index) {
                       return IconButton(
-                          icon: (index < (widget.complaint.fbRating ?? 0))
+                          icon: (index <
+                                  (_complaint == null
+                                      ? 0
+                                      : (_complaint["fbRating"] ?? 0)))
                               ? Icon(Icons.star)
                               : Icon(Icons.star_border),
-                          color: (index < (widget.complaint.fbRating ?? 0))
+                          color: (index <
+                                  (_complaint == null
+                                      ? 0
+                                      : (_complaint["fbRating"] ?? 0)))
                               ? Colors.yellowAccent
                               : Colors.grey,
                           onPressed: () {
-                            if ((widget.complaint.fbRating == null &&
-                                    widget.complaint.fbRating == 0) ||
-                                widget.complaint.fbReview == null ||
+                            if ((_complaint != null &&
+                                    _complaint["fbRating"] == null &&
+                                    _complaint["fbRating"] == 0) ||
+                                _complaint["fbReview"] == null ||
                                 showSubmitButton) {
                               setState(() {
-                                widget.complaint.fbRating = index + 1;
+                                _complaint["fbRating"] = index + 1;
                                 showSubmitButton = true;
                               });
                             }
@@ -134,8 +193,9 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
                   ),
                 ),
               ),
-            if (widget.complaint.fbRating != null &&
-                widget.complaint.fbRating != 0)
+            if (_complaint != null &&
+                _complaint["fbRating"] != null &&
+                _complaint["fbRating"] != 0)
               Form(
                 key: _formKey,
                 child: TextFormField(
@@ -147,7 +207,8 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
                     }
                     return null;
                   },
-                  enabled: (widget.complaint.fbReview == null),
+                  enabled:
+                      (_complaint != null && _complaint["fbReview"] == null),
                   decoration: InputDecoration(
                     hintText: 'Feedback',
                   ),
@@ -168,7 +229,7 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
                     if (_formKey.currentState.validate()) {
                       setState(() {
                         showSubmitButton = false;
-                        widget.complaint.fbReview = feedback.text;
+                        _complaint["fbReview"] = feedback.text;
                       });
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Feedback Submitted')));
@@ -176,7 +237,7 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
                   },
                 ),
               ),
-            if (widget.complaint.status != 'completed')
+            if (_complaint != null && _complaint["status"] != 'Work completed')
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 ElevatedButton(
                   child: Padding(
@@ -190,7 +251,7 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
                   ),
                   onPressed: () {
                     setState(() {
-                      widget.complaint.status = "completed";
+                      _complaint["status"] = "completed";
                     });
                   },
                 ),

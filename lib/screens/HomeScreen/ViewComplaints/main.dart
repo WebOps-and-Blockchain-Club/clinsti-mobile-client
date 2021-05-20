@@ -24,6 +24,8 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
   }
 
   setFilter(String filt) {
+    print(filt);
+    print("e");
     setState(() {
       filterBy = filt;
     });
@@ -40,7 +42,7 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
         children: <Widget>[
           Expanded(
             child: ListView.builder(
-              itemCount: _db.complaintS.length,
+              itemCount: _db == null ? 0 : _db.complaintS.length,
               itemBuilder: (context, i) {
                 return InkWell(
                   child: ComplaintTile(complaint: _db.complaintS[i]),
@@ -48,42 +50,48 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => ShowComplaintScreen(
-                              complaint: _db.complaintS[i]))),
+                                complaint: _db.complaintS[i],
+                                db: _db,
+                              ))),
                 );
               },
             ),
           ),
-          Container(
-            margin: EdgeInsets.only(bottom: 6.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 5.0),
-                    color: Colors.blue[200],
-                    child: Center(
-                      child: DropdownButton(
-                          dropdownColor: Colors.blue[200],
-                          icon: Icon(Icons.filter_list),
-                          value: filterBy,
-                          onChanged: setFilter,
-                          items: <String>['all', 'completed', 'pending']
-                              .map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                                value: value, child: Text(value));
-                          }).toList()),
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 5.0),
-                    color: Colors.blue[200],
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // Container(
+          //   margin: EdgeInsets.only(bottom: 6.0),
+          //   child: Row(
+          //     children: [
+          //       Expanded(
+          //         child: Container(
+          //           margin: EdgeInsets.symmetric(horizontal: 5.0),
+          //           color: Colors.blue[200],
+          //           child: DropdownButton(
+          //               dropdownColor: Colors.blue[200],
+          //               icon: Icon(Icons.filter_list),
+          //               value: filterBy,
+          //               onChanged: setFilter,
+          //               items: <String>[
+          //                 'all',
+          //                 "Pending transmission",
+          //                 "Work is pending",
+          //                 "Work in progress",
+          //                 "Work completed",
+          //                 "Closed with due justification"
+          //               ].map<DropdownMenuItem<String>>((String value) {
+          //                 return DropdownMenuItem<String>(
+          //                     value: value, child: Text(value));
+          //               }).toList()),
+          //         ),
+          //       ),
+          //       // Expanded(
+          //       //   child: Container(
+          //       //     margin: EdgeInsets.symmetric(horizontal: 5.0),
+          //       //     color: Colors.blue[200],
+          //       //   ),
+          //       // ),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );

@@ -1,8 +1,10 @@
 import 'package:app_client/screens/Map/main.dart';
+import 'package:app_client/services/database.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:provider/provider.dart';
 
 class NewComplaintScreen extends StatefulWidget {
   @override
@@ -12,9 +14,12 @@ class NewComplaintScreen extends StatefulWidget {
 class _NewComplaintScreenState extends State<NewComplaintScreen> {
   TextEditingController compLocation = TextEditingController();
   TextEditingController compDescription = TextEditingController();
-  String dropdownValue;
+  String zoneValue;
+  String typeValue;
   List<Asset> images = [];
   String error;
+  DatabaseService _db;
+  final _formKey = GlobalKey<FormState>();
 
   _selectLocation(BuildContext context) async {
     final result = await Navigator.push(
@@ -27,119 +32,192 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _db = Provider.of<DatabaseService>(context, listen: false);
+    });
+  }
+
+  postRequest() async {
+    await _db.postRequest(
+        compDescription.text, compLocation.text, typeValue, zoneValue);
+    setState(() {
+      compDescription.text = "";
+      compLocation.text = "";
+      typeValue = null;
+      zoneValue = null;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        SizedBox(
-          height: 20,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: TextField(
-            decoration: InputDecoration(
-              labelText: 'Description',
-            ),
-            maxLines: null,
-            controller: compDescription,
+    return Form(
+      key: _formKey,
+      child: ListView(
+        children: [
+          SizedBox(
+            height: 20,
           ),
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: TextField(
-            decoration: InputDecoration(
-                labelText: 'Location',
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.location_on),
-                  onPressed: () {
-                    _selectLocation(context);
-                  },
-                )),
-            controller: compLocation,
-            maxLines: null,
-          ),
-        ),
-        SizedBox(
-          height: 20,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: DropdownButton(
-            value: dropdownValue,
-            icon: Icon(Icons.arrow_drop_down),
-            iconSize: 24,
-            elevation: 16,
-            isExpanded: true,
-            style: const TextStyle(color: Colors.deepPurple),
-            underline: Container(
-              height: 2,
-              color: Colors.deepPurpleAccent,
-            ),
-            onChanged: (String newValue) {
-              setState(() {
-                dropdownValue = newValue;
-              });
-            },
-            items: <String>['Bio-degradable', 'Plastic', 'Other']
-                .map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                child: Text(value),
-                value: value,
-              );
-            }).toList(),
-            hint: Text(
-              'Type of Waste',
-              style: TextStyle(color: Colors.grey, fontSize: 14),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: TextFormField(
+              decoration: InputDecoration(
+                labelText: 'Description',
+              ),
+              validator: (val) =>
+                  val.length < 5 ? "please write few more words" : null,
+              maxLines: null,
+              controller: compDescription,
             ),
           ),
-        ),
-        SizedBox(
-          height: 40,
-        ),
-        if (images.length != 0) dispImages(),
-        SizedBox(
-          height: 40,
-        ),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          ElevatedButton(
-            child: Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: Text('Add Images', style: TextStyle(fontSize: 18)),
-            ),
-            onPressed: loadAssets,
+          SizedBox(
+            height: 20,
           ),
-          if (images.length != 0)
-            SizedBox(
-              width: 10,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: TextFormField(
+              decoration: InputDecoration(
+                  labelText: 'Location',
+                  suffixIcon: IconButton(
+                    icon: Icon(Icons.location_on),
+                    onPressed: () {
+                      _selectLocation(context);
+                    },
+                  )),
+              validator: (val) =>
+                  val.length < 5 ? "please write few more words" : null,
+              controller: compLocation,
+              maxLines: null,
             ),
-          if (images.length != 0)
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: DropdownButtonFormField(
+              value: zoneValue,
+              icon: Icon(Icons.arrow_drop_down),
+              iconSize: 24,
+              elevation: 16,
+              isExpanded: true,
+              style: const TextStyle(color: Colors.deepPurple),
+              onChanged: (String newValue) {
+                setState(() {
+                  zoneValue = newValue;
+                });
+              },
+              items: <String>[
+                "Academic Zone",
+                "Hostel Zone",
+                "Residential Zone"
+              ].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  child: Text(value),
+                  value: value,
+                );
+              }).toList(),
+              validator: (val) => val == null ? "please select" : null,
+              hint: Text(
+                'zone',
+                style: TextStyle(color: Colors.grey, fontSize: 14),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: DropdownButtonFormField(
+              value: typeValue,
+              icon: Icon(Icons.arrow_drop_down),
+              iconSize: 24,
+              elevation: 16,
+              isExpanded: true,
+              style: const TextStyle(color: Colors.deepPurple),
+              validator: (val) => val == null ? "please select" : null,
+              onChanged: (String newValue) {
+                setState(() {
+                  typeValue = newValue;
+                });
+              },
+              items: <String>[
+                "Paper/Plastic",
+                "Bottles",
+                "Steel scrap",
+                "Construction debris",
+                "Food waste",
+                "Furniture",
+                "Equipment",
+                "Package materials",
+                "e-waste (Tubelight, Computer, Battery)",
+                "Hazardous waste (chemical, oil, bitumen, empty chemical bottle)",
+                "Bio-medical waste",
+                "Others"
+              ].map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  child: Text(value),
+                  value: value,
+                );
+              }).toList(),
+              hint: Text(
+                'Type of Waste',
+                style: TextStyle(color: Colors.grey, fontSize: 14),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 40,
+          ),
+          if (images.length != 0) dispImages(),
+          SizedBox(
+            height: 40,
+          ),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
             ElevatedButton(
               child: Padding(
                 padding: const EdgeInsets.all(2.0),
-                child: Text('Clear', style: TextStyle(fontSize: 18)),
+                child: Text('Add Images', style: TextStyle(fontSize: 18)),
               ),
-              onPressed: () {
-                setState(() {
-                  images.removeRange(0, images.length);
-                });
+              onPressed: loadAssets,
+            ),
+            if (images.length != 0)
+              SizedBox(
+                width: 10,
+              ),
+            if (images.length != 0)
+              ElevatedButton(
+                child: Padding(
+                  padding: const EdgeInsets.all(2.0),
+                  child: Text('Clear', style: TextStyle(fontSize: 18)),
+                ),
+                onPressed: () {
+                  setState(() {
+                    images.removeRange(0, images.length);
+                  });
+                },
+              ),
+          ]),
+          SizedBox(
+            height: 40,
+          ),
+          Center(
+            child: ElevatedButton(
+              child: Padding(
+                padding: const EdgeInsets.all(2.0),
+                child: Text('Submit Complaint', style: TextStyle(fontSize: 18)),
+              ),
+              onPressed: () async {
+                if (_formKey.currentState.validate()) {
+                  await postRequest();
+                }
               },
             ),
-        ]),
-        SizedBox(
-          height: 40,
-        ),
-        Center(
-          child: ElevatedButton(
-            child: Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: Text('Submit Complaint', style: TextStyle(fontSize: 18)),
-            ),
-            onPressed: null,
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 

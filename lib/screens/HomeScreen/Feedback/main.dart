@@ -22,7 +22,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         child: Form(
           key: _formKey,
           child: ListView(
-
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             children: [
               SizedBox(
@@ -44,8 +43,11 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                     _feedbackTo = v;
                   });
                 },
-                items: <String>['Owzone', 'App']
-                    .map<DropdownMenuItem<String>>((String value) {
+                items: <String>[
+                  "Engineering Unit",
+                  "Administration",
+                  "App development team"
+                ].map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     child: Text(value),
                     value: value,
@@ -77,7 +79,10 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(2.0),
-                        child: Text('Submit', style: TextStyle(fontSize: 18),),
+                        child: Text(
+                          'Submit',
+                          style: TextStyle(fontSize: 18),
+                        ),
                       )))
             ],
           ),

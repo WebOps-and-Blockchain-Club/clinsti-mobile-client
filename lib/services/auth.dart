@@ -77,7 +77,7 @@ class AuthService extends ChangeNotifier {
   }
 
   Future<User> verifyToken() async {
-    return User(email: 'abc@xyz.com', name: 'Hello', token: _token);
+    // return User(email: 'abc@xyz.com', name: 'Hello', token: _token);
     // ignore: dead_code
     try {
       User user = await getUserInfo();
