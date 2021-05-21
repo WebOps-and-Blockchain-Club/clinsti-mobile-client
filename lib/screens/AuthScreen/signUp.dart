@@ -1,3 +1,4 @@
+import 'package:app_client/dev/dev.dart';
 import 'package:app_client/screens/shared/loading.dart';
 import 'package:app_client/services/auth.dart';
 import 'package:flutter/material.dart';
@@ -38,6 +39,12 @@ class _SignUpState extends State<SignUp> {
           elevation: 0.0,
           title: Text('SignUp'),
           actions: <Widget>[
+            IconButton(
+                icon: Icon(Icons.ac_unit_rounded),
+                onPressed: (() {
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => Link()));
+                })),
             TextButton.icon(
               icon: Icon(Icons.person, color: Colors.white),
               label: Text('SignIn', style: TextStyle(color: Colors.white)),

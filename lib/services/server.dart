@@ -1,17 +1,34 @@
 import 'dart:convert';
 import 'package:app_client/models/user.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Server {
-  final String baseUrl =
+  String baseUrl =
       "http://localhost:3000"; //TODO: put your local netwok config here
   final String signup = "/client/accounts/signup";
   final String signin = '/client/accounts/signin';
+  var jsonHead = {'Content-Type': 'application/json'};
+  var tokenHead = {
+    'Authorization':
+        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI4MDUwNmRkMS1iZTJlLTQyOWUtOTUyNS00OTFmZjhkYWEyMGUiLCJfcGFzc3dvcmQiOiIkMmEkMTAkT0ptVlpROGRCaHg3emx4d0hud043TzcwLldFQ0VwWlZJSmg3NnMxY3g5YXJxWGF0UmJIUG0iLCJpYXQiOjE2MjA0MDg1NzIsImV4cCI6MTYyMzAwMDU3Mn0.cSymrAudwljetZIYTetypdPTyofY_96HtBlv-F92_uM'
+  };
+  SharedPreferences _prefs;
+
+  Server() {
+    init();
+  }
+
+  init() async {
+    if (_prefs == null) _prefs = await SharedPreferences.getInstance();
+    baseUrl = _prefs.getString('link') ?? "http://localhost:3000";
+  }
 
   ////Account Requests
   ///SignUp
   Future<dynamic> signUp(String email, String password, String name) async {
-    var headers = {'Content-Type': 'application/json'};
+    await init();
+    var headers = {...jsonHead};
     var request = http.Request('POST', Uri.parse(baseUrl + signup));
     request.body =
         '{"name": "$name","email": "$email","password": "$password"}';
@@ -28,7 +45,8 @@ class Server {
 
   ///SignIn
   Future<dynamic> signIn(String email, String password) async {
-    var headers = {'Content-Type': 'application/json'};
+    await init();
+    var headers = {...jsonHead};
     var request =
         http.Request('POST', Uri.parse('$baseUrl/client/accounts/signin'));
     request.body = '{"email": "$email",   "password": "$password"}';
@@ -45,6 +63,7 @@ class Server {
 
   //View Profile
   Future getUserInfo(String token) async {
+    await init();
     var headers = {'Authorization': 'Bearer $token'};
     var request = http.Request('GET', Uri.parse('$baseUrl/client/accounts'));
 
@@ -63,6 +82,7 @@ class Server {
 
   ///Edit Profile
   Future updateProfile(String token, {String name, String email}) async {
+    await init();
     if (name == null && email == null) {
       return;
     }
@@ -91,6 +111,7 @@ class Server {
   ///Change Password
   Future<dynamic> changePassword(
       String token, String oldPass, String newPass) async {
+    await init();
     var headers = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json'
@@ -114,6 +135,7 @@ class Server {
   ///post request
   Future<dynamic> postRequest(String token, String description, String location,
       String type, String zone) async {
+    await init();
     var headers = {'Authorization': 'Bearer $token'};
     var request =
         http.MultipartRequest('POST', Uri.parse('$baseUrl/client/complaints'));
@@ -143,6 +165,7 @@ class Server {
       int limit,
       String dateFrom,
       String dateTo}) async {
+    await init();
     String url = "$baseUrl/client/complaints";
     List<String> querys = [];
     if (zoneFilter != null) querys.add('zone=$zoneFilter');
@@ -169,6 +192,7 @@ class Server {
 
   /// get request by id
   Future<dynamic> getComplaint(String token, int id) async {
+    await init();
     var headers = {'Authorization': 'Bearer $token'};
     var request =
         http.Request('GET', Uri.parse('$baseUrl/client/complaints/$id'));
@@ -186,6 +210,7 @@ class Server {
 
   ///get image
   Future<dynamic> getImage(String token, String name) async {
+    await init();
     var headers = {'Authorization': 'Bearer $token'};
     var request =
         http.Request('GET', Uri.parse('$baseUrl/client/images/$name'));
@@ -204,6 +229,7 @@ class Server {
   ///add Complaint feedback
   Future<dynamic> postRequestFeedback(
       String token, int id, int rating, String remark) async {
+    await init();
     var headers = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json'
@@ -224,6 +250,7 @@ class Server {
 
   Future<dynamic> postFeedback(
       String token, String type, String feedback) async {
+    await init();
     var headers = {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json'
@@ -242,6 +269,7 @@ class Server {
   }
 
   Future<dynamic> deleteRequest(String token, int id) async {
+    await init();
     var headers = {'Authorization': 'Bearer $token'};
     var request =
         http.Request('DELETE', Uri.parse('$baseUrl/client/complaints/$id'));
