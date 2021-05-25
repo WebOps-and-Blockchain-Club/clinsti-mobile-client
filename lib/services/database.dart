@@ -113,10 +113,11 @@ class DatabaseService extends ChangeNotifier {
 
   Future postRequest(
       String description, String location, String type, String zone,
-      {String img}) async {
+      List<String> imgagesPath) async {
+        
     await _loadToken();
     try {
-      await http.postRequest(_token, description, location, type, zone);
+      await http.postRequest(_token, description, location, type, zone, imgagesPath);
     } catch (e) {}
   }
 

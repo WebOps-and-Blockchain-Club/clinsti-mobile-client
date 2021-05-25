@@ -134,7 +134,7 @@ class Server {
 
   ///post request
   Future<dynamic> postRequest(String token, String description, String location,
-      String type, String zone) async {
+      String type, String zone, List<String> imagesPath) async {
     await init();
     var headers = {'Authorization': 'Bearer $token'};
     var request =
@@ -145,6 +145,13 @@ class Server {
       'wasteType': type,
       'zone': zone
     });
+
+    if(imagesPath.length != null){
+      for(int i = 0; i < imagesPath.length; i++){
+        request.files.add(await http.MultipartFile.fromPath('images', imagesPath[i]));
+        print(imagesPath[i]);
+      }
+    }
 
     request.headers.addAll(headers);
 

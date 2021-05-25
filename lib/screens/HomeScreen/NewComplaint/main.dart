@@ -1,9 +1,12 @@
+import 'dart:io';
 import 'package:app_client/screens/Map/main.dart';
 import 'package:app_client/services/database.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 class NewComplaintScreen extends StatefulWidget {
@@ -17,6 +20,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
   String zoneValue;
   String typeValue;
   List<Asset> images = [];
+  List<String> compressedImagesPath = [];
   String error;
   DatabaseService _db;
   final _formKey = GlobalKey<FormState>();
@@ -41,13 +45,14 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
 
   postRequest() async {
     await _db.postRequest(
-        compDescription.text, compLocation.text, typeValue, zoneValue);
+        compDescription.text, compLocation.text, typeValue, zoneValue, compressedImagesPath);
     setState(() {
       compDescription.text = "";
       compLocation.text = "";
       typeValue = null;
       zoneValue = null;
     });
+    clearImages();    
   }
 
   @override
@@ -181,7 +186,12 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                 padding: const EdgeInsets.all(2.0),
                 child: Text('Add Images', style: TextStyle(fontSize: 18)),
               ),
-              onPressed: loadAssets,
+              onPressed: () async {
+                  await loadAssets();
+                  if(images.length != 0){
+                    await compressImages();
+                  }
+                },
             ),
             if (images.length != 0)
               SizedBox(
@@ -193,11 +203,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                   padding: const EdgeInsets.all(2.0),
                   child: Text('Clear', style: TextStyle(fontSize: 18)),
                 ),
-                onPressed: () {
-                  setState(() {
-                    images.removeRange(0, images.length);
-                  });
-                },
+                onPressed: clearImages,
               ),
           ]),
           SizedBox(
@@ -239,6 +245,13 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
         },
       ),
     );
+  }
+
+  void clearImages(){
+    setState(() {
+      images.removeRange(0, images.length);
+    });
+    compressedImagesPath.removeRange(0, compressedImagesPath.length);
   }
 
   Future<void> loadAssets() async {
@@ -294,4 +307,48 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
       }
     });
   }
+
+
+  Future<File> getImageFileFromAssets(Asset asset) async {
+    final byteData = await asset.getByteData();
+
+    final tempFile =
+        File("${(await getTemporaryDirectory()).path}/${asset.name}");
+    final file = await tempFile.writeAsBytes(
+      byteData.buffer
+          .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
+    );
+    return file;
+  }
+
+  Future<void> compressImages() async{
+    File temp;
+    for(int i = 0; i < images.length; i++){
+      temp = await getImageFileFromAssets(images[i]);
+      temp = await compressImage(temp);
+      compressedImagesPath.add(temp.path);
+    }
+  }
+  
+  Future<File> compressImage(File file) async {
+
+  final filePath = file.absolute.path; 
+
+  // Create output file path
+  // eg:- "Volume/VM/abcd_out.jpeg"
+
+  final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
+  print(filePath);
+  final splitted = filePath.substring(0, (lastIndex));
+  final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
+  print(outPath);
+  var result = await FlutterImageCompress.compressAndGetFile(
+    filePath, outPath,
+    quality: 70,
+    minWidth: 1000,
+    minHeight: 1000
+  );  
+  return result;
+ }
+
 }
