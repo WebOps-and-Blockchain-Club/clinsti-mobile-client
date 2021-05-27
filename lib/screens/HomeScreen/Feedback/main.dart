@@ -1,4 +1,6 @@
+import 'package:app_client/services/server.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class FeedbackScreen extends StatefulWidget {
   @override
@@ -9,6 +11,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   final TextEditingController _feedbackText = TextEditingController();
   String _feedbackTo;
   final _formKey = GlobalKey<FormState>();
+  Server _server = Server();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -18,7 +22,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 5.0),
         width: MediaQuery.of(context).size.width,
-        color: Colors.blue[100],
+        //color: Colors.blue[100],
         child: Form(
           key: _formKey,
           child: ListView(
@@ -72,9 +76,16 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               ),
               Center(
                   child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (_formKey.currentState.validate()) {
+                          await _server.postFeedback(_feedbackTo, _feedbackText.text);
                           Navigator.pop(context);
+                          Fluttertoast.showToast(
+                            msg: "Feedback Sent",
+                            toastLength: Toast.LENGTH_LONG,
+                            backgroundColor: Colors.white,
+                            textColor: Colors.black,
+                            fontSize: 14.0);
                         }
                       },
                       child: Padding(

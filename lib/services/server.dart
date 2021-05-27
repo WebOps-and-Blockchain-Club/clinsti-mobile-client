@@ -255,11 +255,9 @@ class Server {
     }
   }
 
-  Future<dynamic> postFeedback(
-      String token, String type, String feedback) async {
+  Future<dynamic> postFeedback(String type, String feedback) async {
     await init();
     var headers = {
-      'Authorization': 'Bearer $token',
       'Content-Type': 'application/json'
     };
     var request = http.Request('POST', Uri.parse('$baseUrl/client/feedback'));
