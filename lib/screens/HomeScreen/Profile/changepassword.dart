@@ -1,11 +1,20 @@
+import 'package:app_client/services/auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class EditPasswordScreen extends StatefulWidget {
+
+  final AuthService auth;
+  EditPasswordScreen({this.auth});
+
   @override
   _EditPasswordScreenState createState() => _EditPasswordScreenState();
 }
 
 class _EditPasswordScreenState extends State<EditPasswordScreen> {
+
+  TextEditingController oldPassword = TextEditingController();
+  TextEditingController newPassword = TextEditingController();
   String error;
   @override
   Widget build(BuildContext context) {
@@ -27,8 +36,7 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                       hintText: 'Current Password',
                       border: OutlineInputBorder(),
                     ),
-                    //controller: _password,
-                    // 'Update validator'
+                    controller: oldPassword,
                     validator: (val) => val.length < 7
                         ? 'Enter a password 8+ chars long'
                         : null,
@@ -41,10 +49,10 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                   child: TextFormField(
                     decoration: InputDecoration(
                       //icon: Icon(Icons.create_rounded),
-                      hintText: 'New Password',
+                      hintText: 'New Password', 
                       border: OutlineInputBorder(),
                     ),
-                    //controller: _password,
+                    controller: newPassword,
                     validator: (val) => val.length < 7
                         ? 'Enter a password 8+ chars long'
                         : null,
@@ -78,7 +86,15 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                       style: TextStyle(color: Colors.white),
                     ),
                     onPressed: () async {
-                      // Update at server
+                      await widget.auth.changePassword(oldPassword.text, newPassword.text);
+                      Navigator.pop(context);
+                      Fluttertoast.showToast(
+                            msg: "Password Updated",
+                            toastLength: Toast.LENGTH_LONG,
+                            backgroundColor: Colors.white,
+                            textColor: Colors.black,
+                            fontSize: 14.0
+                          );
                     },
                   ),
                 ),

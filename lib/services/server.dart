@@ -117,7 +117,7 @@ class Server {
       'Content-Type': 'application/json'
     };
     var request =
-        http.Request('POST', Uri.parse('$baseUrl/api/changePassword'));
+        http.Request('POST', Uri.parse('$baseUrl/client/accounts/changePassword'));
     request.body = '{"oldPassword": "$oldPass","newPassword":"$newPass"}';
     request.headers.addAll(headers);
 

@@ -117,6 +117,18 @@ class AuthService extends ChangeNotifier {
     }
   }
 
+  Future changePassword(String oldPassword, String newPassword) async{
+    await _loadToken();
+    try{
+      dynamic obj = await http.changePassword(_token, oldPassword, newPassword);
+      _setToken(obj['userjwtToken']);
+      _user.token = _token;
+    }
+    catch(e) {
+      throw(e);
+    }
+  }
+
   Future signAnon() async {
     await _setUser(
         User(email: 'abc@xyz.com', name: "Hello", token: 'newToken'));

@@ -21,15 +21,19 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   void initState() {
     super.initState();
     nameFocusNode = FocusNode();
-    User user = widget.auth.useR;
-    _name.text = user.name;
-    _email.text = user.email;
+    getUser();
   }
 
   @override
   void dispose() {
     nameFocusNode.dispose();
     super.dispose();
+  }
+
+  getUser(){
+    User user = widget.auth.useR;
+    _name.text = user.name;
+    _email.text = user.email;
   }
 
   _updateUserProfile({AuthService auth, String email, String name}) async {
@@ -138,7 +142,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => EditPasswordScreen()));
+                              builder: (context) => EditPasswordScreen(auth: widget.auth)));
                     },
                   ),
                 ),

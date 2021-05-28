@@ -1,7 +1,7 @@
 class User {
   String name;
   String email;
-  final String token;
+  String token;
 
   User({this.name, this.email, this.token});
 

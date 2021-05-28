@@ -85,7 +85,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                             toastLength: Toast.LENGTH_LONG,
                             backgroundColor: Colors.white,
                             textColor: Colors.black,
-                            fontSize: 14.0);
+                            fontSize: 14.0
+                          );
                         }
                       },
                       child: Padding(
