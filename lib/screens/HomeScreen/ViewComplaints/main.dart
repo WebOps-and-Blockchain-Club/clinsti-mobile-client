@@ -18,8 +18,10 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _db = Provider.of<DatabaseService>(context, listen: false);
-      _db.synC();
+      setState(() {
+        _db = Provider.of<DatabaseService>(context, listen: false);
+        _db.synC();
+      });
     });
   }
 
@@ -57,41 +59,90 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
               },
             ),
           ),
-          // Container(
-          //   margin: EdgeInsets.only(bottom: 6.0),
-          //   child: Row(
-          //     children: [
-          //       Expanded(
-          //         child: Container(
-          //           margin: EdgeInsets.symmetric(horizontal: 5.0),
-          //           color: Colors.blue[200],
-          //           child: DropdownButton(
-          //               dropdownColor: Colors.blue[200],
-          //               icon: Icon(Icons.filter_list),
-          //               value: filterBy,
-          //               onChanged: setFilter,
-          //               items: <String>[
-          //                 'all',
-          //                 "Pending transmission",
-          //                 "Work is pending",
-          //                 "Work in progress",
-          //                 "Work completed",
-          //                 "Closed with due justification"
-          //               ].map<DropdownMenuItem<String>>((String value) {
-          //                 return DropdownMenuItem<String>(
-          //                     value: value, child: Text(value));
-          //               }).toList()),
-          //         ),
-          //       ),
-          //       // Expanded(
-          //       //   child: Container(
-          //       //     margin: EdgeInsets.symmetric(horizontal: 5.0),
-          //       //     color: Colors.blue[200],
-          //       //   ),
-          //       // ),
-          //     ],
-          //   ),
-          // ),
+          Container(
+            margin: EdgeInsets.only(bottom: 6.0),
+            child: Row(
+              children: [
+                Expanded(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      await _db.prev();
+                      setState(() {});
+                    },
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Colors.blueAccent)),
+                    child: Text(
+                      "<Prev",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                )),
+                // Expanded(
+                //     child: DropdownButton(
+                //   items: <String>[
+                //     "Pending\n transmission",
+                //     "Work is\n pending",
+                //     "Work in\n progress",
+                //     "Work\n completed",
+                //     "Closed\n with due\n justification"
+                //   ].map<DropdownMenuItem<String>>((String value) {
+                //     return DropdownMenuItem<String>(
+                //       child: Text(value),
+                //       value: value,
+                //     );
+                //   }).toList(),
+                // )),
+                Expanded(
+                    child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      await _db.next();
+                      setState(() {});
+                    },
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Colors.blueAccent)),
+                    child: Text(
+                      "Next>",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                )),
+                // Expanded(
+                //   child: Container(
+                //     margin: EdgeInsets.symmetric(horizontal: 5.0),
+                //     color: Colors.blue[200],
+                //     child: DropdownButton(
+                //         dropdownColor: Colors.blue[200],
+                //         icon: Icon(Icons.filter_list),
+                //         value: filterBy,
+                //         onChanged: setFilter,
+                //         items: <String>[
+                //           'all',
+                //           "Pending transmission",
+                //           "Work is pending",
+                //           "Work in progress",
+                //           "Work completed",
+                //           "Closed with due justification"
+                //         ].map<DropdownMenuItem<String>>((String value) {
+                //           return DropdownMenuItem<String>(
+                //               value: value, child: Text(value));
+                //         }).toList()),
+                //   ),
+                // ),
+                // Expanded(
+                //   child: Container(
+                //     margin: EdgeInsets.symmetric(horizontal: 5.0),
+                //     color: Colors.blue[200],
+                //   ),
+                // ),
+              ],
+            ),
+          ),
         ],
       ),
     );

@@ -23,6 +23,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
   List<String> compressedImagesPath = [];
   String error;
   DatabaseService _db;
+  bool geoLoc = false;
   final _formKey = GlobalKey<FormState>();
 
   _selectLocation(BuildContext context) async {
@@ -31,6 +32,9 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
     if (result != null) {
       setState(() {
         compLocation.text = result;
+        setState(() {
+          geoLoc = true;
+        });
       });
     }
   }
@@ -44,15 +48,15 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
   }
 
   postRequest() async {
-    await _db.postRequest(
-        compDescription.text, compLocation.text, typeValue, zoneValue, compressedImagesPath);
+    await _db.postRequest(compDescription.text, compLocation.text, typeValue,
+        zoneValue, compressedImagesPath);
     setState(() {
       compDescription.text = "";
       compLocation.text = "";
       typeValue = null;
       zoneValue = null;
     });
-    clearImages();    
+    clearImages();
   }
 
   @override
@@ -94,6 +98,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                   val.length < 5 ? "please write few more words" : null,
               controller: compLocation,
               maxLines: null,
+              readOnly: geoLoc,
             ),
           ),
           SizedBox(
@@ -187,11 +192,11 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                 child: Text('Add Images', style: TextStyle(fontSize: 18)),
               ),
               onPressed: () async {
-                  await loadAssets();
-                  if(images.length != 0){
-                    await compressImages();
-                  }
-                },
+                await loadAssets();
+                if (images.length != 0) {
+                  await compressImages();
+                }
+              },
             ),
             if (images.length != 0)
               SizedBox(
@@ -247,7 +252,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
     );
   }
 
-  void clearImages(){
+  void clearImages() {
     setState(() {
       images.removeRange(0, images.length);
     });
@@ -308,7 +313,6 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
     });
   }
 
-
   Future<File> getImageFileFromAssets(Asset asset) async {
     final byteData = await asset.getByteData();
 
@@ -321,34 +325,29 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
     return file;
   }
 
-  Future<void> compressImages() async{
+  Future<void> compressImages() async {
     File temp;
-    for(int i = 0; i < images.length; i++){
+    for (int i = 0; i < images.length; i++) {
       temp = await getImageFileFromAssets(images[i]);
       temp = await compressImage(temp);
       compressedImagesPath.add(temp.path);
     }
   }
-  
+
   Future<File> compressImage(File file) async {
+    final filePath = file.absolute.path;
 
-  final filePath = file.absolute.path; 
+    // Create output file path
+    // eg:- "Volume/VM/abcd_out.jpeg"
 
-  // Create output file path
-  // eg:- "Volume/VM/abcd_out.jpeg"
-
-  final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
-  print(filePath);
-  final splitted = filePath.substring(0, (lastIndex));
-  final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
-  print(outPath);
-  var result = await FlutterImageCompress.compressAndGetFile(
-    filePath, outPath,
-    quality: 70,
-    minWidth: 1000,
-    minHeight: 1000
-  );  
-  return result;
- }
-
+    final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
+    print(filePath);
+    final splitted = filePath.substring(0, (lastIndex));
+    final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
+    print(outPath);
+    var result = await FlutterImageCompress.compressAndGetFile(
+        filePath, outPath,
+        quality: 70, minWidth: 1000, minHeight: 1000);
+    return result;
+  }
 }
