@@ -49,16 +49,19 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
               itemBuilder: (context, i) {
                 return InkWell(
                   child: ComplaintTile(complaint: _db.complaintS[i]),
-                  onTap: () async { 
-                    dynamic _complaint = await _db.getComplaint(_db.complaintS[i]['complaint_id']);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ShowComplaint(
-                                complaint: _complaint,
-                                db: _db,
-                              )));
-                              },
+                  onTap: () async {
+                    dynamic _complaint = await _db
+                        .getComplaint(_db.complaintS[i]['complaint_id']);
+                    await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ShowComplaint(
+                                  complaint: _complaint,
+                                  db: _db,
+                                )));
+                    _db.synC();
+                    setState(() {  });
+                  },
                 );
               },
             ),
