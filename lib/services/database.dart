@@ -121,6 +121,18 @@ class DatabaseService extends ChangeNotifier {
     } catch (e) {}
   }
 
+  Future postRequestFeedback(int id, int rating, String review) async{
+    await _loadToken();
+    try{
+      print(1);
+      print(id);
+      await http.postRequestFeedback(_token, id, rating, review);
+    }
+    catch(e){
+      print("Error " + e.toString());
+    }
+  }
+
   // Future postFeedback(String type, String feedback) async{
   //   print('uess');
   //   await _loadToken();

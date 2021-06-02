@@ -1,4 +1,5 @@
 import 'package:app_client/screens/HomeScreen/ShowComplaint/main.dart';
+import 'package:app_client/screens/HomeScreen/ShowComplaint/showComplaint.dart';
 import 'package:app_client/screens/HomeScreen/ViewComplaints/complaint_tile.dart';
 import 'package:app_client/services/database.dart';
 import "package:flutter/material.dart";
@@ -46,13 +47,16 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
               itemBuilder: (context, i) {
                 return InkWell(
                   child: ComplaintTile(complaint: _db.complaintS[i]),
-                  onTap: () => Navigator.push(
+                  onTap: () async { 
+                    dynamic _complaint = await _db.getComplaint(_db.complaintS[i]['complaint_id']);
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ShowComplaintScreen(
-                                complaint: _db.complaintS[i],
+                          builder: (context) => ShowComplaint(
+                                complaint: _complaint,
                                 db: _db,
-                              ))),
+                              )));
+                              },
                 );
               },
             ),
