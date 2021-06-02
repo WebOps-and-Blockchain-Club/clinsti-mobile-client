@@ -141,26 +141,29 @@ class _ShowComplaintState extends State<ShowComplaint> {
             //     widget.complaint["feedback_rating"] != null &&
             //     widget.complaint["feedback_rating"] != 0)
             if(widget.complaint["status"] == "Work completed" || widget.complaint["status"] == "Closed with due justification")
-              (widget.complaint['feedback_remark'] == null)
+              (widget.complaint['feedback_remark'] == null && widget.complaint['status'] != "Closed with due justification")
               ? Form(
                 key: _formKey,
                 child: TextFormField(
                   maxLines: null,
                   controller: feedback,
-                  readOnly: widget.complaint['status'] == "Closed with due justification",
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Please enter some text';
                     }
                     return null;
                   },
-                  // enabled:
-                  //     (widget.complaint != null && widget.complaint["feedback_remark"] == null),
+                  enabled:
+                      (widget.complaint != null && widget.complaint["feedback_remark"] == null),
                   decoration: InputDecoration(
                     hintText: widget.complaint['status'] == "Closed with due justification" ? 'Justification' : 'Feedback',
                   ),
                 ),
-              ) : Text(widget.complaint['feedback_remark']),
+              ) : Text(
+                widget.complaint['status'] == "Closed with due justification" ?
+                (widget.complaint['admin_remark'] ?? 'Unnecessary Complaint')
+                : widget.complaint['feedback_remark']
+                ),
             SizedBox(
               height: 20,
             ),
