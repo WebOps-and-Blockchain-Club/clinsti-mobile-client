@@ -203,10 +203,10 @@ class _ShowComplaintState extends State<ShowComplaint> {
                       ),
                     ),
                   ),
-                  onPressed: () {
-                    // setState(() {
-                    //   widget.complaint["status"] = "completed";
-                    // });
+                  onPressed: () async{
+                    await widget.db.deleteRequest(widget.complaint['complaint_id']);
+                    await widget.db.synC();
+                    Navigator.pop(context);
                   },
                 ),
               ]),

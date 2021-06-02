@@ -145,8 +145,6 @@ class DatabaseService extends ChangeNotifier {
   Future postRequestFeedback(int id, int rating, String review) async{
     await _loadToken();
     try{
-      print(1);
-      print(id);
       await http.postRequestFeedback(_token, id, rating, review);
     }
     catch(e){
@@ -167,6 +165,16 @@ class DatabaseService extends ChangeNotifier {
 
   Future synC() async {
     await _fetchComplaints();
+  }
+
+  Future deleteRequest(int id)async{
+    await _loadToken();
+    try{
+      await http.deleteRequest(_token, id);
+    }
+    catch(e){
+      print("Error " + e.toString());
+    }
   }
 
   var dummyComplaints = [
