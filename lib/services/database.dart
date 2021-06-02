@@ -17,7 +17,7 @@ class DatabaseService extends ChangeNotifier {
   String _statusFilter;
   String _zoneFilter;
   int _skip = 0;
-  int _limit = 50;
+  int _limit = 10;
   List<dynamic> _complaints = <dynamic>[];
 
   List<dynamic> get complaintS => _complaints ?? [];
@@ -81,10 +81,10 @@ class DatabaseService extends ChangeNotifier {
     _skip = x;
   }
 
-  Future _setComplaints(dynamic arr) {
-    _complaints = arr;
-    notifyListeners();
-  }
+  // Future _setComplaints(dynamic arr) {
+  //   _complaints = arr;
+  //   notifyListeners();
+  // }
 
   Future _fetchComplaints() async {
     await _loadToken();
@@ -94,8 +94,12 @@ class DatabaseService extends ChangeNotifier {
           zoneFilter: _zoneFilter,
           skip: _skip,
           limit: _limit);
-      _setComplaints(arr);
-    } catch (e) {}
+
+      _complaints = arr;
+      notifyListeners();
+    } catch (e) {
+      throw (e);
+    }
     // _complaints = dummyComplaints;
   }
 
@@ -107,17 +111,34 @@ class DatabaseService extends ChangeNotifier {
     } catch (e) {}
   }
 
-  Future next() async {}
+  Future next() async {
+    try {
+      _skip += _limit;
+      await _fetchComplaints();
+    } catch (e) {
+      _skip -= _limit;
+      await _fetchComplaints();
+    }
+  }
 
-  Future prev() async {}
+  Future prev() async {
+    try {
+      if (_skip > 0) {
+        _skip -= _limit;
+      }
+      await _fetchComplaints();
+    } catch (e) {
+      _skip = 0;
+      await _fetchComplaints();
+    }
+  }
 
-  Future postRequest(
-      String description, String location, String type, String zone,
-      List<String> imgagesPath) async {
-        
+  Future postRequest(String description, String location, String type,
+      String zone, List<String> imgagesPath) async {
     await _loadToken();
     try {
-      await http.postRequest(_token, description, location, type, zone, imgagesPath);
+      await http.postRequest(
+          _token, description, location, type, zone, imgagesPath);
     } catch (e) {}
   }
 
