@@ -28,7 +28,10 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
 
   _selectLocation(BuildContext context) async {
     final result = await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => MapSelect()));
+        context,
+        MaterialPageRoute(
+            builder: (context) => MapSelect(
+                loc: compLocation.text == "" ? null : compLocation.text)));
     if (result != null) {
       setState(() {
         compLocation.text = result;

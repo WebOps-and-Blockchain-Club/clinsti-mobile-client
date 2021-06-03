@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app_client/screens/Map/main.dart';
 import 'package:app_client/services/database.dart';
 import 'package:flutter/material.dart';
 
@@ -17,13 +18,36 @@ class _ShowComplaintState extends State<ShowComplaint> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController feedback = TextEditingController();
 
-  String _getLocation(String loc) {
+  Widget _getLocationWidget(String loc) {
     try {
       var obj = jsonDecode(loc);
       obj['Latitude'];
-      return "geoLocation";
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MapSelect(
+                        loc: loc,
+                        select: false,
+                      )));
+        },
+        child: Row(
+          children: [
+            Text("geoLocation"),
+            Spacer(),
+            Icon(Icons.location_on),
+          ],
+        ),
+      );
     } catch (e) {
-      return loc;
+      return Row(
+        children: [
+          Text(loc),
+          Spacer(),
+          Icon(Icons.location_on),
+        ],
+      );
     }
   }
 
@@ -40,13 +64,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
         padding: const EdgeInsets.all(20.0),
         child: ListView(
           children: <Widget>[
-            Row(
-              children: [
-                Text(_getLocation(widget.complaint['_location'])),
-                Spacer(),
-                Icon(Icons.location_on),
-              ],
-            ),
+            _getLocationWidget(widget.complaint['_location']),
             SizedBox(
               height: 30,
             ),
