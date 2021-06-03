@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:app_client/services/database.dart';
 import 'package:flutter/material.dart';
 
@@ -11,10 +13,19 @@ class ShowComplaint extends StatefulWidget {
 }
 
 class _ShowComplaintState extends State<ShowComplaint> {
-
   bool showSubmitButton = false;
   final _formKey = GlobalKey<FormState>();
   TextEditingController feedback = TextEditingController();
+
+  String _getLocation(String loc) {
+    try {
+      var obj = jsonDecode(loc);
+      obj['Latitude'];
+      return "geoLocation";
+    } catch (e) {
+      return loc;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +40,9 @@ class _ShowComplaintState extends State<ShowComplaint> {
         padding: const EdgeInsets.all(20.0),
         child: ListView(
           children: <Widget>[
-             Row(
+            Row(
               children: [
-                Text(
-                  widget.complaint['_location'],
-                ),
+                Text(_getLocation(widget.complaint['_location'])),
                 Spacer(),
                 Icon(Icons.location_on),
               ],
@@ -109,30 +118,33 @@ class _ShowComplaintState extends State<ShowComplaint> {
                           icon: (index <
                                   (widget.complaint == null
                                       ? 0
-                                      : (widget.complaint["feedback_rating"] ?? 0)))
+                                      : (widget.complaint["feedback_rating"] ??
+                                          0)))
                               ? Icon(Icons.star)
                               : Icon(Icons.star_border),
                           color: (index <
                                   (widget.complaint == null
                                       ? 0
-                                      : (widget.complaint["feedback_rating"] ?? 0)))
+                                      : (widget.complaint["feedback_rating"] ??
+                                          0)))
                               ? Colors.yellowAccent
                               : Colors.grey,
                           onPressed: () {
-                                print(showSubmitButton);
-                                print((widget.complaint != null &&
-                                    widget.complaint["feedback_rating"] == null));
-                                print(widget.complaint["feedback_remark"] == null);
-                                if ((widget.complaint != null &&
-                                        widget.complaint["feedback_rating"] == null) ||
-                                    widget.complaint["feedback_remark"] == null ||
-                                    showSubmitButton) {
-                                      setState(() {
-                                        widget.complaint["feedback_rating"] = index + 1;
-                                        showSubmitButton = true;
-                                      });
-                                }
+                            print(showSubmitButton);
+                            print((widget.complaint != null &&
+                                widget.complaint["feedback_rating"] == null));
+                            print(widget.complaint["feedback_remark"] == null);
+                            if ((widget.complaint != null &&
+                                    widget.complaint["feedback_rating"] ==
+                                        null) ||
+                                widget.complaint["feedback_remark"] == null ||
+                                showSubmitButton) {
+                              setState(() {
+                                widget.complaint["feedback_rating"] = index + 1;
+                                showSubmitButton = true;
                               });
+                            }
+                          });
                     },
                   ),
                 ),
@@ -140,30 +152,37 @@ class _ShowComplaintState extends State<ShowComplaint> {
             // if (widget.complaint != null &&
             //     widget.complaint["feedback_rating"] != null &&
             //     widget.complaint["feedback_rating"] != 0)
-            if(widget.complaint["status"] == "Work completed" || widget.complaint["status"] == "Closed with due justification")
-              (widget.complaint['feedback_remark'] == null && widget.complaint['status'] != "Closed with due justification")
-              ? Form(
-                key: _formKey,
-                child: TextFormField(
-                  maxLines: null,
-                  controller: feedback,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                  enabled:
-                      (widget.complaint != null && widget.complaint["feedback_remark"] == null),
-                  decoration: InputDecoration(
-                    hintText: widget.complaint['status'] == "Closed with due justification" ? 'Justification' : 'Feedback',
-                  ),
-                ),
-              ) : Text(
-                widget.complaint['status'] == "Closed with due justification" ?
-                (widget.complaint['admin_remark'] ?? 'Unnecessary Complaint')
-                : widget.complaint['feedback_remark']
-                ),
+            if (widget.complaint["status"] == "Work completed" ||
+                widget.complaint["status"] == "Closed with due justification")
+              (widget.complaint['feedback_remark'] == null &&
+                      widget.complaint['status'] !=
+                          "Closed with due justification")
+                  ? Form(
+                      key: _formKey,
+                      child: TextFormField(
+                        maxLines: null,
+                        controller: feedback,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                        enabled: (widget.complaint != null &&
+                            widget.complaint["feedback_remark"] == null),
+                        decoration: InputDecoration(
+                          hintText: widget.complaint['status'] ==
+                                  "Closed with due justification"
+                              ? 'Justification'
+                              : 'Feedback',
+                        ),
+                      ),
+                    )
+                  : Text(widget.complaint['status'] ==
+                          "Closed with due justification"
+                      ? (widget.complaint['admin_remark'] ??
+                          'Unnecessary Complaint')
+                      : widget.complaint['feedback_remark']),
             SizedBox(
               height: 20,
             ),
@@ -191,7 +210,9 @@ class _ShowComplaintState extends State<ShowComplaint> {
                   },
                 ),
               ),
-            if (widget.complaint != null && widget.complaint["status"] != 'Work completed' && widget.complaint['status'] != "Closed with due justification")
+            if (widget.complaint != null &&
+                widget.complaint["status"] != 'Work completed' &&
+                widget.complaint['status'] != "Closed with due justification")
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 ElevatedButton(
                   child: Padding(
@@ -203,8 +224,9 @@ class _ShowComplaintState extends State<ShowComplaint> {
                       ),
                     ),
                   ),
-                  onPressed: (){
-                    widget.db.deleteRequest(widget.complaint['complaint_id']);
+                  onPressed: () async {
+                    await widget.db
+                        .deleteRequest(widget.complaint['complaint_id']);
                     //await widget.db.synC();
                     Navigator.pop(context);
                   },

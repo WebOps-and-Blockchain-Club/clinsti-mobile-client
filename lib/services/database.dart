@@ -118,6 +118,7 @@ class DatabaseService extends ChangeNotifier {
     } catch (e) {
       _skip -= _limit;
       await _fetchComplaints();
+      throw (e);
     }
   }
 
@@ -125,11 +126,14 @@ class DatabaseService extends ChangeNotifier {
     try {
       if (_skip > 0) {
         _skip -= _limit;
+      } else {
+        throw "";
       }
       await _fetchComplaints();
     } catch (e) {
       _skip = 0;
       await _fetchComplaints();
+      throw (e);
     }
   }
 
@@ -142,12 +146,11 @@ class DatabaseService extends ChangeNotifier {
     } catch (e) {}
   }
 
-  Future postRequestFeedback(int id, int rating, String review) async{
+  Future postRequestFeedback(int id, int rating, String review) async {
     await _loadToken();
-    try{
+    try {
       await http.postRequestFeedback(_token, id, rating, review);
-    }
-    catch(e){
+    } catch (e) {
       print("Error " + e.toString());
     }
   }
@@ -167,12 +170,11 @@ class DatabaseService extends ChangeNotifier {
     await _fetchComplaints();
   }
 
-  Future deleteRequest(int id)async{
+  Future deleteRequest(int id) async {
     await _loadToken();
-    try{
+    try {
       await http.deleteRequest(_token, id);
-    }
-    catch(e){
+    } catch (e) {
       print("Error " + e.toString());
     }
   }

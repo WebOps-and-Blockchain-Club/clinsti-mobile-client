@@ -14,16 +14,28 @@ class ViewComplaintScreen extends StatefulWidget {
 class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
   String filterBy = 'all';
   DatabaseService _db;
+  ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+    _scrollController = ScrollController();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {
         _db = Provider.of<DatabaseService>(context, listen: false);
         _db.synC();
       });
     });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToTop() {
+    _scrollController.jumpTo(0);
   }
 
   setFilter(String filt) {
@@ -46,6 +58,7 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
           Expanded(
             child: ListView.builder(
               itemCount: _db == null ? 0 : _db.complaintS.length,
+              controller: _scrollController,
               itemBuilder: (context, i) {
                 return InkWell(
                   child: ComplaintTile(complaint: _db.complaintS[i]),
@@ -59,8 +72,8 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
                                   complaint: _complaint,
                                   db: _db,
                                 )));
-                    _db.synC();
-                    setState(() {  });
+                    await _db.synC();
+                    setState(() {});
                   },
                 );
               },
@@ -75,8 +88,14 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     onPressed: () async {
-                      await _db.prev();
-                      setState(() {});
+                      try {
+                        await _db.prev();
+                        setState(() {});
+                        _scrollToTop();
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('No More Requests')));
+                      }
                     },
                     style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
@@ -107,8 +126,14 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     onPressed: () async {
-                      await _db.next();
-                      setState(() {});
+                      try {
+                        await _db.next();
+                        setState(() {});
+                        _scrollToTop();
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('No More Requests')));
+                      }
                     },
                     style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
