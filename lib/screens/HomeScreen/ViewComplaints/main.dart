@@ -39,7 +39,7 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 5.0),
       width: MediaQuery.of(context).size.width,
-      color: Colors.blue[100],
+      //color: Colors.blue[100],
       child: Column(
         children: <Widget>[
           Expanded(

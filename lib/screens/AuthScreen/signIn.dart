@@ -55,6 +55,10 @@ class _SignInState extends State<SignIn> {
                 ],
               ),
               body: Container(
+                  decoration: BoxDecoration(
+                      image: DecorationImage(
+                          image: AssetImage('assets/bg1.jpg'),
+                          fit: BoxFit.cover)),
                   padding:
                       EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
                   child: SingleChildScrollView(

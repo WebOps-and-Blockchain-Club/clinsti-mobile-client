@@ -155,7 +155,8 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
             SizedBox(
               height: 30,
             ),
-            if (widget.complaint["status"] == 'Work completed')
+            if (widget.complaint["status"] == 'Work completed' ||
+                widget.complaint["status"] == 'Closed with due justification')
               Center(
                 child: Container(
                   width: 0.67 * width,
@@ -237,7 +238,8 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
                   },
                 ),
               ),
-            if (_complaint != null && _complaint["status"] != 'Work completed')
+            if (_complaint != null &&
+                _complaint["status"] == 'Pending transmission')
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 ElevatedButton(
                   child: Padding(
