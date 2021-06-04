@@ -5,6 +5,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapSelect extends StatefulWidget {
+  final bool select;
+  final String loc;
+  MapSelect({this.loc, this.select = true});
   @override
   State<MapSelect> createState() => MapSelectState();
 }
@@ -15,6 +18,7 @@ class MapSelectState extends State<MapSelect> {
   LatLng _selectedLocation;
   Marker _markerSelected;
   Set<Marker> _markers;
+
   BitmapDescriptor locationIcon;
 
   MapType _mapType = MapType.normal;
@@ -26,45 +30,84 @@ class MapSelectState extends State<MapSelect> {
 
   void initState() {
     super.initState();
+    setState(() {
+      _selectedLocation = _getLocation(widget.loc);
+    });
     init();
   }
 
   init() async {
     initMarkers();
-    await getCurrentLocation();
-    await gotoCurrentLocation();
-    selectCurrentLocation();
+    if (widget.select) {
+      if (widget.loc == null) {
+        await getCurrentLocation();
+        await gotoCurrentLocation();
+        selectCurrentLocation();
+      } else {
+        await gotoSelectedLocation();
+        getCurrentLocation();
+      }
+    } else {
+      if (widget.loc != null) {
+        await gotoSelectedLocation();
+      }
+    }
   }
 
   initMarkers() {
-    _markerCurrent = Marker(markerId: MarkerId('current'));
-    _markerSelected = Marker(markerId: MarkerId('selected'));
-    _markers = {_markerSelected, _markerCurrent};
-    BitmapDescriptor.fromAssetImage(
-            ImageConfiguration(size: Size(48, 48)), 'assets/location.png')
-        .then((onValue) {
-      locationIcon = onValue;
+    setState(() {
+      _markerCurrent = Marker(markerId: MarkerId('current'));
+      if (_selectedLocation != null) {
+        _markerSelected =
+            Marker(markerId: MarkerId('selected'), position: _selectedLocation);
+      } else {
+        _markerSelected = Marker(markerId: MarkerId('selected'));
+      }
+      _markers = {_markerSelected, _markerCurrent};
+      BitmapDescriptor.fromAssetImage(
+              ImageConfiguration(size: Size(48, 48)), 'assets/location.png')
+          .then((onValue) {
+        locationIcon = onValue;
+      });
     });
   }
 
+  LatLng _getLocation(String loc) {
+    try {
+      var obj = jsonDecode(loc);
+      return new LatLng(obj['Latitude'], obj['Longitude']);
+    } catch (e) {
+      return null;
+    }
+  }
+
   Future getCurrentLocation() async {
-    await Geolocator.getCurrentPosition().then((currentLocation) {
-      setState(() {
-        _currentLocation =
-            LatLng(currentLocation.latitude, currentLocation.longitude);
-        _markerCurrent = Marker(
-            markerId: MarkerId('current'),
-            position: _currentLocation,
-            onTap: selectCurrentLocation,
-            icon: locationIcon);
-        Marker tempMarker = _markers.firstWhere(
-            (marker) => marker.markerId.value == "current",
-            orElse: () => null);
-        _markers.remove(tempMarker);
-        _markers.add(_markerCurrent);
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      print("HERE");
+      await Geolocator.requestPermission();
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.whileInUse ||
+        permission == LocationPermission.always) {
+      await Geolocator.getCurrentPosition().then((currentLocation) {
+        setState(() {
+          _currentLocation =
+              LatLng(currentLocation.latitude, currentLocation.longitude);
+          _markerCurrent = Marker(
+              markerId: MarkerId('current'),
+              position: _currentLocation,
+              onTap: selectCurrentLocation,
+              icon: locationIcon);
+          Marker tempMarker = _markers.firstWhere(
+              (marker) => marker.markerId.value == "current",
+              orElse: () => null);
+          _markers.remove(tempMarker);
+          _markers.add(_markerCurrent);
+        });
+        return;
       });
-      return;
-    });
+    }
   }
 
   selectCurrentLocation() {
@@ -72,6 +115,7 @@ class MapSelectState extends State<MapSelect> {
   }
 
   Future gotoCurrentLocation() async {
+    // LocationPermission permission = await Geolocator.checkPermission();
     if (_controller != null) {
       final GoogleMapController controller = await _controller.future;
       controller.animateCamera(CameraUpdate.newCameraPosition(
@@ -79,17 +123,27 @@ class MapSelectState extends State<MapSelect> {
     }
   }
 
+  Future gotoSelectedLocation() async {
+    if (_controller != null) {
+      final GoogleMapController controller = await _controller.future;
+      controller.animateCamera(CameraUpdate.newCameraPosition(
+          CameraPosition(target: _selectedLocation, zoom: 16)));
+    }
+  }
+
   void _onTap(LatLng latLng) {
-    setState(() {
-      _selectedLocation = latLng;
-      _markerSelected =
-          Marker(markerId: MarkerId("selected"), position: latLng);
-      Marker tempMarker = _markers.firstWhere(
-          (marker) => marker.markerId.value == "selected",
-          orElse: () => null);
-      _markers.remove(tempMarker);
-      _markers.add(_markerSelected);
-    });
+    if (widget.select) {
+      setState(() {
+        _selectedLocation = latLng;
+        _markerSelected =
+            Marker(markerId: MarkerId("selected"), position: latLng);
+        Marker tempMarker = _markers.firstWhere(
+            (marker) => marker.markerId.value == "selected",
+            orElse: () => null);
+        _markers.remove(tempMarker);
+        _markers.add(_markerSelected);
+      });
+    }
   }
 
   void _onMapCreate(GoogleMapController controller) {
@@ -146,17 +200,21 @@ class MapSelectState extends State<MapSelect> {
                     }),
                 ElevatedButton(
                     onPressed: () {
-                      if (_selectedLocation == null) {
-                        print('select first');
+                      if (widget.select) {
+                        if (_selectedLocation == null) {
+                          print('select first');
+                        } else {
+                          _returnLoc(context);
+                        }
                       } else {
                         _returnLoc(context);
                       }
                     },
-                    child: Text('Select location')),
+                    child: Text(widget.select ? 'Select location' : "Back")),
                 IconButton(
                     icon: Icon(Icons.my_location_rounded),
                     onPressed: () async {
-                      getCurrentLocation();
+                      await getCurrentLocation();
                       gotoCurrentLocation();
                     }),
               ],

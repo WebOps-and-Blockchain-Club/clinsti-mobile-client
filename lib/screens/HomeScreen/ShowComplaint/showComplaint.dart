@@ -1,79 +1,59 @@
-// import 'package:app_client/screens/HomeScreen/Feedback/main.dart';
-// import 'package:app_client/screens/HomeScreen/ShowComplaint/resolveComplaintScreen.dart';
+import 'dart:convert';
+
+import 'package:app_client/screens/Map/main.dart';
 import 'package:app_client/services/database.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ShowComplaintScreen extends StatefulWidget {
+class ShowComplaint extends StatefulWidget {
   final dynamic complaint;
   final DatabaseService db;
-  ShowComplaintScreen({this.complaint, this.db});
+  ShowComplaint({this.complaint, this.db});
 
   @override
-  _ShowComplaintScreenState createState() => _ShowComplaintScreenState();
+  _ShowComplaintState createState() => _ShowComplaintState();
 }
 
-class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
+class _ShowComplaintState extends State<ShowComplaint> {
   bool showSubmitButton = false;
-  TextEditingController location = TextEditingController();
-  TextEditingController description = TextEditingController();
-  TextEditingController feedback = TextEditingController();
-  int requestId;
   final _formKey = GlobalKey<FormState>();
-  dynamic _complaint;
+  TextEditingController feedback = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    // {
-    //   "complaint_id": 27,
-    //   "_location": "IITMsa4csdsd",
-    //   "created_time": "2021-05-07T17:39:57.307Z",
-    //   "status": "Pending transmission"
-    // },
-    location.text = widget.complaint["_location"];
-    requestId = widget.complaint["complaint_id"];
-    // requestId = widget.complaint['complaint_id'];
-    getComplaint();
-    // {complaint_id: 33,
-    // description: hfhbebifwbuifw, _
-    // location: all Homes,
-    // waste_type: Furniture,
-    // zone: Academic Zone,
-    // status: Pending transmission,
-    // created_time: 2021-05-20T07:39:14.150Z,
-    // completed_time: null,
-    // images: null,
-    // feedback_rating: null,
-    // feedback_remark: null,
-    // admin_remark: null}
-  }
-
-  Future getComplaint() async {
-    _complaint = await widget.db.getComplaint(widget.complaint["complaint_id"]);
-    print(_complaint);
-    setState(() {
-      description.text = _complaint["description"];
-      location.text = _complaint["_location"];
-      feedback.text = _complaint["feedback_remark"] ?? "";
-    });
-    setState(() {});
-    // {complaint_id: 33,
-    // description: hfhbebifwbuifw,
-    // _location: locatiosdas,
-    // waste_type: Furniture,
-    // zone: Academic Zone,
-    // status: Pending transmission,
-    // created_time: 2021-05-20T07:39:14.150Z,
-    // completed_time: null,
-    // images: null,
-    // feedback_rating: null,
-    // feedback_remark: null,
-    // admin_remark: null}
+  Widget _getLocationWidget(String loc) {
+    try {
+      var obj = jsonDecode(loc);
+      obj['Latitude'];
+      return GestureDetector(
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MapSelect(
+                        loc: loc,
+                        select: false,
+                      )));
+        },
+        child: Row(
+          children: [
+            Text("geoLocation"),
+            Spacer(),
+            Icon(Icons.location_on),
+          ],
+        ),
+      );
+    } catch (e) {
+      return Row(
+        children: [
+          Text(loc),
+          Spacer(),
+          Icon(Icons.location_on),
+        ],
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    print(widget.complaint);
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
@@ -84,23 +64,11 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
         padding: const EdgeInsets.all(20.0),
         child: ListView(
           children: <Widget>[
-            TextField(
-              controller: location,
-              maxLines: null,
-              decoration: InputDecoration(
-                suffixIcon: IconButton(
-                  icon: Icon(Icons.location_on),
-                  onPressed: null,
-                ),
-              ),
-            ),
+            _getLocationWidget(widget.complaint['_location']),
             SizedBox(
               height: 30,
             ),
-            TextField(
-              controller: description,
-              maxLines: null,
-            ),
+            Text(widget.complaint['description']),
             SizedBox(
               height: 20,
             ),
@@ -167,25 +135,31 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
                     itemBuilder: (context, int index) {
                       return IconButton(
                           icon: (index <
-                                  (_complaint == null
+                                  (widget.complaint == null
                                       ? 0
-                                      : (_complaint["fbRating"] ?? 0)))
+                                      : (widget.complaint["feedback_rating"] ??
+                                          0)))
                               ? Icon(Icons.star)
                               : Icon(Icons.star_border),
                           color: (index <
-                                  (_complaint == null
+                                  (widget.complaint == null
                                       ? 0
-                                      : (_complaint["fbRating"] ?? 0)))
+                                      : (widget.complaint["feedback_rating"] ??
+                                          0)))
                               ? Colors.yellowAccent
                               : Colors.grey,
                           onPressed: () {
-                            if ((_complaint != null &&
-                                    _complaint["fbRating"] == null &&
-                                    _complaint["fbRating"] == 0) ||
-                                _complaint["fbReview"] == null ||
+                            print(showSubmitButton);
+                            print((widget.complaint != null &&
+                                widget.complaint["feedback_rating"] == null));
+                            print(widget.complaint["feedback_remark"] == null);
+                            if ((widget.complaint != null &&
+                                    widget.complaint["feedback_rating"] ==
+                                        null) ||
+                                widget.complaint["feedback_remark"] == null ||
                                 showSubmitButton) {
                               setState(() {
-                                _complaint["fbRating"] = index + 1;
+                                widget.complaint["feedback_rating"] = index + 1;
                                 showSubmitButton = true;
                               });
                             }
@@ -194,27 +168,40 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
                   ),
                 ),
               ),
-            if (_complaint != null &&
-                _complaint["fbRating"] != null &&
-                _complaint["fbRating"] != 0)
-              Form(
-                key: _formKey,
-                child: TextFormField(
-                  maxLines: null,
-                  controller: feedback,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                  enabled:
-                      (_complaint != null && _complaint["fbReview"] == null),
-                  decoration: InputDecoration(
-                    hintText: 'Feedback',
-                  ),
-                ),
-              ),
+            // if (widget.complaint != null &&
+            //     widget.complaint["feedback_rating"] != null &&
+            //     widget.complaint["feedback_rating"] != 0)
+            if (widget.complaint["status"] == "Work completed" ||
+                widget.complaint["status"] == "Closed with due justification")
+              (widget.complaint['feedback_remark'] == null &&
+                      widget.complaint['status'] !=
+                          "Closed with due justification")
+                  ? Form(
+                      key: _formKey,
+                      child: TextFormField(
+                        maxLines: null,
+                        controller: feedback,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter some text';
+                          }
+                          return null;
+                        },
+                        enabled: (widget.complaint != null &&
+                            widget.complaint["feedback_remark"] == null),
+                        decoration: InputDecoration(
+                          hintText: widget.complaint['status'] ==
+                                  "Closed with due justification"
+                              ? 'Justification'
+                              : 'Feedback',
+                        ),
+                      ),
+                    )
+                  : Text(widget.complaint['status'] ==
+                          "Closed with due justification"
+                      ? (widget.complaint['admin_remark'] ??
+                          'Unnecessary Complaint')
+                      : widget.complaint['feedback_remark']),
             SizedBox(
               height: 20,
             ),
@@ -226,20 +213,25 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
                     child:
                         Text('Submit Feedback', style: TextStyle(fontSize: 18)),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     if (_formKey.currentState.validate()) {
                       setState(() {
                         showSubmitButton = false;
-                        _complaint["fbReview"] = feedback.text;
+                        widget.complaint["feedback_remark"] = feedback.text;
                       });
+                      await widget.db.postRequestFeedback(
+                          widget.complaint['complaint_id'],
+                          widget.complaint['feedback_rating'],
+                          widget.complaint['feedback_remark']);
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Feedback Submitted')));
                     }
                   },
                 ),
               ),
-            if (_complaint != null &&
-                _complaint["status"] == 'Pending transmission')
+            if (widget.complaint != null &&
+                widget.complaint["status"] != 'Work completed' &&
+                widget.complaint['status'] != "Closed with due justification")
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 ElevatedButton(
                   child: Padding(
@@ -251,10 +243,11 @@ class _ShowComplaintScreenState extends State<ShowComplaintScreen> {
                       ),
                     ),
                   ),
-                  onPressed: () {
-                    setState(() {
-                      _complaint["status"] = "completed";
-                    });
+                  onPressed: () async {
+                    await widget.db
+                        .deleteRequest(widget.complaint['complaint_id']);
+                    //await widget.db.synC();
+                    Navigator.pop(context);
                   },
                 ),
               ]),

@@ -118,6 +118,7 @@ class DatabaseService extends ChangeNotifier {
     } catch (e) {
       _skip -= _limit;
       await _fetchComplaints();
+      throw (e);
     }
   }
 
@@ -125,11 +126,14 @@ class DatabaseService extends ChangeNotifier {
     try {
       if (_skip > 0) {
         _skip -= _limit;
+      } else {
+        throw "";
       }
       await _fetchComplaints();
     } catch (e) {
       _skip = 0;
       await _fetchComplaints();
+      throw (e);
     }
   }
 
@@ -140,6 +144,15 @@ class DatabaseService extends ChangeNotifier {
       await http.postRequest(
           _token, description, location, type, zone, imgagesPath);
     } catch (e) {}
+  }
+
+  Future postRequestFeedback(int id, int rating, String review) async {
+    await _loadToken();
+    try {
+      await http.postRequestFeedback(_token, id, rating, review);
+    } catch (e) {
+      print("Error " + e.toString());
+    }
   }
 
   // Future postFeedback(String type, String feedback) async{
@@ -155,6 +168,15 @@ class DatabaseService extends ChangeNotifier {
 
   Future synC() async {
     await _fetchComplaints();
+  }
+
+  Future deleteRequest(int id) async {
+    await _loadToken();
+    try {
+      await http.deleteRequest(_token, id);
+    } catch (e) {
+      print("Error " + e.toString());
+    }
   }
 
   var dummyComplaints = [
