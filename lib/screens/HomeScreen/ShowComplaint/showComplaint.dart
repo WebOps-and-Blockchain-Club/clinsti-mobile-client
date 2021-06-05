@@ -59,7 +59,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            'Complaint ID: ${widget.complaint["complaint_id"].toString()}'),
+            'Request ID: ${widget.complaint["complaint_id"].toString()}'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
