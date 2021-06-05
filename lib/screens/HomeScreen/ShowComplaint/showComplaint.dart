@@ -21,22 +21,24 @@ class _ShowComplaintState extends State<ShowComplaint> {
   Widget _getLocationWidget(String loc) {
     try {
       var obj = jsonDecode(loc);
+      // ignore: unnecessary_statements
       obj['Latitude'];
       return GestureDetector(
         onTap: () {
           Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => MapSelect(
-                        loc: loc,
-                        select: false,
-                      )));
+            context,
+            MaterialPageRoute(
+              builder: (context) => MapSelect(
+                loc: loc,
+                select: false,
+              )
+            )
+          );
         },
         child: Row(
           children: [
-            Text("geoLocation"),
-            Spacer(),
             Icon(Icons.location_on),
+            Text("geoLocation",style: TextStyle(color: Colors.blue,decoration: TextDecoration.underline)),
           ],
         ),
       );
@@ -53,12 +55,11 @@ class _ShowComplaintState extends State<ShowComplaint> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.complaint);
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            'Complaint ID: ' + widget.complaint["complaint_id"].toString()),
+            'Complaint ID: ${widget.complaint["complaint_id"].toString()}'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
@@ -72,47 +73,15 @@ class _ShowComplaintState extends State<ShowComplaint> {
             SizedBox(
               height: 20,
             ),
-
-            // Container(
-            //   height: 200,
-            //   child: ListView.builder(
-            //     itemCount: complaint.images_url.length,
-            //     scrollDirection: Axis.horizontal,
-            //     itemBuilder: (context, index) {
-            //       return Card(
-            //         child: Image.network(
-            //           complaint.images_url[index],
-            //           height: 150,
-            //           width: 150,
-            //           loadingBuilder: (BuildContext context, Widget child,
-            //               ImageChunkEvent loadingProgress) {
-            //             if (loadingProgress == null) return child;
-            //             return Center(
-            //               child: CircularProgressIndicator(
-            //                 value: loadingProgress.expectedTotalBytes != null
-            //                     ? loadingProgress.cumulativeBytesLoaded /
-            //                     loadingProgress.expectedTotalBytes
-            //                     : null,
-            //               ),
-            //             );
-            //           },
-            //         ),
-            //       );
-            //     },
-            //   ),
-            // ),
-            // SizedBox(
-            //   height: 30,
-            // ),
             Text(
-              'Registered on: ' + widget.complaint["created_time"].toString(),
-              style: TextStyle(fontSize: 20, color: Colors.blue),
+              'Registered on: ${widget.complaint["created_time"].toString()}',
+              style: TextStyle(color: Colors.blue),
             ),
             SizedBox(
               height: 20,
             ),
             Text(
-              'Status: ' + widget.complaint["status"].toString(),
+              'Status: ${widget.complaint["status"].toString()}',
               style: TextStyle(
                 fontSize: 20,
                 color: (widget.complaint["status"] == 'completed')
@@ -134,43 +103,37 @@ class _ShowComplaintState extends State<ShowComplaint> {
                     itemCount: 5,
                     itemBuilder: (context, int index) {
                       return IconButton(
-                          icon: (index <
-                                  (widget.complaint == null
-                                      ? 0
-                                      : (widget.complaint["feedback_rating"] ??
-                                          0)))
-                              ? Icon(Icons.star)
-                              : Icon(Icons.star_border),
-                          color: (index <
-                                  (widget.complaint == null
-                                      ? 0
-                                      : (widget.complaint["feedback_rating"] ??
-                                          0)))
-                              ? Colors.yellowAccent
-                              : Colors.grey,
-                          onPressed: () {
-                            print(showSubmitButton);
-                            print((widget.complaint != null &&
-                                widget.complaint["feedback_rating"] == null));
-                            print(widget.complaint["feedback_remark"] == null);
-                            if ((widget.complaint != null &&
-                                    widget.complaint["feedback_rating"] ==
-                                        null) ||
-                                widget.complaint["feedback_remark"] == null ||
-                                showSubmitButton) {
-                              setState(() {
-                                widget.complaint["feedback_rating"] = index + 1;
-                                showSubmitButton = true;
-                              });
-                            }
-                          });
+                        icon: (index <
+                                (widget.complaint == null
+                                    ? 0
+                                    : (widget.complaint["feedback_rating"] ??
+                                        0)))
+                            ? Icon(Icons.star)
+                            : Icon(Icons.star_border),
+                        color: (index <
+                                (widget.complaint == null
+                                    ? 0
+                                    : (widget.complaint["feedback_rating"] ??
+                                        0)))
+                            ? Colors.yellowAccent
+                            : Colors.grey,
+                        onPressed: () {
+                          if ((widget.complaint != null &&
+                                  widget.complaint["feedback_rating"] ==
+                                      null) ||
+                              widget.complaint["feedback_remark"] == null ||
+                              showSubmitButton) {
+                            setState(() {
+                              widget.complaint["feedback_rating"] = index + 1;
+                              showSubmitButton = true;
+                            });
+                          }
+                        }
+                      );
                     },
                   ),
                 ),
               ),
-            // if (widget.complaint != null &&
-            //     widget.complaint["feedback_rating"] != null &&
-            //     widget.complaint["feedback_rating"] != 0)
             if (widget.complaint["status"] == "Work completed" ||
                 widget.complaint["status"] == "Closed with due justification")
               (widget.complaint['feedback_remark'] == null &&
@@ -246,7 +209,6 @@ class _ShowComplaintState extends State<ShowComplaint> {
                   onPressed: () async {
                     await widget.db
                         .deleteRequest(widget.complaint['complaint_id']);
-                    //await widget.db.synC();
                     Navigator.pop(context);
                   },
                 ),

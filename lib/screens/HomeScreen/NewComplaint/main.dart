@@ -25,7 +25,12 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
   DatabaseService _db;
   bool geoLoc = false;
   final _formKey = GlobalKey<FormState>();
-
+  final List<String> zones=["Academic Zone","Hostel Zone","Residential Zone"];
+  final List<String> types=["Paper/Plastic","Bottles","Steel scrap","Construction debris",
+                  "Food waste","Furniture","Equipment","Package materials",
+                  "e-waste (Tubelight, Computer, Battery)",
+                  "Hazardous waste (chemical, oil, bitumen, empty chemical bottle)",
+                  "Bio-medical waste","Others"];
   _selectLocation(BuildContext context) async {
     final result = await Navigator.push(
         context,
@@ -123,11 +128,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                     zoneValue = newValue;
                   });
                 },
-                items: <String>[
-                  "Academic Zone",
-                  "Hostel Zone",
-                  "Residential Zone"
-                ].map<DropdownMenuItem<String>>((String value) {
+                items: zones.map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     child: Text(value),
                     value: value,
@@ -158,20 +159,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                     typeValue = newValue;
                   });
                 },
-                items: <String>[
-                  "Paper/Plastic",
-                  "Bottles",
-                  "Steel scrap",
-                  "Construction debris",
-                  "Food waste",
-                  "Furniture",
-                  "Equipment",
-                  "Package materials",
-                  "e-waste (Tubelight, Computer, Battery)",
-                  "Hazardous waste (chemical, oil, bitumen, empty chemical bottle)",
-                  "Bio-medical waste",
-                  "Others"
-                ].map<DropdownMenuItem<String>>((String value) {
+                items: types.map<DropdownMenuItem<String>>((String value) {
                   return DropdownMenuItem<String>(
                     child: Text(value),
                     value: value,
@@ -271,7 +259,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
 
     try {
       resultList = await MultiImagePicker.pickImages(
-        maxImages: 300,
+        maxImages: 8,
         enableCamera: true,
         selectedAssets: images,
         cupertinoOptions: CupertinoOptions(
@@ -300,9 +288,6 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
           fontSize: 14.0);
     }
 
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
     if (!mounted) return;
 
     setState(() {
@@ -343,10 +328,6 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
 
   Future<File> compressImage(File file) async {
     final filePath = file.absolute.path;
-
-    // Create output file path
-    // eg:- "Volume/VM/abcd_out.jpeg"
-
     final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
     print(filePath);
     final splitted = filePath.substring(0, (lastIndex));

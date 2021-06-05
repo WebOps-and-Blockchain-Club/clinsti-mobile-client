@@ -2,6 +2,7 @@ import 'package:app_client/screens/HomeScreen/ShowComplaint/showComplaint.dart';
 import 'package:app_client/screens/HomeScreen/ViewComplaints/complaint_tile.dart';
 import 'package:app_client/services/database.dart';
 import "package:flutter/material.dart";
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class ViewComplaintScreen extends StatefulWidget {
@@ -92,8 +93,12 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
                         setState(() {});
                         _scrollToTop();
                       } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('No More Requests')));
+                        Fluttertoast.showToast(
+                          msg: 'No More Requests',
+                          toastLength: Toast.LENGTH_SHORT,
+                          backgroundColor: Colors.cyan,
+                          textColor: Colors.black,
+                          fontSize: 14.0);
                       }
                     },
                     style: ButtonStyle(
@@ -130,8 +135,12 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
                         setState(() {});
                         _scrollToTop();
                       } catch (e) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('No More Requests')));
+                        Fluttertoast.showToast(
+                          msg: 'No More Requests',
+                          toastLength: Toast.LENGTH_SHORT,
+                          backgroundColor: Colors.cyan,
+                          textColor: Colors.black,
+                          fontSize: 14.0);
                       }
                     },
                     style: ButtonStyle(
