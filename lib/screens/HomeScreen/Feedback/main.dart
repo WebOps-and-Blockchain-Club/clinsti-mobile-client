@@ -12,6 +12,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   String _feedbackTo;
   final _formKey = GlobalKey<FormState>();
   Server _server = Server();
+  bool loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +78,11 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               Center(
                   child: ElevatedButton(
                       onPressed: () async {
+                        setState(() {
+                          loading=true;
+                        });
                         if (_formKey.currentState.validate()) {
+                          try{
                           await _server.postFeedback(_feedbackTo, _feedbackText.text);
                           Navigator.pop(context);
                           Fluttertoast.showToast(
@@ -86,10 +91,13 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                             backgroundColor: Colors.white,
                             textColor: Colors.black,
                             fontSize: 14.0
-                          );
+                          );}catch(e){}
                         }
+                        setState(() {
+                          loading=false;
+                        });
                       },
-                      child: Padding(
+                      child: loading?CircularProgressIndicator(): Padding(
                         padding: const EdgeInsets.all(2.0),
                         child: Text(
                           'Submit',

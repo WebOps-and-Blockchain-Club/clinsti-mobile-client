@@ -1,5 +1,4 @@
 import 'package:app_client/dev/dev.dart';
-import 'package:app_client/screens/shared/loading.dart';
 import 'package:app_client/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -16,18 +15,23 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _password = TextEditingController();
   final TextEditingController _name = TextEditingController();
   String error;
+  bool loading = false;
   final _formKey = GlobalKey<FormState>();
   _signUp(auth) async {
     setState(() {
       error = null;
+      loading = true;
     });
     try {
-      auth.signUp(_email.text, _password.text, _name.text);
+      await auth.signUp(_email.text, _password.text, _name.text);
     } catch (e) {
       setState(() {
         error = e;
       });
     }
+    setState(() {
+      loading = false;
+    });
   }
 
   @override
@@ -54,7 +58,7 @@ class _SignUpState extends State<SignUp> {
             ),
           ],
         ),
-        body: Container(
+        body: loading? Center(child: CircularProgressIndicator(),): Container(
             padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
             child: SingleChildScrollView(
               child: Form(
@@ -122,16 +126,7 @@ class _SignUpState extends State<SignUp> {
                         ),
                         onPressed: () async {
                           if (_formKey.currentState.validate()) {
-                            Navigator.of(context).push(PageRouteBuilder(
-                                opaque: false,
-                                pageBuilder: (BuildContext context, _, __) {
-                                  return Loading(
-                                    backgroundColor:
-                                        Color.fromRGBO(0, 0, 2, 0.4),
-                                  );
-                                }));
                             await _signUp(auth);
-                            Navigator.pop(context);
                           }
                         },
                       ),

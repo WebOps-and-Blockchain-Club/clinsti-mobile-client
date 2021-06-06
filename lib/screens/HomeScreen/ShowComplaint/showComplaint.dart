@@ -17,6 +17,46 @@ class _ShowComplaintState extends State<ShowComplaint> {
   bool showSubmitButton = false;
   final _formKey = GlobalKey<FormState>();
   TextEditingController feedback = TextEditingController();
+  Map<String,dynamic> complaint = {};
+  bool loading = false;
+
+  @override
+  initState(){
+    super.initState();
+    setState(() {
+      complaint["location"] = widget.complaint["_location"];
+      complaint["complaint_id"] = widget.complaint["complaint_id"];
+    });
+    _fetchComplaint();
+  }
+
+  _fetchComplaint()async{
+    setState(() {
+      loading = true;
+    });
+    try{
+      dynamic result = await widget.db
+          .getComplaint(widget.complaint["complaint_id"]);
+      setState(() {
+        complaint = result;
+        // complaint["description"] = result["description"] ?? "";
+        // complaint["status"] = result["status"] ?? "";
+        // complaint["created_time"] = result["created_time"] ?? "";
+        // complaint["feedback_rating"] = result["feedback_rating"];
+        // complaint["feedback_remark"] = result["feedback_remark"];
+        // complaint["admin_remark"] = result["admin_remark"];
+        // complaint["waste_type"] = result["waste_type"] ?? "";
+        // complaint["zone"] = result["zone"] ?? "";
+        // complaint["completed_time"] = result["completed_time"];
+        // complaint["images"] = result["images"] ?? [];
+      });
+    } catch(e) {
+
+    }
+    setState(() {
+      loading = false;
+    });
+  }
 
   Widget _getLocationWidget(String loc) {
     try {
@@ -59,9 +99,9 @@ class _ShowComplaintState extends State<ShowComplaint> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            'Request ID: ${widget.complaint["complaint_id"].toString()}'),
+            'Request ID: ${widget.complaint["complaint_id"]}'),
       ),
-      body: Padding(
+      body: loading? Center(child: CircularProgressIndicator(),):Padding(
         padding: const EdgeInsets.all(20.0),
         child: ListView(
           children: <Widget>[
@@ -69,22 +109,22 @@ class _ShowComplaintState extends State<ShowComplaint> {
             SizedBox(
               height: 30,
             ),
-            Text(widget.complaint['description']),
+            Text(complaint['description']??""),
             SizedBox(
               height: 20,
             ),
             Text(
-              'Registered on: ${widget.complaint["created_time"].toString()}',
+              'Registered on: ${complaint["created_time"] ?? ""}',
               style: TextStyle(color: Colors.blue),
             ),
             SizedBox(
               height: 20,
             ),
             Text(
-              'Status: ${widget.complaint["status"].toString()}',
+              'Status: ${complaint["status"] ?? ""}',
               style: TextStyle(
                 fontSize: 20,
-                color: (widget.complaint["status"] == 'completed')
+                color: (complaint["status"] == 'completed')
                     ? Colors.green
                     : Colors.redAccent,
               ),
@@ -92,8 +132,8 @@ class _ShowComplaintState extends State<ShowComplaint> {
             SizedBox(
               height: 30,
             ),
-            if (widget.complaint["status"] == 'Work completed' ||
-                widget.complaint["status"] == 'Closed with due justification')
+            if (complaint["status"] != null && (complaint["status"]== 'Work completed' ||
+                complaint["status"] == 'Closed with due justification'))
               Center(
                 child: Container(
                   width: 0.67 * width,
@@ -104,27 +144,27 @@ class _ShowComplaintState extends State<ShowComplaint> {
                     itemBuilder: (context, int index) {
                       return IconButton(
                         icon: (index <
-                                (widget.complaint == null
+                                (complaint == null
                                     ? 0
-                                    : (widget.complaint["feedback_rating"] ??
+                                    : (complaint["feedback_rating"] ??
                                         0)))
                             ? Icon(Icons.star)
                             : Icon(Icons.star_border),
                         color: (index <
-                                (widget.complaint == null
+                                (complaint == null
                                     ? 0
-                                    : (widget.complaint["feedback_rating"] ??
+                                    : (complaint["feedback_rating"] ??
                                         0)))
                             ? Colors.yellowAccent
                             : Colors.grey,
                         onPressed: () {
-                          if ((widget.complaint != null &&
-                                  widget.complaint["feedback_rating"] ==
+                          if ((complaint != null &&
+                                  complaint["feedback_rating"] ==
                                       null) ||
-                              widget.complaint["feedback_remark"] == null ||
+                              complaint["feedback_remark"] == null ||
                               showSubmitButton) {
                             setState(() {
-                              widget.complaint["feedback_rating"] = index + 1;
+                              complaint["feedback_rating"] = index + 1;
                               showSubmitButton = true;
                             });
                           }
@@ -134,10 +174,10 @@ class _ShowComplaintState extends State<ShowComplaint> {
                   ),
                 ),
               ),
-            if (widget.complaint["status"] == "Work completed" ||
-                widget.complaint["status"] == "Closed with due justification")
-              (widget.complaint['feedback_remark'] == null &&
-                      widget.complaint['status'] !=
+            if (complaint["status"] != null && (complaint["status"] == "Work completed" ||
+                complaint["status"] == "Closed with due justification"))
+              (complaint['feedback_remark'] == null &&
+                      complaint['status'] !=
                           "Closed with due justification")
                   ? Form(
                       key: _formKey,
@@ -150,21 +190,21 @@ class _ShowComplaintState extends State<ShowComplaint> {
                           }
                           return null;
                         },
-                        enabled: (widget.complaint != null &&
-                            widget.complaint["feedback_remark"] == null),
+                        enabled: (complaint != null &&
+                            complaint["feedback_remark"] == null),
                         decoration: InputDecoration(
-                          hintText: widget.complaint['status'] ==
+                          hintText: complaint['status'] ==
                                   "Closed with due justification"
                               ? 'Justification'
                               : 'Feedback',
                         ),
                       ),
                     )
-                  : Text(widget.complaint['status'] ==
+                  : Text(complaint['status'] ==
                           "Closed with due justification"
-                      ? (widget.complaint['admin_remark'] ??
+                      ? (complaint['admin_remark'] ??
                           'Unnecessary Complaint')
-                      : widget.complaint['feedback_remark']),
+                      : complaint['feedback_remark']),
             SizedBox(
               height: 20,
             ),
@@ -180,21 +220,21 @@ class _ShowComplaintState extends State<ShowComplaint> {
                     if (_formKey.currentState.validate()) {
                       setState(() {
                         showSubmitButton = false;
-                        widget.complaint["feedback_remark"] = feedback.text;
+                        complaint["feedback_remark"] = feedback.text;
                       });
                       await widget.db.postRequestFeedback(
                           widget.complaint['complaint_id'],
-                          widget.complaint['feedback_rating'],
-                          widget.complaint['feedback_remark']);
+                          complaint['feedback_rating'],
+                          complaint['feedback_remark']);
                       ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Feedback Submitted')));
                     }
                   },
                 ),
               ),
-            if (widget.complaint != null &&
-                widget.complaint["status"] != 'Work completed' &&
-                widget.complaint['status'] != "Closed with due justification")
+            if (complaint != null &&
+                complaint["status"] != 'Work completed' &&
+                complaint['status'] != "Closed with due justification")
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 ElevatedButton(
                   child: Padding(

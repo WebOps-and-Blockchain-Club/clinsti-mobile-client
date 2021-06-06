@@ -16,6 +16,7 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
   TextEditingController oldPassword = TextEditingController();
   TextEditingController newPassword = TextEditingController();
   String error;
+  bool loading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,11 +82,15 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                   // ignore: deprecated_member_use
                   child: RaisedButton(
                     color: Colors.green,
-                    child: Text(
+                    child: loading? CircularProgressIndicator():Text(
                       'Update Password',
                       style: TextStyle(color: Colors.white),
                     ),
                     onPressed: () async {
+                      setState(() {
+                        loading=true;
+                      });
+                      try{
                       await widget.auth.changePassword(oldPassword.text, newPassword.text);
                       Navigator.pop(context);
                       Fluttertoast.showToast(
@@ -95,6 +100,10 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                             textColor: Colors.black,
                             fontSize: 14.0
                           );
+                      }catch(e){}
+                      setState(() {
+                        loading=false;
+                      });
                     },
                   ),
                 ),

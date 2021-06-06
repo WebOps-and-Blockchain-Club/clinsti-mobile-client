@@ -21,8 +21,10 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
   String typeValue;
   List<Asset> images = [];
   List<String> compressedImagesPath = [];
-  String error;
+  String error = "";
+  String error1;
   DatabaseService _db;
+  bool loading = false;
   bool geoLoc = false;
   final _formKey = GlobalKey<FormState>();
   final List<String> zones=["Academic Zone","Hostel Zone","Residential Zone"];
@@ -56,20 +58,40 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
   }
 
   postRequest() async {
-    await _db.postRequest(compDescription.text, compLocation.text, typeValue,
-        zoneValue, compressedImagesPath);
     setState(() {
-      compDescription.text = "";
-      compLocation.text = "";
-      typeValue = null;
-      zoneValue = null;
+      loading = true;
+      error = "";
     });
-    clearImages();
+    try{
+      await _db.postRequest(compDescription.text, compLocation.text, typeValue,
+        zoneValue, compressedImagesPath);
+      Fluttertoast.showToast(
+                          msg: "Request posted",
+                          toastLength: Toast.LENGTH_LONG,
+                          backgroundColor: Colors.white,
+                          textColor: Colors.black,
+                          fontSize: 14.0
+                        );
+      setState(() {
+        compDescription.text = "";
+        compLocation.text = "";
+        typeValue = null;
+        zoneValue = null;
+      });
+      clearImages();
+    }catch(e){
+      setState(() {
+        error = e.toString();
+      });
+    }
+    setState(() {
+      loading = false;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return loading? Center(child: CircularProgressIndicator(),): Container(
       color: Colors.pinkAccent[50],
       child: Form(
         key: _formKey,
@@ -221,6 +243,8 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                 },
               ),
             ),
+            SizedBox(height: 20),
+            Text(error),
           ],
         ),
       ),
@@ -278,10 +302,11 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
         ),
       );
     } on Exception catch (e) {
-      error = e.toString();
-      print(error);
+      setState(() {
+        error1 = e.toString();
+      });
       Fluttertoast.showToast(
-          msg: error,
+          msg: error1,
           toastLength: Toast.LENGTH_SHORT,
           backgroundColor: Colors.white,
           textColor: Colors.black,

@@ -14,6 +14,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   TextEditingController _name = TextEditingController();
   TextEditingController _email = TextEditingController();
   String error;
+  bool loading=false;
   bool isEditable = false;
   FocusNode nameFocusNode;
 
@@ -37,10 +38,12 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   }
 
   _updateUserProfile({AuthService auth, String email, String name}) async {
+    
+    setState(() {
+      error = null;
+      loading=true;
+    });
     try {
-      setState(() {
-        error = null;
-      });
       await auth.updateProfile(email: email, name: name);
       setState(() {});
 
@@ -49,6 +52,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         error = e.toString();
       });
     }
+    setState(() {
+      loading=false;
+    });
   }
   
   @override
@@ -104,7 +110,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   // ignore: deprecated_member_use
                   child: RaisedButton(
                     color: Colors.green,
-                    child: Text(
+                    child: loading? CircularProgressIndicator():Text(
                       !isEditable ? 'Edit Profile' : 'Update Profile',
                       style: TextStyle(color: Colors.white),
                     ),
@@ -134,7 +140,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                   // ignore: deprecated_member_use
                   child: RaisedButton(
                     color: Colors.blue,
-                    child: Text(
+                    child:Text(
                       'Change Password',
                       style: TextStyle(color: Colors.white),
                     ),

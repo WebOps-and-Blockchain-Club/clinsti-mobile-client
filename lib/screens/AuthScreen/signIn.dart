@@ -1,5 +1,4 @@
 import 'package:app_client/dev/dev.dart';
-import 'package:app_client/screens/shared/loading.dart';
 import 'package:app_client/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,18 +14,23 @@ class _SignInState extends State<SignIn> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
   String error;
+  bool loading = false;
   final _formKey = GlobalKey<FormState>();
   _signIn(AuthService auth) async {
+    setState(() {
+      error = null;
+      loading = true;
+    });
     try {
-      setState(() {
-        error = null;
-      });
       await auth.signIn(_email.text, _password.text);
     } catch (e) {
       setState(() {
         error = e.toString();
       });
     }
+    setState(() {
+      loading = false;
+    });
   }
 
   @override
@@ -54,7 +58,7 @@ class _SignInState extends State<SignIn> {
                   ),
                 ],
               ),
-              body: Container(
+              body:loading? Center(child: CircularProgressIndicator(),): Container(
                   decoration: BoxDecoration(
                       image: DecorationImage(
                           image: AssetImage('assets/bg1.jpg'),
@@ -109,17 +113,7 @@ class _SignInState extends State<SignIn> {
                               ),
                               onPressed: () async {
                                 if (_formKey.currentState.validate()) {
-                                  Navigator.of(context).push(PageRouteBuilder(
-                                      opaque: false,
-                                      pageBuilder:
-                                          (BuildContext context, _, __) {
-                                        return Loading(
-                                          backgroundColor:
-                                              Color.fromRGBO(0, 0, 2, 0.4),
-                                        );
-                                      }));
                                   await _signIn(auth);
-                                  Navigator.pop(context);
                                 }
                               },
                             ),
