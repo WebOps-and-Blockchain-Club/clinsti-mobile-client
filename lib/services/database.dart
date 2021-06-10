@@ -77,15 +77,6 @@ class DatabaseService extends ChangeNotifier {
     _fetchComplaints();
   }
 
-  Future setSkip(int x) {
-    _skip = x;
-  }
-
-  // Future _setComplaints(dynamic arr) {
-  //   _complaints = arr;
-  //   notifyListeners();
-  // }
-
   Future _fetchComplaints() async {
     await _loadToken();
     try {
@@ -179,66 +170,4 @@ class DatabaseService extends ChangeNotifier {
     }
   }
 
-  var dummyComplaints = [
-    {
-      "complaint_id": 27,
-      "_location": "IITMsa4csdsd",
-      "created_time": "2021-05-07T17:39:57.307Z",
-      "status": "Pending transmission"
-    },
-    {
-      "complaint_id": 26,
-      "_location": "IITMsa4csdsd",
-      "created_time": "2021-05-07T17:39:44.291Z",
-      "status": "Work in progress"
-    },
-    {
-      "complaint_id": 25,
-      "_location": "IITMsa4csdsd",
-      "created_time": "2021-05-07T17:39:33.705Z",
-      "status": "Pending transmission"
-    },
-    {
-      "complaint_id": 24,
-      "_location": "IITMsa4csdsd",
-      "created_time": "2021-05-07T17:39:13.446Z",
-      "status": "Pending transmission"
-    },
-    {
-      "complaint_id": 23,
-      "_location": "IITMsa4csdsd",
-      "created_time": "2021-05-07T17:38:59.209Z",
-      "status": "Work in progress"
-    },
-    {
-      "complaint_id": 22,
-      "_location": "IITMsa4csdsd",
-      "created_time": "2021-05-07T17:38:45.653Z",
-      "status": "Pending transmission"
-    },
-    {
-      "complaint_id": 21,
-      "_location": "IITMsa4csdsd",
-      "created_time": "2021-05-07T17:38:33.960Z",
-      "status": "Pending transmission"
-    },
-    {
-      "complaint_id": 20,
-      "_location": "IITMsa4csdsd",
-      "created_time": "2021-05-07T17:38:20.336Z",
-      "status": "Work in progress"
-    },
-    {
-      "complaint_id": 19,
-      "_location": "IITMsa4csdsd",
-      "created_time": "2021-05-07T17:37:52.284Z",
-      "status": "Pending transmission"
-    },
-    {
-      "complaint_id": 18,
-      "_location": "IITMsa4csdsd",
-      "created_time": "2021-05-07T17:30:58.419Z",
-      "status": "Pending transmission"
-    }
-  ];
 }

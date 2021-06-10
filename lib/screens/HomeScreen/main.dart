@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:app_client/dev/dev.dart';
 import 'package:app_client/screens/HomeScreen/Feedback/main.dart';
 import 'package:app_client/screens/HomeScreen/ViewComplaints/main.dart';
 import 'package:app_client/screens/HomeScreen/NewComplaint/main.dart';
@@ -62,16 +61,8 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // leading: Icon(Icons.celebration),
+        leading: Icon(Icons.help_outline),
         title: Text("CLinsti"),
-        actions: <Widget>[
-          IconButton(
-              icon: Icon(Icons.ac_unit),
-              onPressed: (() {
-                Navigator.push(
-                    context, MaterialPageRoute(builder: (context) => Link()));
-              }))
-        ],
       ),
       body: PageView(
         controller: _pageController,
@@ -93,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
         onTap: _onItemTap,
         selectedItemColor: Colors.amber[800],
       ),
-      drawer: Drawer(
+      endDrawer: Drawer(
           child: ListView(
         children: [
           DrawerHeader(

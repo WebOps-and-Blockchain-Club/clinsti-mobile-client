@@ -140,12 +140,6 @@ class _SignUpState extends State<SignUp> {
                     ],
                   )),
             )),
-        floatingActionButton: IconButton(
-          icon: Icon(Icons.arrow_right_alt),
-          onPressed: () async {
-            auth.signAnon();
-          },
-        ),
       ),
     );
   }

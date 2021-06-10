@@ -9,10 +9,6 @@ class Server {
   final String signup = "/client/accounts/signup";
   final String signin = '/client/accounts/signin';
   var jsonHead = {'Content-Type': 'application/json'};
-  var tokenHead = {
-    'Authorization':
-        'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI4MDUwNmRkMS1iZTJlLTQyOWUtOTUyNS00OTFmZjhkYWEyMGUiLCJfcGFzc3dvcmQiOiIkMmEkMTAkT0ptVlpROGRCaHg3emx4d0hud043TzcwLldFQ0VwWlZJSmg3NnMxY3g5YXJxWGF0UmJIUG0iLCJpYXQiOjE2MjA0MDg1NzIsImV4cCI6MTYyMzAwMDU3Mn0.cSymrAudwljetZIYTetypdPTyofY_96HtBlv-F92_uM'
-  };
   SharedPreferences _prefs;
 
   Server() {
@@ -191,7 +187,8 @@ class Server {
     http.StreamedResponse response = await request.send();
 
     if (response.statusCode == 200) {
-      return jsonDecode(await response.stream.bytesToString());
+      var complaints = jsonDecode(await response.stream.bytesToString());
+      return complaints['complaints'];
     } else {
       throw (response);
     }
