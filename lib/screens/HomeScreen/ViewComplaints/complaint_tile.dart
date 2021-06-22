@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:app_client/screens/HomeScreen/ShowComplaint/showComplaint.dart';
 import 'package:flutter/material.dart';
 
 class ComplaintTile extends StatelessWidget {
@@ -42,7 +43,7 @@ class ComplaintTile extends StatelessWidget {
           tileColor: statusColor[complaint["status"]],
           title: Text(_getLocation(complaint["_location"])),
           subtitle:
-              Text(complaint != null ? complaint["created_time"] : "Unknown"),
+              Text(complaint != null ? dateTimeString(complaint["created_time"]) : "Unknown"),
         )
       )
     );

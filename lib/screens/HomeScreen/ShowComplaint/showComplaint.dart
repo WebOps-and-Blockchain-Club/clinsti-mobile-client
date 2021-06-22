@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:app_client/screens/Map/main.dart';
 import 'package:app_client/services/database.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ShowComplaint extends StatefulWidget {
   final dynamic complaint;
@@ -114,7 +115,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
               height: 20,
             ),
             Text(
-              'Registered on: ${complaint["created_time"] ?? ""}',
+              'Registered on: ${dateTimeString(complaint["created_time"])}',
               style: TextStyle(color: Colors.blue),
             ),
             SizedBox(
@@ -258,4 +259,13 @@ class _ShowComplaintState extends State<ShowComplaint> {
       ),
     );
   }
+}
+
+String dateTimeString( String utcDateTime) {
+  var parseDateTime = DateTime.parse(utcDateTime);
+  final localDateTime = parseDateTime.toLocal();
+
+  var dateTimeFormat = DateFormat("dd/MM/yyyy hh:mm:ss aaa");
+
+  return dateTimeFormat.format(localDateTime);
 }
