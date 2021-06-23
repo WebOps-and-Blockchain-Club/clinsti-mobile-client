@@ -15,6 +15,7 @@ class _SignInState extends State<SignIn> {
   final TextEditingController _password = TextEditingController();
   String error;
   bool loading = false;
+  bool _obscureText = true;
   final _formKey = GlobalKey<FormState>();
   _signIn(AuthService auth) async {
     setState(() {
@@ -58,75 +59,91 @@ class _SignInState extends State<SignIn> {
                   ),
                 ],
               ),
-              body:loading? Center(child: CircularProgressIndicator(),): Container(
-                  decoration: BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage('assets/bg1.jpg'),
-                          fit: BoxFit.cover)),
-                  padding:
-                      EdgeInsets.symmetric(vertical: 15.0, horizontal: 20.0),
-                  child: SingleChildScrollView(
-                    child: Form(
-                        key: _formKey,
-                        child: Column(
-                          children: <Widget>[
-                            SizedBox(height: 10.0),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  icon: Icon(Icons.email),
-                                  hintText: 'Email',
-                                  border: OutlineInputBorder(),
+              body: loading
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Container(
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage('assets/bg1.jpg'),
+                              fit: BoxFit.cover)),
+                      padding: EdgeInsets.symmetric(
+                          vertical: 15.0, horizontal: 20.0),
+                      child: SingleChildScrollView(
+                        child: Form(
+                            key: _formKey,
+                            child: Column(
+                              children: <Widget>[
+                                SizedBox(height: 10.0),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  child: TextFormField(
+                                    decoration: InputDecoration(
+                                      icon: Icon(Icons.email),
+                                      hintText: 'Email',
+                                      border: OutlineInputBorder(),
+                                    ),
+                                    maxLines: null,
+                                    controller: _email,
+                                    validator: (val) => val.isEmpty
+                                        ? 'Please enter your email'
+                                        : null,
+                                  ),
                                 ),
-                                maxLines: null,
-                                controller: _email,
-                                validator: (val) => val.isEmpty
-                                    ? 'Please enter your email'
-                                    : null,
-                              ),
-                            ),
-                            SizedBox(height: 15.0),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 10.0),
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  icon: Icon(Icons.create_rounded),
-                                  hintText: 'Password',
-                                  border: OutlineInputBorder(),
+                                SizedBox(height: 15.0),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  child: TextFormField(
+                                    decoration: InputDecoration(
+                                        icon: Icon(Icons.create_rounded),
+                                        hintText: 'Password',
+                                        border: OutlineInputBorder(),
+                                        suffixIcon: IconButton(
+                                          icon: Icon(
+                                            _obscureText
+                                                ? Icons.visibility
+                                                : Icons.visibility_off,
+                                            color: Colors.grey[600],
+                                          ),
+                                          onPressed: () {
+                                            setState(() {
+                                              _obscureText = !_obscureText;
+                                            });
+                                          },
+                                        )),
+                                    controller: _password,
+                                    validator: (val) => val.length < 7
+                                        ? 'Password did not match'
+                                        : null,
+                                    obscureText: _obscureText,
+                                  ),
                                 ),
-                                controller: _password,
-                                validator: (val) => val.length < 7
-                                    ? 'Password did not match'
-                                    : null,
-                                obscureText: true,
-                              ),
-                            ),
-                            SizedBox(height: 15.0),
-                            ElevatedButton(
-                              // style: ButtonStyle(),
-                              child: Text(
-                                'Login',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              onPressed: () async {
-                                if (_formKey.currentState.validate()) {
-                                  await _signIn(auth);
-                                }
-                              },
-                            ),
-                            SizedBox(height: 6.0),
-                            error != null
-                                ? Text(
-                                    error,
-                                    style: TextStyle(color: Colors.red),
-                                  )
-                                : SizedBox()
-                          ],
-                        )),
-                  )),
+                                SizedBox(height: 15.0),
+                                ElevatedButton(
+                                  // style: ButtonStyle(),
+                                  child: Text(
+                                    'Login',
+                                    style: TextStyle(color: Colors.white),
+                                  ),
+                                  onPressed: () async {
+                                    if (_formKey.currentState.validate()) {
+                                      await _signIn(auth);
+                                    }
+                                  },
+                                ),
+                                SizedBox(height: 6.0),
+                                error != null
+                                    ? Text(
+                                        error,
+                                        style: TextStyle(color: Colors.red),
+                                      )
+                                    : SizedBox()
+                              ],
+                            )),
+                      )),
             ));
   }
 }
