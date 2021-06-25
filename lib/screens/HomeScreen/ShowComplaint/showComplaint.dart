@@ -45,7 +45,8 @@ class _ShowComplaintState extends State<ShowComplaint> {
         complaint = result;
         
       });
-      _setIconStatus(complaint['status'].toString()); 
+      _setIconStatus(complaint['status'].toString());
+      feedback.text = complaint['feedback_remark'] ?? "";
     } catch(e) {
 
     }
@@ -55,6 +56,9 @@ class _ShowComplaintState extends State<ShowComplaint> {
   }
 
   _setIconStatus(String currentStatus){
+    if(currentStatus == "Closed with due justification"){
+      return;
+    }
     if(currentStatus == "Pending transmission"){
       status[0] = true;
     }
@@ -133,12 +137,13 @@ class _ShowComplaintState extends State<ShowComplaint> {
       ListView(
         padding: EdgeInsets.all(20),
         children: <Widget>[
-          _getLocationWidget(widget.complaint['_location']),
+          _buildRequestDetail(complaint['description']),
           SizedBox(height: 20,),
-          _buildRequestDescription(complaint['description']),
+          _getLocationWidget(widget.complaint['_location']),
           SizedBox(height: 20,),
           _buildRequestDate(complaint["created_time"]),
           SizedBox(height: 20,),
+          if(complaint['status'] != "Closed with due justification")
           _buildProgressIndicator(status, width),
           Center(
             child: Text(
@@ -151,7 +156,11 @@ class _ShowComplaintState extends State<ShowComplaint> {
               ),
             ),
           ),
-          SizedBox(height: 30,),
+          SizedBox(height: 20,),
+          if(complaint["admin_remark"] != null)
+          _buildRequestDetail(complaint["admin_remark"]),
+          if(complaint["admin_remark"] != null)
+          SizedBox(height: 20,),
           if(complaint["images"] != null)
             TextButton(
               onPressed: () async{
@@ -168,7 +177,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
               child: Text("Images")
             ),
           SizedBox(
-            height: 30,
+            height: 20,
           ),
           if (complaint["status"] != null && (complaint["status"]== 'Work completed' ||
               complaint["status"] == 'Closed with due justification'))
@@ -212,12 +221,14 @@ class _ShowComplaintState extends State<ShowComplaint> {
                 ),
               ),
             ),
+            SizedBox(height: 20),
           if (complaint["status"] != null && (complaint["status"] == "Work completed" ||
               complaint["status"] == "Closed with due justification"))
-            (complaint['feedback_remark'] == null &&
-                    complaint['status'] !=
-                        "Closed with due justification")
-                ? Form(
+            // (complaint['feedback_remark'] == null &&
+                //     complaint['status'] !=
+                //         "Closed with due justification")
+                // ? 
+                Form(
                     key: _formKey,
                     child: TextFormField(
                       maxLines: null,
@@ -231,18 +242,19 @@ class _ShowComplaintState extends State<ShowComplaint> {
                       enabled: (complaint != null &&
                           complaint["feedback_remark"] == null),
                       decoration: InputDecoration(
+                        border: OutlineInputBorder(),
                         hintText: complaint['status'] ==
                                 "Closed with due justification"
                             ? 'Justification'
                             : 'Feedback',
                       ),
                     ),
-                  )
-                : Text(complaint['status'] ==
-                        "Closed with due justification"
-                    ? (complaint['admin_remark'] ??
-                        'Unnecessary Complaint')
-                    : complaint['feedback_remark']),
+                  ),
+                // : Text(complaint['status'] ==
+                //         "Closed with due justification"
+                //     ? (complaint['admin_remark'] ??
+                //         'Unnecessary Complaint')
+                //     : complaint['feedback_remark']),
           SizedBox(
             height: 20,
           ),
@@ -260,6 +272,8 @@ class _ShowComplaintState extends State<ShowComplaint> {
                       showSubmitButton = false;
                       complaint["feedback_remark"] = feedback.text;
                     });
+                    print(complaint['feedback_remark']);
+                    print(complaint['feedback_rating']);
                     await widget.db.postRequestFeedback(
                         widget.complaint['complaint_id'],
                         complaint['feedback_rating'],
@@ -271,8 +285,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
               ),
             ),
           if (complaint != null &&
-              complaint["status"] != 'Work completed' &&
-              complaint['status'] != "Closed with due justification")
+              complaint["status"] == "Pending transmission")
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               ElevatedButton(
                 child: Padding(
@@ -332,7 +345,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
     );
   }
 
-  _buildRequestDescription(String requestDetail){
+  _buildRequestDetail(String requestDetail){
     return 
     Container(
       decoration: BoxDecoration(
