@@ -16,8 +16,8 @@ class Server {
   }
 
   init() async {
-    if (_prefs == null) _prefs = await SharedPreferences.getInstance();
-    baseUrl = _prefs.getString('link') ?? "http://ec2-15-206-1-172.ap-south-1.compute.amazonaws.com:9000";
+    // if (_prefs == null) _prefs = await SharedPreferences.getInstance();
+    // baseUrl = _prefs.getString('link') ?? "http://ec2-15-206-1-172.ap-south-1.compute.amazonaws.com:9000";
   }
 
   ////Account Requests

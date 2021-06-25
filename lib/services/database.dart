@@ -174,7 +174,6 @@ class DatabaseService extends ChangeNotifier {
 
   Future getImage(String img) async {
     await _loadToken();
-    String img = '1624425345393-962037609..png';
     try {
       dynamic imgData = await http.getImage(_token, img);
       return base64Encode(imgData);
