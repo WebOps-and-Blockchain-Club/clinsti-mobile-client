@@ -312,15 +312,26 @@ class _ShowComplaintState extends State<ShowComplaint> {
   _buildProgressIndicator(List<bool> status, double width){
     //_setIconStatus(complaint['status'].toString());
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        _buildProgressIcon(status[0], iconData: MdiIcons.clipboardClockOutline),
-        _buildProgressLine(status[1], width/10),
-        _buildProgressIcon(status[1], iconData: MdiIcons.clockTimeThreeOutline,),
-        _buildProgressLine(status[2], width/10),
-        _buildProgressIcon(status[2], iconData: Icons.hourglass_bottom),
-        _buildProgressLine(status[3], width/10),
-        _buildProgressIcon(status[3], iconData: Icons.check_circle_outline),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _buildProgressIcon(status[0], iconData: MdiIcons.clipboardClockOutline),
+            _buildProgressLine(status[1], 25),
+            _buildProgressIcon(status[1], iconData: MdiIcons.clockTimeThreeOutline,),
+            _buildProgressLine(status[2], 25),
+            _buildProgressIcon(status[2], iconData: Icons.hourglass_bottom),
+            _buildProgressLine(status[3], 25),
+            _buildProgressIcon(status[3], iconData: Icons.check_circle_outline),
+          ],
+        ),
+        Column(
+          children: [
+            Text('Registered on'),
+            Text('Completed on')
+          ],
+        )
       ],
     );
   }
@@ -335,10 +346,10 @@ class _ShowComplaintState extends State<ShowComplaint> {
     );
   }
 
-  _buildProgressLine(bool isDone, double width){
+  _buildProgressLine(bool isDone, double height){
     return SizedBox(
-      width: width,
-      child: Divider(
+      height: height,
+      child: VerticalDivider(
         thickness: 2.5,
         color: isDone ? Colors.green[400] : Colors.grey,
       ),
