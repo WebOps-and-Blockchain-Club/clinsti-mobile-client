@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:app_client/screens/HomeScreen/ShowComplaint/complaintImages.dart';
 import 'package:app_client/screens/Map/main.dart';
 import 'package:app_client/services/database.dart';
 import 'package:flutter/material.dart';
@@ -130,6 +131,24 @@ class _ShowComplaintState extends State<ShowComplaint> {
                     : Colors.redAccent,
               ),
             ),
+            SizedBox(
+              height: 30,
+            ),
+            if(complaint["images"] != null)
+              TextButton(
+                onPressed: () async{
+                    await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ComplaintImages(
+                                  imgNames: complaint["images"],
+                                  db: widget.db,
+                                )));
+                    await widget.db.synC();
+                    setState(() {});
+                },
+                child: Text("Images")
+              ),
             SizedBox(
               height: 30,
             ),

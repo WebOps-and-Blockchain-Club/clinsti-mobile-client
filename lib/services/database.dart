@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:app_client/services/server.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -167,6 +169,17 @@ class DatabaseService extends ChangeNotifier {
       await http.deleteRequest(_token, id);
     } catch (e) {
       print("Error " + e.toString());
+    }
+  }
+
+  Future getImage(String img) async {
+    await _loadToken();
+    String img = '1624425345393-962037609..png';
+    try {
+      dynamic imgData = await http.getImage(_token, img);
+      return base64Encode(imgData);
+    } catch (e) {
+      print("Error "+ e.toString());
     }
   }
 

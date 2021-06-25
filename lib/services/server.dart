@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Server {
   String baseUrl =
-      "http://localhost:3000"; //TODO: put your local netwok config here
+      "http://ec2-15-206-1-172.ap-south-1.compute.amazonaws.com:9000"; //TODO: put your local netwok config here
   final String signup = "/client/accounts/signup";
   final String signin = '/client/accounts/signin';
   var jsonHead = {'Content-Type': 'application/json'};
@@ -17,7 +17,7 @@ class Server {
 
   init() async {
     if (_prefs == null) _prefs = await SharedPreferences.getInstance();
-    baseUrl = _prefs.getString('link') ?? "http://localhost:3000";
+    baseUrl = _prefs.getString('link') ?? "http://ec2-15-206-1-172.ap-south-1.compute.amazonaws.com:9000";
   }
 
   ////Account Requests
@@ -216,17 +216,12 @@ class Server {
   Future<dynamic> getImage(String token, String name) async {
     await init();
     var headers = {'Authorization': 'Bearer $token'};
-    var request =
-        http.Request('GET', Uri.parse('$baseUrl/client/images/$name'));
+    var request = await http.get(Uri.parse('$baseUrl/client/images/$name'), headers: headers);
 
-    request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      return (await response.stream.bytesToString());
+    if (request.statusCode == 200) {
+      return (request.bodyBytes);
     } else {
-      throw (response);
+      throw (request);
     }
   }
 
