@@ -38,112 +38,258 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     return Consumer<AuthService>(
         builder: (context, auth, child) => Scaffold(
-              appBar: AppBar(
-                backgroundColor: Colors.green[400],
-                elevation: 0.0,
-                title: Text('SignIn'),
-                actions: <Widget>[
-                  IconButton(
-                      icon: Icon(Icons.ac_unit_rounded),
-                      onPressed: (() {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => Link()));
-                      })),
-                  TextButton.icon(
-                    icon: Icon(Icons.person_add, color: Colors.white),
-                    label:
-                        Text('SignUp', style: TextStyle(color: Colors.white)),
-                    onPressed: () {
-                      widget.toggleView();
-                    },
-                  ),
-                ],
-              ),
               body: loading
                   ? Center(
                       child: CircularProgressIndicator(),
                     )
-                  : Container(
-                      decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage('assets/bg1.jpg'),
-                              fit: BoxFit.cover)),
-                      padding: EdgeInsets.symmetric(
-                          vertical: 15.0, horizontal: 20.0),
-                      child: SingleChildScrollView(
-                        child: Form(
-                            key: _formKey,
-                            child: Column(
-                              children: <Widget>[
-                                SizedBox(height: 10.0),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0),
-                                  child: TextFormField(
-                                    decoration: InputDecoration(
-                                      icon: Icon(Icons.email),
-                                      hintText: 'Email',
-                                      border: OutlineInputBorder(),
-                                    ),
-                                    maxLines: null,
-                                    controller: _email,
-                                    validator: (val) => val.isEmpty
-                                        ? 'Please enter your email'
-                                        : null,
-                                  ),
-                                ),
-                                SizedBox(height: 15.0),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0),
-                                  child: TextFormField(
-                                    decoration: InputDecoration(
-                                        icon: Icon(Icons.create_rounded),
-                                        hintText: 'Password',
-                                        border: OutlineInputBorder(),
-                                        suffixIcon: IconButton(
-                                          icon: Icon(
-                                            _obscureText
-                                                ? Icons.visibility
-                                                : Icons.visibility_off,
-                                            color: Colors.grey[600],
-                                          ),
-                                          onPressed: () {
-                                            setState(() {
-                                              _obscureText = !_obscureText;
-                                            });
-                                          },
-                                        )),
-                                    controller: _password,
-                                    validator: (val) => val.length < 7
-                                        ? 'Password did not match'
-                                        : null,
-                                    obscureText: _obscureText,
-                                  ),
-                                ),
-                                SizedBox(height: 15.0),
-                                ElevatedButton(
-                                  // style: ButtonStyle(),
-                                  child: Text(
-                                    'Login',
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  onPressed: () async {
-                                    if (_formKey.currentState.validate()) {
-                                      await _signIn(auth);
-                                    }
-                                  },
-                                ),
-                                SizedBox(height: 6.0),
-                                error != null
-                                    ? Text(
-                                        error,
-                                        style: TextStyle(color: Colors.red),
-                                      )
-                                    : SizedBox()
-                              ],
+                  : Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                                child: Container(
+                              padding: EdgeInsets.symmetric(vertical: 40),
+                              color: Colors.white,
                             )),
-                      )),
+                          ],
+                        ),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 80,
+                          ),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              image: DecorationImage(
+                                  image: AssetImage('assets/82.png'),
+                                  fit: BoxFit.cover)),
+                        ),
+                        Expanded(
+                          child: Container(
+                              color: Colors.white,
+                              child: SingleChildScrollView(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 20,
+                                ),
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      'Welcome Back! ',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 5,
+                                    ),
+                                    Text(
+                                      'Login To Continue',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 30.0,
+                                    ),
+                                    Column(
+                                      children: [
+                                        Form(
+                                            key: _formKey,
+                                            child: Column(
+                                              children: <Widget>[
+                                                SizedBox(height: 10.0),
+                                                Material(
+                                                  elevation: 20.0,
+                                                  shadowColor: Colors.white,
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          const Radius.circular(
+                                                              10.0)),
+                                                  child: TextFormField(
+                                                    decoration: InputDecoration(
+                                                      prefixIcon: Icon(
+                                                          Icons.email,
+                                                          color: Colors.green),
+                                                      enabledBorder: const OutlineInputBorder(
+                                                          borderSide:
+                                                              const BorderSide(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  width: 0.0),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  const Radius
+                                                                          .circular(
+                                                                      10.0))),
+                                                      border:
+                                                          new OutlineInputBorder(
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .all(
+                                                          const Radius.circular(
+                                                              10.0),
+                                                        ),
+                                                      ),
+                                                      hintText: 'Email',
+                                                    ),
+                                                    maxLines: null,
+                                                    controller: _email,
+                                                    validator: (val) => val
+                                                            .isEmpty
+                                                        ? 'Please enter your email'
+                                                        : null,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 15.0),
+                                                Material(
+                                                  elevation: 20.0,
+                                                  shadowColor: Colors.white,
+                                                  color: Colors.white,
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          const Radius.circular(
+                                                              10.0)),
+                                                  child: TextFormField(
+                                                    decoration: InputDecoration(
+                                                        prefixIcon: Icon(
+                                                          Icons.create_rounded,
+                                                          color: Colors.green,
+                                                        ),
+                                                        hintText: 'Password',
+                                                        enabledBorder: const OutlineInputBorder(
+                                                            borderSide:
+                                                                const BorderSide(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    width: 0.0),
+                                                            borderRadius:
+                                                                BorderRadius.all(
+                                                                    const Radius
+                                                                            .circular(
+                                                                        10.0))),
+                                                        border:
+                                                            new OutlineInputBorder(
+                                                          borderRadius:
+                                                              const BorderRadius
+                                                                  .all(
+                                                            const Radius
+                                                                .circular(10.0),
+                                                          ),
+                                                        ),
+                                                        suffixIcon: IconButton(
+                                                          icon: Icon(
+                                                            _obscureText
+                                                                ? Icons
+                                                                    .visibility
+                                                                : Icons
+                                                                    .visibility_off,
+                                                            color: Colors
+                                                                .grey[600],
+                                                          ),
+                                                          onPressed: () {
+                                                            setState(() {
+                                                              _obscureText =
+                                                                  !_obscureText;
+                                                            });
+                                                          },
+                                                        )),
+                                                    controller: _password,
+                                                    validator: (val) => val
+                                                                .length <
+                                                            7
+                                                        ? 'Password did not match'
+                                                        : null,
+                                                    obscureText: _obscureText,
+                                                  ),
+                                                ),
+                                                SizedBox(height: 15.0),
+                                                Center(
+                                                  child: ElevatedButton.icon(
+                                                    icon: ImageIcon(
+                                                      AssetImage(
+                                                          "assets/sign-in.png"),
+                                                    ),
+                                                    style: ButtonStyle(
+                                                      backgroundColor:
+                                                          MaterialStateProperty
+                                                              .all(
+                                                                  Colors.green),
+                                                      elevation:
+                                                          MaterialStateProperty
+                                                              .all(10),
+                                                    ),
+                                                    label: Text(
+                                                      'Login',
+                                                      style: TextStyle(
+                                                          color: Colors.white),
+                                                    ),
+                                                    onPressed: () async {
+                                                      if (_formKey.currentState
+                                                          .validate()) {
+                                                        await _signIn(auth);
+                                                      }
+                                                    },
+                                                  ),
+                                                ),
+                                                SizedBox(height: 6.0),
+                                                error != null
+                                                    ? Text(
+                                                        error,
+                                                        style: TextStyle(
+                                                            color: Colors.red),
+                                                      )
+                                                    : SizedBox(),
+                                                SizedBox(
+                                                  height: 20,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                        "Don't have an Account ? "),
+                                                    GestureDetector(
+                                                      onTap: widget.toggleView,
+                                                      child: Text(
+                                                        "Sign Up",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.green),
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height: 60,
+                                                ),
+                                                IconButton(
+                                                    icon: Icon(
+                                                        Icons.ac_unit_rounded),
+                                                    onPressed: (() {
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder:
+                                                                  (context) =>
+                                                                      Link()));
+                                                    })),
+                                              ],
+                                            )),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              )),
+                        ),
+                      ],
+                    ),
             ));
   }
 }
+
