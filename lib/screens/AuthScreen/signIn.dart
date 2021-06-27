@@ -1,4 +1,3 @@
-import 'package:app_client/dev/dev.dart';
 import 'package:app_client/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -268,17 +267,6 @@ class _SignInState extends State<SignIn> {
                                                 SizedBox(
                                                   height: 60,
                                                 ),
-                                                IconButton(
-                                                    icon: Icon(
-                                                        Icons.ac_unit_rounded),
-                                                    onPressed: (() {
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder:
-                                                                  (context) =>
-                                                                      Link()));
-                                                    })),
                                               ],
                                             )),
                                       ],

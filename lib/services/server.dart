@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:app_client/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,10 +16,7 @@ class Server {
     init();
   }
 
-  init() async {
-    // if (_prefs == null) _prefs = await SharedPreferences.getInstance();
-    // baseUrl = _prefs.getString('link') ?? "http://ec2-15-206-1-172.ap-south-1.compute.amazonaws.com:9000";
-  }
+  init()async {}
 
   ////Account Requests
   ///SignUp
@@ -30,12 +28,17 @@ class Server {
         '{"name": "$name","email": "$email","password": "$password"}';
     request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 201) {
-      return jsonDecode(await response.stream.bytesToString());
-    } else {
-      throw (response);
+    try{
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        return jsonDecode(await response.stream.bytesToString());
+      } else{
+          throw (await response.stream.bytesToString());
+        }
+    } on SocketException {
+      throw('server error');
+    } catch(e){
+      throw(e);
     }
   }
 
@@ -47,13 +50,18 @@ class Server {
         http.Request('POST', Uri.parse('$baseUrl/client/accounts/signin'));
     request.body = '{"email": "$email",   "password": "$password"}';
     request.headers.addAll(headers);
-
-    http.StreamedResponse response = await request.send();
-
-    if (response.statusCode == 200) {
-      return jsonDecode(await response.stream.bytesToString());
-    } else {
-      throw (response);
+    
+    try{
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        return jsonDecode(await response.stream.bytesToString());
+      } else  {
+          throw (await response.stream.bytesToString());
+      }
+    } on SocketException {
+      throw('server error');
+    } catch(e){
+      throw(e);
     }
   }
 
