@@ -46,26 +46,6 @@ class _SignUpState extends State<SignUp> {
               )
             : Column(
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                          child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 20),
-                        color: Colors.white,
-                      )),
-                    ],
-                  ),
-                  Container(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 20,
-                      vertical: 70,
-                    ),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        image: DecorationImage(
-                            image: AssetImage('assets/82.png'),
-                            fit: BoxFit.cover)),
-                  ),
                   Expanded(
                     child: Container(
                         color: Colors.white,
@@ -76,6 +56,26 @@ class _SignUpState extends State<SignUp> {
                           ),
                           child: Column(
                             children: [
+                              Row(
+                                children: [
+                                  Expanded(
+                                      child: Container(
+                                    padding: EdgeInsets.symmetric(vertical: 20),
+                                    color: Colors.white,
+                                  )),
+                                ],
+                              ),
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 20,
+                                  vertical: 70,
+                                ),
+                                decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    image: DecorationImage(
+                                        image: AssetImage('assets/82.png'),
+                                        fit: BoxFit.cover)),
+                              ),
                               Text(
                                 'Welcome',
                                 style: TextStyle(
@@ -373,5 +373,3 @@ class _SignUpState extends State<SignUp> {
     );
   }
 }
-
-

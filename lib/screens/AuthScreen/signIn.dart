@@ -43,26 +43,6 @@ class _SignInState extends State<SignIn> {
                     )
                   : Column(
                       children: [
-                        Row(
-                          children: [
-                            Expanded(
-                                child: Container(
-                              padding: EdgeInsets.symmetric(vertical: 40),
-                              color: Colors.white,
-                            )),
-                          ],
-                        ),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 20,
-                            vertical: 80,
-                          ),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              image: DecorationImage(
-                                  image: AssetImage('assets/82.png'),
-                                  fit: BoxFit.cover)),
-                        ),
                         Expanded(
                           child: Container(
                               color: Colors.white,
@@ -73,6 +53,28 @@ class _SignInState extends State<SignIn> {
                                 ),
                                 child: Column(
                                   children: [
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                            child: Container(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 40),
+                                          color: Colors.white,
+                                        )),
+                                      ],
+                                    ),
+                                    Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 20,
+                                        vertical: 80,
+                                      ),
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          image: DecorationImage(
+                                              image:
+                                                  AssetImage('assets/82.png'),
+                                              fit: BoxFit.cover)),
+                                    ),
                                     Text(
                                       'Welcome Back! ',
                                       style: TextStyle(
@@ -103,48 +105,52 @@ class _SignInState extends State<SignIn> {
                                               children: <Widget>[
                                                 SizedBox(height: 10.0),
                                                 Material(
-                                                  elevation: 20.0,
-                                                  shadowColor: Colors.white,
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          const Radius.circular(
-                                                              10.0)),
-                                                  child: TextFormField(
-                                                    decoration: InputDecoration(
-                                                      prefixIcon: Icon(
-                                                          Icons.email,
-                                                          color: Colors.green),
-                                                      enabledBorder: const OutlineInputBorder(
-                                                          borderSide:
-                                                              const BorderSide(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  width: 0.0),
-                                                          borderRadius:
-                                                              BorderRadius.all(
-                                                                  const Radius
-                                                                          .circular(
-                                                                      10.0))),
-                                                      border:
-                                                          new OutlineInputBorder(
-                                                        borderRadius:
-                                                            const BorderRadius
-                                                                .all(
-                                                          const Radius.circular(
-                                                              10.0),
+                                                    elevation: 20.0,
+                                                    shadowColor: Colors.white,
+                                                    color: Colors.white,
+                                                    borderRadius: BorderRadius
+                                                        .all(const Radius
+                                                            .circular(10.0)),
+                                                    child: Stack(children: [
+                                                      TextFormField(
+                                                        decoration:
+                                                            InputDecoration(
+                                                          prefixIcon: Icon(
+                                                              Icons.email,
+                                                              color:
+                                                                  Colors.green),
+                                                          enabledBorder: const OutlineInputBorder(
+                                                              borderSide:
+                                                                  const BorderSide(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      width:
+                                                                          0.0),
+                                                              borderRadius:
+                                                                  BorderRadius.all(
+                                                                      const Radius
+                                                                              .circular(
+                                                                          10.0))),
+                                                          border:
+                                                              new OutlineInputBorder(
+                                                            borderRadius:
+                                                                const BorderRadius
+                                                                    .all(
+                                                              const Radius
+                                                                      .circular(
+                                                                  10.0),
+                                                            ),
+                                                          ),
+                                                          hintText: 'Email',
                                                         ),
+                                                        maxLines: null,
+                                                        controller: _email,
+                                                        validator: (val) => val
+                                                                .isEmpty
+                                                            ? 'Please enter your email'
+                                                            : null,
                                                       ),
-                                                      hintText: 'Email',
-                                                    ),
-                                                    maxLines: null,
-                                                    controller: _email,
-                                                    validator: (val) => val
-                                                            .isEmpty
-                                                        ? 'Please enter your email'
-                                                        : null,
-                                                  ),
-                                                ),
+                                                    ])),
                                                 SizedBox(height: 15.0),
                                                 Material(
                                                   elevation: 20.0,
@@ -280,4 +286,3 @@ class _SignInState extends State<SignIn> {
             ));
   }
 }
-
