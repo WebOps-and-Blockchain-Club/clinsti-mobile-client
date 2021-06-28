@@ -1,6 +1,7 @@
 import 'package:app_client/models/user.dart';
 import 'package:app_client/screens/HomeScreen/Profile/changepassword.dart';
 import 'package:app_client/screens/HomeScreen/Feedback/main.dart';
+import 'package:app_client/screens/HomeScreen/Profile/editProfile.dart';
 import 'package:app_client/services/auth.dart';
 import 'package:flutter/material.dart';
 
@@ -155,9 +156,11 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                       color: Colors.black87, fontSize: 18),
                                 ),
                           onPressed: () async {
-                            setState(() {
-                              isEditable = !isEditable;
-                            });
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MyEditProfileScreen(auth: widget.auth))
+                            );
                             // if(isEditable){
                             //   nameFocusNode.requestFocus();
                             //   _name.value = _name.value.copyWith(
