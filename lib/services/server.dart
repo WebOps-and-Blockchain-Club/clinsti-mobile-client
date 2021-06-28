@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Server {
   String baseUrl =
-      "http://ec2-15-206-1-172.ap-south-1.compute.amazonaws.com:9000"; //TODO: put your local netwok config here
+      "http://ec2-15-206-1-172.ap-south-1.compute.amazonaws.com:9000"; 
   final String signup = "/client/accounts/signup";
   final String signin = '/client/accounts/signin';
   var jsonHead = {'Content-Type': 'application/json'};
