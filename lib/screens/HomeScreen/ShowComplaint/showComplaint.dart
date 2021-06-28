@@ -318,10 +318,27 @@ class _ShowComplaintState extends State<ShowComplaint> {
             Row(children: [
               _buildProgressIcon(statusColors[0], iconData: MdiIcons.clipboardClockOutline),
               Text(
-                'Registered on: ' + '\n' + dateTimeString(complaint['created_time']),
+                'Registered on: ' + '\n' + dateTimeString(complaint['created_time']) + '\n' + "Current Status: askjaskj",
                 softWrap: true,
               )
             ],),
+            // _buildProgressLine(statusColors[1], 25),
+            // Row(children: [
+            //   _buildProgressIcon(statusColors[2], iconData: MdiIcons.clockTimeThreeOutline,),
+            //   Text(
+            //     'Registered on: ' + '\n' + dateTimeString(complaint['created_time']),
+            //     softWrap: true,
+            //   )
+            // ],),
+            // _buildProgressLine(statusColors[3], 25),
+            // Row(children: [
+            //   _buildProgressIcon(statusColors[4], iconData: Icons.hourglass_bottom),
+            //   Text(
+            //     'Registered on: ' + '\n' + dateTimeString(complaint['created_time']),
+            //     softWrap: true,
+            //   )
+            // ],),
+            // _buildProgressLine(statusColors[5], 25),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
