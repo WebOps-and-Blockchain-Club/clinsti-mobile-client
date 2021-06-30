@@ -15,6 +15,8 @@ class _SignInState extends State<SignIn> {
   String error;
   bool loading = false;
   bool _obscureText = true;
+  String emailerror;
+  String passerror;
   final _formKey = GlobalKey<FormState>();
   _signIn(AuthService auth) async {
     setState(() {
@@ -104,114 +106,210 @@ class _SignInState extends State<SignIn> {
                                             child: Column(
                                               children: <Widget>[
                                                 SizedBox(height: 10.0),
-                                                Material(
-                                                    elevation: 20.0,
-                                                    shadowColor: Colors.white,
-                                                    color: Colors.white,
-                                                    borderRadius: BorderRadius
-                                                        .all(const Radius
-                                                            .circular(10.0)),
-                                                    child: Stack(children: [
-                                                      TextFormField(
-                                                        decoration:
-                                                            InputDecoration(
-                                                          prefixIcon: Icon(
-                                                              Icons.email,
-                                                              color:
-                                                                  Colors.green),
-                                                          enabledBorder: const OutlineInputBorder(
-                                                              borderSide:
-                                                                  const BorderSide(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      width:
-                                                                          0.0),
-                                                              borderRadius:
-                                                                  BorderRadius.all(
-                                                                      const Radius
-                                                                              .circular(
-                                                                          10.0))),
-                                                          border:
-                                                              new OutlineInputBorder(
-                                                            borderRadius:
-                                                                const BorderRadius
-                                                                    .all(
-                                                              const Radius
-                                                                      .circular(
-                                                                  10.0),
-                                                            ),
-                                                          ),
-                                                          hintText: 'Email',
-                                                        ),
-                                                        maxLines: null,
-                                                        controller: _email,
-                                                        validator: (val) => val
-                                                                .isEmpty
-                                                            ? 'Please enter your email'
-                                                            : null,
-                                                      ),
-                                                    ])),
-                                                SizedBox(height: 15.0),
-                                                Material(
-                                                  elevation: 20.0,
-                                                  shadowColor: Colors.white,
-                                                  color: Colors.white,
-                                                  borderRadius:
-                                                      BorderRadius.all(
-                                                          const Radius.circular(
-                                                              10.0)),
-                                                  child: TextFormField(
-                                                    decoration: InputDecoration(
-                                                        prefixIcon: Icon(
-                                                          Icons.create_rounded,
-                                                          color: Colors.green,
-                                                        ),
-                                                        hintText: 'Password',
-                                                        enabledBorder: const OutlineInputBorder(
-                                                            borderSide:
-                                                                const BorderSide(
+                                                Stack(children: [
+                                                  Container(
+                                                      height: 70,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      )),
+                                                  Column(
+                                                    children: [
+                                                      Material(
+                                                        elevation: 20.0,
+                                                        shadowColor:
+                                                            Colors.white,
+                                                        color: Colors.white,
+                                                        borderRadius:
+                                                            BorderRadius.all(
+                                                                const Radius
+                                                                        .circular(
+                                                                    10.0)),
+                                                        child: TextFormField(
+                                                          decoration:
+                                                              InputDecoration(
+                                                            errorStyle:
+                                                                TextStyle(
+                                                                    height: 0),
+                                                            prefixIcon: Icon(
+                                                                Icons.email,
+                                                                color: Colors
+                                                                    .green),
+                                                            focusedBorder: const OutlineInputBorder(
+                                                                borderSide: const BorderSide(
                                                                     color: Colors
-                                                                        .white,
-                                                                    width: 0.0),
-                                                            borderRadius:
-                                                                BorderRadius.all(
+                                                                        .green,
+                                                                    width: 2.0),
+                                                                borderRadius: BorderRadius.all(
                                                                     const Radius
                                                                             .circular(
                                                                         10.0))),
-                                                        border:
-                                                            new OutlineInputBorder(
+                                                            enabledBorder: const OutlineInputBorder(
+                                                                borderSide: const BorderSide(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    width: 0.0),
+                                                                borderRadius: BorderRadius.all(
+                                                                    const Radius
+                                                                            .circular(
+                                                                        10.0))),
+                                                            border:
+                                                                new OutlineInputBorder(
+                                                              borderRadius:
+                                                                  const BorderRadius
+                                                                      .all(
+                                                                const Radius
+                                                                        .circular(
+                                                                    10.0),
+                                                              ),
+                                                            ),
+                                                            hintText: 'Email',
+                                                          ),
+                                                          maxLines: null,
+                                                          controller: _email,
+                                                          validator: (val) {
+                                                            if (val.isEmpty) {
+                                                              setState(() {
+                                                                emailerror =
+                                                                    'Please Enter your Email';
+                                                              });
+                                                              return '';
+                                                            } else {
+                                                              setState(() {
+                                                                emailerror =
+                                                                    null;
+                                                              });
+                                                              return null;
+                                                            }
+                                                          },
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 8,
+                                                      ),
+                                                      errorMessages(emailerror),
+                                                    ],
+                                                  ),
+                                                ]),
+                                                SizedBox(height: 15.0),
+                                                Stack(
+                                                  children: [
+                                                    Container(
+                                                        height: 70,
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          color: Colors.white,
                                                           borderRadius:
-                                                              const BorderRadius
-                                                                  .all(
-                                                            const Radius
-                                                                .circular(10.0),
+                                                              BorderRadius
+                                                                  .circular(10),
+                                                        )),
+                                                    Column(
+                                                      children: [
+                                                        Material(
+                                                          elevation: 20.0,
+                                                          shadowColor:
+                                                              Colors.white,
+                                                          color: Colors.white,
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  const Radius
+                                                                          .circular(
+                                                                      10.0)),
+                                                          child: TextFormField(
+                                                            decoration:
+                                                                InputDecoration(
+                                                                    focusedErrorBorder: const OutlineInputBorder(
+                                                                        borderSide: const BorderSide(
+                                                                            color: Colors
+                                                                                .red,
+                                                                            width:
+                                                                                2),
+                                                                        borderRadius: BorderRadius.all(const Radius.circular(
+                                                                            10.0))),
+                                                                    errorStyle: TextStyle(
+                                                                        height:
+                                                                            0),
+                                                                    prefixIcon:
+                                                                        Icon(
+                                                                      Icons
+                                                                          .create_rounded,
+                                                                      color: Colors
+                                                                          .green,
+                                                                    ),
+                                                                    hintText:
+                                                                        'Password',
+                                                                    focusedBorder: const OutlineInputBorder(
+                                                                        borderSide: const BorderSide(
+                                                                            color: Colors
+                                                                                .green,
+                                                                            width:
+                                                                                2.0),
+                                                                        borderRadius: BorderRadius.all(const Radius.circular(
+                                                                            10.0))),
+                                                                    enabledBorder: const OutlineInputBorder(
+                                                                        borderSide: const BorderSide(
+                                                                            color: Colors.white,
+                                                                            width: 0.0),
+                                                                        borderRadius: BorderRadius.all(const Radius.circular(10.0))),
+                                                                    border: new OutlineInputBorder(
+                                                                      borderRadius:
+                                                                          const BorderRadius
+                                                                              .all(
+                                                                        const Radius.circular(
+                                                                            10.0),
+                                                                      ),
+                                                                    ),
+                                                                    suffixIcon: IconButton(
+                                                                      icon:
+                                                                          Icon(
+                                                                        _obscureText
+                                                                            ? Icons.visibility
+                                                                            : Icons.visibility_off,
+                                                                        color: Colors
+                                                                            .grey[600],
+                                                                      ),
+                                                                      onPressed:
+                                                                          () {
+                                                                        setState(
+                                                                            () {
+                                                                          _obscureText =
+                                                                              !_obscureText;
+                                                                        });
+                                                                      },
+                                                                    )),
+                                                            controller:
+                                                                _password,
+                                                            validator: (val) {
+                                                              if (val.isEmpty) {
+                                                                setState(() {
+                                                                  passerror =
+                                                                      'Enter your Password';
+                                                                });
+
+                                                                return '';
+                                                              } else {
+                                                                setState(() {
+                                                                  passerror =
+                                                                      null;
+                                                                });
+
+                                                                return null;
+                                                              }
+                                                            },
+                                                            obscureText:
+                                                                _obscureText,
                                                           ),
                                                         ),
-                                                        suffixIcon: IconButton(
-                                                          icon: Icon(
-                                                            _obscureText
-                                                                ? Icons
-                                                                    .visibility
-                                                                : Icons
-                                                                    .visibility_off,
-                                                            color: Colors
-                                                                .grey[600],
-                                                          ),
-                                                          onPressed: () {
-                                                            setState(() {
-                                                              _obscureText =
-                                                                  !_obscureText;
-                                                            });
-                                                          },
-                                                        )),
-                                                    controller: _password,
-                                                    validator: (val) => val
-                                                                .length <
-                                                            7
-                                                        ? 'Password did not match'
-                                                        : null,
-                                                    obscureText: _obscureText,
-                                                  ),
+                                                        SizedBox(
+                                                          height: 8,
+                                                        ),
+                                                        errorMessages(
+                                                            passerror),
+                                                      ],
+                                                    ),
+                                                  ],
                                                 ),
                                                 SizedBox(height: 15.0),
                                                 Center(
@@ -284,5 +382,20 @@ class _SignInState extends State<SignIn> {
                       ],
                     ),
             ));
+  }
+
+  Widget errorMessages(String errmessage) {
+    if (errmessage != null) {
+      return Container(
+        margin: EdgeInsets.only(left: 10),
+        alignment: Alignment.topLeft,
+        child: Text(
+          errmessage,
+          style: TextStyle(fontSize: 12, color: Colors.red[800]),
+        ),
+      );
+    } else {
+      return Container();
+    }
   }
 }

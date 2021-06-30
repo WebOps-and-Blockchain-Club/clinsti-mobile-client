@@ -79,8 +79,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             child: Container(
                 color: Colors.white,
                 child: SingleChildScrollView(
-                    child: Form(
-                        child: Column(
+                    child: Column(
                   children: <Widget>[
                     SizedBox(
                       height: 80,
@@ -136,7 +135,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       ),
                     ),
                     SizedBox(height: 15.0),
-                    Center(
+                    Container(
                       child: ConstrainedBox(
                         constraints:
                             BoxConstraints.tightFor(width: 350, height: 50),
@@ -152,15 +151,16 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                               ? CircularProgressIndicator()
                               : Text(
                                   'Edit Profile',
+                                  textAlign: TextAlign.left,
                                   style: TextStyle(
                                       color: Colors.black87, fontSize: 18),
                                 ),
                           onPressed: () async {
                             Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => MyEditProfileScreen(auth: widget.auth))
-                            );
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => MyEditProfileScreen(
+                                        auth: widget.auth)));
                             // if(isEditable){
                             //   nameFocusNode.requestFocus();
                             //   _name.value = _name.value.copyWith(
@@ -183,11 +183,15 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                       child: ConstrainedBox(
                         constraints:
                             BoxConstraints.tightFor(width: 350, height: 50),
-                        child: ElevatedButton(
+                        child: ElevatedButton.icon(
+                          icon: ImageIcon(
+                            AssetImage('assets/key.png'),
+                            color: Colors.black87,
+                          ),
                           style: ButtonStyle(
                               backgroundColor:
                                   MaterialStateProperty.all(Colors.white)),
-                          child: Text(
+                          label: Text(
                             'Change Password',
                             style:
                                 TextStyle(color: Colors.black87, fontSize: 18),
@@ -215,11 +219,13 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           style: ButtonStyle(
                               backgroundColor:
                                   MaterialStateProperty.all(Colors.white)),
-                          label: Text(
-                            'Feedback',
-                            style: TextStyle(
-                              color: Colors.black87,
-                              fontSize: 18,
+                          label: Container(
+                            child: Text(
+                              'Feedback',
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 18,
+                              ),
                             ),
                           ),
                           onPressed: () async {
@@ -262,7 +268,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           )
                         : SizedBox()
                   ],
-                )))),
+                ))),
           ),
         ],
       ),

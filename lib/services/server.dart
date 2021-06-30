@@ -30,7 +30,7 @@ class Server {
 
     try{
       http.StreamedResponse response = await request.send();
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         return jsonDecode(await response.stream.bytesToString());
       } else{
           throw (await response.stream.bytesToString());
