@@ -23,6 +23,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
   Map<String,dynamic> complaint = {};
   bool loading = false;  
   List<Color> statusColors = []..length = 7;
+  List<bool> lineBools = [false, false, false];
 
   @override
   initState(){
@@ -43,7 +44,6 @@ class _ShowComplaintState extends State<ShowComplaint> {
           .getComplaint(widget.complaint["complaint_id"]);
       setState(() {
         complaint = result;
-        
       });
       _setIconStatus(complaint['status'].toString());
       feedback.text = complaint['feedback_remark'] ?? "";
@@ -60,26 +60,30 @@ class _ShowComplaintState extends State<ShowComplaint> {
       return;
     }
     if(currentStatus == "Pending transmission"){
-      statusColors[0] = Colors.purple;
-      for(int i = 1; i < 7; i++){
+      statusColors[0] = Colors.green;
+      statusColors[1] = Colors.purple;
+      for(int i = 2; i < 7; i++){
         statusColors[i] = Colors.grey;
       }
+      lineBools[0] = true;
     }
     else if(currentStatus == "Work is pending"){
-      statusColors[0] = Colors.green[400];
-      statusColors[1] = Colors.green[400];
-      statusColors[2] = Colors.purple;
-      for(int i = 3; i < 7; i++){
-        statusColors[i] = Colors.grey;
-      }
-    }
-    else if(currentStatus == "Work in progress"){
-      for(int i = 0; i < 4; i++){
+      for(int i = 0; i < 3; i++){
         statusColors[i] = Colors.green[400];
       }
-      statusColors[4] = Colors.purple;
-      statusColors[5] = Colors.grey;
+      statusColors[3] = Colors.purple;
+      for(int i = 4; i < 7; i++){
+        statusColors[i] = Colors.grey;
+      }
+      lineBools[1] = true;
+    }
+    else if(currentStatus == "Work in progress"){
+      for(int i = 0; i < 5; i++){
+        statusColors[i] = Colors.green[400];
+      }
+      statusColors[5] = Colors.purple;
       statusColors[6] = Colors.grey;
+      lineBools[2] = true;
     }
     else if(currentStatus == "Work completed"){
       for(int i = 0; i < 7; i ++){
@@ -105,12 +109,8 @@ class _ShowComplaintState extends State<ShowComplaint> {
                 : Colors.redAccent,
           ),
         ),
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: Icon(
-            Icons.arrow_back,
-            color: Colors.black,
-          )
+        leading: BackButton(
+          color: Colors.black,
         ),
       ),
       body: loading? Center(child: CircularProgressIndicator(),)
@@ -125,42 +125,22 @@ class _ShowComplaintState extends State<ShowComplaint> {
             SizedBox(height: 20,),
             if(complaint['status'] != "Closed with due justification")
             _buildProgressIndicator(statusColors, width),
-            // Center(
-            //   child: Text(
-            //     complaint["status"] ?? "",
-            //     style: TextStyle(
-            //       fontSize: 20,
-            //       color: (complaint["status"] == 'completed')
-            //           ? Colors.green
-            //           : Colors.redAccent,
-            //     ),
-            //   ),
-            // ),
+            if(complaint['status'] != "Closed with due justification")
             SizedBox(height: 20,),
+            if(complaint["admin_remark"] != null)
+            Text(
+              "Administration Remark",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.red,
+              ),
+            ),
             if(complaint["admin_remark"] != null)
             _buildRequestDetail(complaint["admin_remark"]),
             if(complaint["admin_remark"] != null)
             SizedBox(height: 20,),
-            if(complaint["images"] != null)
-              OutlinedButton(
-                onPressed: () async{
-                    await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ComplaintImages(
-                                  imgNames: complaint["images"],
-                                  db: widget.db,
-                                )));
-                    await widget.db.synC();
-                    setState(() {});
-                },
-                child: Text("Show Images")
-              ),
-            SizedBox(
-              height: 20,
-            ),
-            if (complaint["status"] != null && (complaint["status"]== 'Work completed' ||
-                complaint["status"] == 'Closed with due justification'))
+            if (complaint["status"]== 'Work completed' ||
+                complaint["status"] == 'Closed with due justification')
               Center(
                 child: Container(
                   width: 0.67 * width,
@@ -201,9 +181,20 @@ class _ShowComplaintState extends State<ShowComplaint> {
                   ),
                 ),
               ),
+            if (complaint["status"]== 'Work completed' ||
+                complaint["status"] == 'Closed with due justification')
               SizedBox(height: 20),
-            if (complaint["status"] != null && (complaint["status"] == "Work completed" ||
-                complaint["status"] == "Closed with due justification"))
+            if (complaint["status"] == "Work completed" ||
+                complaint["status"] == "Closed with due justification" && complaint["feedback_remark"] != null)
+              Text(
+              "Feedback",
+              style: TextStyle(
+                fontSize: 16,
+                color: Colors.red,
+              ),
+            ),
+            if (complaint["status"] == "Work completed" ||
+                complaint["status"] == "Closed with due justification")
                   Form(
                       key: _formKey,
                       child: TextFormField(
@@ -219,16 +210,15 @@ class _ShowComplaintState extends State<ShowComplaint> {
                             complaint["feedback_remark"] == null),
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
-                          hintText: complaint['status'] ==
-                                  "Closed with due justification"
-                              ? 'Justification'
-                              : 'Feedback',
+                          hintText: 'Rate & Give Feedback',
                         ),
                       ),
                     ),
-            SizedBox(
-              height: 20,
-            ),
+            if (complaint["status"] == "Work completed" ||
+                complaint["status"] == "Closed with due justification")
+              SizedBox(
+                height: 20,
+              ),
             if (showSubmitButton)
               Center(
                 child: InkWell(
@@ -262,8 +252,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
                   },
                 ),
               ),
-            if (complaint != null &&
-                complaint["status"] == "Pending transmission")
+            if (complaint["status"] == "Pending transmission")
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                 InkWell(
                   onTap: () async {
@@ -308,78 +297,104 @@ class _ShowComplaintState extends State<ShowComplaint> {
     );
   }
 
-  _buildProgressIndicator(List<Color> statusColors, double width){
+  _buildProgressIndicator(List<Color> iconColors, double width){
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(children: [
-              _buildProgressIcon(statusColors[0], iconData: MdiIcons.clipboardClockOutline),
-              Text(
-                'Registered on: ' + '\n' + dateTimeString(complaint['created_time']) + '\n' + "Current Status: askjaskj",
-                softWrap: true,
-              )
-            ],),
-            // _buildProgressLine(statusColors[1], 25),
-            // Row(children: [
-            //   _buildProgressIcon(statusColors[2], iconData: MdiIcons.clockTimeThreeOutline,),
-            //   Text(
-            //     'Registered on: ' + '\n' + dateTimeString(complaint['created_time']),
-            //     softWrap: true,
-            //   )
-            // ],),
-            // _buildProgressLine(statusColors[3], 25),
-            // Row(children: [
-            //   _buildProgressIcon(statusColors[4], iconData: Icons.hourglass_bottom),
-            //   Text(
-            //     'Registered on: ' + '\n' + dateTimeString(complaint['created_time']),
-            //     softWrap: true,
-            //   )
-            // ],),
-            // _buildProgressLine(statusColors[5], 25),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                _buildProgressLine(statusColors[1], 25),
-                _buildProgressIcon(statusColors[2], iconData: MdiIcons.clockTimeThreeOutline,),
-                _buildProgressLine(statusColors[3], 25),
-                _buildProgressIcon(statusColors[4], iconData: Icons.hourglass_bottom),
-                _buildProgressLine(statusColors[5], 25),
+                _buildProgressIcon(statusColors[0], iconData: MdiIcons.clipboardClockOutline,),
+                _buildProgressText(Colors.black, complaint['created_time'], "Pending Transmission", false , width)
               ],
             ),
+            _buildProgressLine(statusColors[1], lineBools[0]),
             Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                _buildProgressIcon(statusColors[6], iconData: Icons.check_circle_outline),
-                if(complaint['completed_time'] != null)
-                Text('Completed on: ' + '\n' + dateTimeString(complaint['completed_time'])),
+                _buildProgressIcon(statusColors[2], iconData: MdiIcons.clockTimeThreeOutline,),
+                //if(complaint['registered_time'] != null)
+                _buildProgressText(Colors.black, complaint['registered_time'] ?? "", "Work is pending", lineBools[0], width)
+            ],),
+            _buildProgressLine(statusColors[3], lineBools[1]),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                _buildProgressIcon(statusColors[4], iconData: Icons.hourglass_bottom),
+                //if(complaint['work_started_time'] != null)
+                _buildProgressText(Colors.black, complaint['work_started_time'] ?? "", "Work in progress", lineBools[1], width)              
+            ],),
+            _buildProgressLine(statusColors[5], lineBools[2]),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                _buildProgressIcon(iconColors[6], iconData: Icons.check_circle_outline),
+                //if(complaint['completed_time'] != null)
+                _buildProgressText(Colors.black, complaint['completed_time'] ?? "", "Work completed", lineBools[2], width),
+                
               ],
-            )
-            
+            ),
           ],
         ),
       ],
     );
   }
 
-  _buildProgressIcon(Color color, {IconData iconData = Icons.check_circle}){
-    return IconButton(
-      icon: Icon(
-        iconData,
-        color: color,
-        size: 30,
+  _buildProgressIcon(Color color, {IconData iconData}){
+    return SizedBox(
+      width: 60,
+      height: 80, 
+      child: IconButton(
+        icon: Icon(
+          iconData,
+          color: color,
+          size: 40,
+        ),
+        onPressed: null,
       ),
-      onPressed: null,
     );
   }
 
-  _buildProgressLine(Color color, double height){
+  _buildProgressText(Color color, String date, String status, bool current, double width){
     return SizedBox(
-      height: height,
-      child: VerticalDivider(
-        thickness: 2.5,
-        color: color,
+      width: width - 100,
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: RichText(
+            text: TextSpan(
+              text: dateTimeString(date),
+              style: TextStyle(color: Colors.black),
+              children: [
+                if(date != "")
+                TextSpan(
+                  text: "\n",
+                ),
+                TextSpan(
+                  text: status,
+                  style: TextStyle(color: current ? Colors.purple : Colors.grey)
+                )
+              ]
+            ), 
+          )
+        ),
+      ),
+    );
+  }
+
+  _buildProgressLine(Color color, bool isDashed){
+    return SizedBox(
+      height: 30,
+      width: 60,
+      child: Center(
+        child: VerticalDivider(
+          thickness: 2.5,
+          color: color,
+        ),
       ),
     );
   }
@@ -457,10 +472,17 @@ Widget _getLocationWidget(String loc, BuildContext context) {
               color: Colors.green[400],
             ),
             SizedBox(width: 10,),
-            Flexible(child: Text(
+            // Flexible(child: Text(
+                // loc,
+                // style: TextStyle(fontSize: 17),
+            //   )),
+            Expanded(child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Text(
                 loc,
                 style: TextStyle(fontSize: 17),
-              )),
+              ),
+            ),)
           ],
         ),
       );
@@ -469,6 +491,9 @@ Widget _getLocationWidget(String loc, BuildContext context) {
 
 
 String dateTimeString( String utcDateTime) {
+  if(utcDateTime == ""){
+    return "";
+  }
   var parseDateTime = DateTime.parse(utcDateTime);
   final localDateTime = parseDateTime.toLocal();
 
