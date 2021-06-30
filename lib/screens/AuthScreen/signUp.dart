@@ -25,7 +25,7 @@ class _SignUpState extends State<SignUp> {
   bool confirmpasslesserro = false;
   bool confirmpassnomatcherror = false;
   final _formKey = GlobalKey<FormState>();
-  _signUp(auth) async {
+  _signUp(AuthService auth) async {
     setState(() {
       error = null;
       loading = true;
