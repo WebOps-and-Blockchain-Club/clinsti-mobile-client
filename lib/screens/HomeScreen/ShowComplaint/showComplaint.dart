@@ -56,9 +56,6 @@ class _ShowComplaintState extends State<ShowComplaint> {
   }
 
   _setIconStatus(String currentStatus){
-    if(currentStatus == "Closed with due justification"){
-      return;
-    }
     if(currentStatus == "Pending transmission"){
       statusColors[0] = Colors.green;
       statusColors[1] = Colors.purple;
@@ -89,6 +86,11 @@ class _ShowComplaintState extends State<ShowComplaint> {
       for(int i = 0; i < 7; i ++){
         statusColors[i] = Colors.green;
       }
+    }
+    else if(currentStatus == "Closed with due justification"){
+      statusColors[0] = Colors.green;
+      statusColors[1] = Colors.green;
+      statusColors[2] = Colors.green;
     }
   }
 
@@ -123,9 +125,9 @@ class _ShowComplaintState extends State<ShowComplaint> {
             SizedBox(height: 20,),
             _getLocationWidget(widget.complaint['_location'], context),
             SizedBox(height: 20,),
-            if(complaint['status'] != "Closed with due justification")
+            // if(complaint['status'] != "Closed with due justification")
             _buildProgressIndicator(statusColors, width),
-            if(complaint['status'] != "Closed with due justification")
+            // if(complaint['status'] != "Closed with due justification")
             SizedBox(height: 20,),
             if(complaint["admin_remark"] != null)
             Text(
@@ -311,30 +313,39 @@ class _ShowComplaintState extends State<ShowComplaint> {
                 _buildProgressText(Colors.black, complaint['created_time'], "Pending Transmission", false , width)
               ],
             ),
-            _buildProgressLine(statusColors[1], lineBools[0]),
+            _buildProgressLine(statusColors[1]),
+            if(complaint['status'] != "Closed with due justification")
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 _buildProgressIcon(statusColors[2], iconData: MdiIcons.clockTimeThreeOutline,),
-                //if(complaint['registered_time'] != null)
                 _buildProgressText(Colors.black, complaint['registered_time'] ?? "", "Work is pending", lineBools[0], width)
             ],),
-            _buildProgressLine(statusColors[3], lineBools[1]),
+            if(complaint['status'] != "Closed with due justification")
+            _buildProgressLine(statusColors[3]),
+            if(complaint['status'] != "Closed with due justification")
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 _buildProgressIcon(statusColors[4], iconData: Icons.hourglass_bottom),
-                //if(complaint['work_started_time'] != null)
                 _buildProgressText(Colors.black, complaint['work_started_time'] ?? "", "Work in progress", lineBools[1], width)              
             ],),
-            _buildProgressLine(statusColors[5], lineBools[2]),
+            if(complaint['status'] != "Closed with due justification")
+            _buildProgressLine(statusColors[5]),
+            if(complaint['status'] != "Closed with due justification")
             Row(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 _buildProgressIcon(iconColors[6], iconData: Icons.check_circle_outline),
-                //if(complaint['completed_time'] != null)
                 _buildProgressText(Colors.black, complaint['completed_time'] ?? "", "Work completed", lineBools[2], width),
-                
+              ],
+            ),
+            if(complaint['status'] == "Closed with due justification")
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                _buildProgressIcon(Colors.red, iconData: Icons.close),
+                _buildProgressText(Colors.black, complaint['completed_time'] ?? "", "Closed with due Justification", false, width),
               ],
             ),
           ],
@@ -386,7 +397,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
     );
   }
 
-  _buildProgressLine(Color color, bool isDashed){
+  _buildProgressLine(Color color){
     return SizedBox(
       height: 30,
       width: 60,
