@@ -17,7 +17,7 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
   TextEditingController _email = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String error;
-  bool loading=false;
+  bool loading = false;
   String nameerror;
   String emailerror;
 
@@ -37,189 +37,201 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
     super.dispose();
   }
 
-  getUser(){
+  getUser() {
     User user = widget.auth.useR;
     _name.text = user.name;
     _email.text = user.email;
   }
 
   _updateUserProfile({AuthService auth, String email, String name}) async {
-    
     setState(() {
       error = null;
-      loading=true;
+      loading = true;
     });
     try {
       await auth.updateProfile(email: email, name: name);
       Navigator.pop(context);
       Fluttertoast.showToast(
-        msg: "Profile Updated",
-        toastLength: Toast.LENGTH_LONG,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 14.0
-      );
+          msg: "Profile Updated",
+          toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 14.0);
     } catch (e) {
       setState(() {
         error = e.toString();
       });
     }
     setState(() {
-      loading=false;
+      loading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: loading ? 
-          Center(
-            child: CircularProgressIndicator(),
-          ) :
-          Container(
-            color: Colors.white,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: double.infinity,
-                  height: 120,
-                  alignment: Alignment.centerLeft,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                  ),
-                  child: BackButton(),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                    child: SingleChildScrollView(
-                      child: Form(
-                        key: _formKey,
-                        child: Container(
-                          color: Colors.white,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                "assets/user-01.png",
-                                scale: 1,
-                                color: Colors.green,
-                                ),
-                              SizedBox(height: 20),
-                              Material(
-                                elevation: 20.0,
-                                shadowColor: Colors.white,
+        body: loading
+            ? Center(
+                child: CircularProgressIndicator(),
+              )
+            : Container(
+                color: Colors.white,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      height: 120,
+                      alignment: Alignment.centerLeft,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      child: BackButton(),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                        child: SingleChildScrollView(
+                          child: Form(
+                              key: _formKey,
+                              child: Container(
                                 color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                    errorStyle: TextStyle(height: 0),
-                                    hintText: "Name",
-                                    prefixIcon: Icon(
-                                      Icons.person,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Image.asset(
+                                      "assets/user-01.png",
+                                      scale: 1,
                                       color: Colors.green,
+                                    ),
+                                    SizedBox(height: 20),
+                                    Material(
+                                      elevation: 20.0,
+                                      shadowColor: Colors.white,
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                      child: TextFormField(
+                                        decoration: InputDecoration(
+                                            errorStyle: TextStyle(height: 0),
+                                            hintText: "Name",
+                                            prefixIcon: Icon(
+                                              Icons.person,
+                                              color: Colors.green,
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10.0)),
+                                              borderSide: BorderSide(
+                                                  color: Colors.white,
+                                                  width: 0.0),
+                                            ),
+                                            border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(10.0)))),
+                                        readOnly: false,
+                                        controller: _name,
+                                        maxLines: null,
+                                        validator: (val) {
+                                          if (val.isEmpty) {
+                                            setState(() {
+                                              nameerror = "Please Enter Name";
+                                            });
+                                            return '';
+                                          } else {
+                                            setState(() {
+                                              nameerror = null;
+                                            });
+                                            return null;
+                                          }
+                                        },
                                       ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                                      borderSide: BorderSide(color: Colors.white,width: 0.0),
+                                    ),
+                                    errorMessages(nameerror),
+                                    SizedBox(height: 20),
+                                    Material(
+                                      elevation: 20.0,
+                                      shadowColor: Colors.white,
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10.0),
+                                      child: TextFormField(
+                                        decoration: InputDecoration(
+                                            errorStyle: TextStyle(height: 0),
+                                            hintText: "Email",
+                                            prefixIcon: Icon(
+                                              Icons.email,
+                                              color: Colors.green,
+                                            ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10.0)),
+                                              borderSide: BorderSide(
+                                                  color: Colors.white,
+                                                  width: 0.0),
+                                            ),
+                                            border: OutlineInputBorder(
+                                                borderRadius: BorderRadius.all(
+                                                    Radius.circular(10.0)))),
+                                        readOnly: false,
+                                        controller: _email,
+                                        maxLines: null,
+                                        validator: (val) {
+                                          if (val.isEmpty) {
+                                            setState(() {
+                                              emailerror = "Please Enter Email";
+                                            });
+                                            return '';
+                                          } else {
+                                            setState(() {
+                                              emailerror = null;
+                                            });
+                                            return null;
+                                          }
+                                        },
                                       ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(Radius.circular(10.0))
-                                    )
-                                  ),
-                                  readOnly: false,
-                                  controller: _name,
-                                  maxLines: null,
-                                  validator: (val) {
-                                    if (val.isEmpty) {
-                                      setState(() {
-                                        nameerror="Please Enter Name";
-                                      });
-                                      return null;
-                                    } else {
-                                      setState(() {
-                                        nameerror = null;
-                                      });
-                                      return null;
-                                      }
-                                  },
+                                    ),
+                                    errorMessages(emailerror),
+                                    SizedBox(height: 20),
+                                    Center(
+                                      child: ElevatedButton.icon(
+                                          style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all(
+                                                      Colors.green),
+                                              elevation:
+                                                  MaterialStateProperty.all(
+                                                      10)),
+                                          onPressed: () async {
+                                            if (_formKey.currentState
+                                                .validate())
+                                              await _updateUserProfile(
+                                                  auth: widget.auth,
+                                                  name: _name.text,
+                                                  email: _email.text);
+                                          },
+                                          icon:
+                                              Icon(MdiIcons.circleEditOutline),
+                                          label: Text(
+                                            "Update Profile",
+                                            textScaleFactor: 1.2,
+                                          )),
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    error != null
+                                        ? Text(
+                                            error,
+                                            style: TextStyle(color: Colors.red),
+                                          )
+                                        : SizedBox()
+                                  ],
                                 ),
-                              ),
-                              errorMessages(nameerror),
-                              SizedBox(height: 20),
-                              Material(
-                                elevation: 20.0,
-                                shadowColor: Colors.white,
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10.0),
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                    hintText: "Email",
-                                    prefixIcon: Icon(
-                                      Icons.email,
-                                      color: Colors.green,
-                                      ),
-                                    enabledBorder: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                                      borderSide: BorderSide(color: Colors.white,width: 0.0),
-                                      ),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.all(Radius.circular(10.0))
-                                    )
-                                  ),
-                                  readOnly: false,
-                                  controller: _email,
-                                  maxLines: null,
-                                  validator: (val) {
-                                    if (val.isEmpty) {
-                                      setState(() {
-                                        emailerror="Please Enter Email";
-                                      });
-                                      return null;
-                                    } else {
-                                      setState(() {
-                                        emailerror = null;
-                                      });
-                                      return null;
-                                    }
-                                  },
-                                ),
-                              ),
-                              errorMessages(emailerror),
-                              SizedBox(height: 20),
-                              Center(
-                                child: ElevatedButton.icon(
-                                  style: ButtonStyle(
-                                    backgroundColor: MaterialStateProperty.all( Colors.green),
-                                    elevation: MaterialStateProperty.all( 10 )
-                                  ),
-                                  onPressed: ()async {
-                                    if(_formKey.currentState.validate())
-                                      await _updateUserProfile(
-                                        auth: widget.auth,
-                                        name: _name.text,
-                                        email: _email.text);},
-                                  icon: Icon(MdiIcons.circleEditOutline),
-                                  label: Text("Update Profile",textScaleFactor: 1.2,)),
-                              ),
-                              SizedBox(height: 20,),
-                              error != null ?
-                                Text(
-                                  error,
-                                  style: TextStyle(color: Colors.red),
-                                )
-                                : SizedBox()
-                            ],
-                          ),
-                        )
+                              )),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          )
-    );
+              ));
   }
 }

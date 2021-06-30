@@ -18,12 +18,10 @@ class _SignUpState extends State<SignUp> {
   bool loading = false;
   bool _obscureText1 = true;
   bool _obscureText2 = true;
-  bool nameerror = false;
-  bool emailerror = false;
-  bool passerror = false;
-  bool confirmpassemptyerror = false;
-  bool confirmpasslesserro = false;
-  bool confirmpassnomatcherror = false;
+  String nameerror;
+  String emailerror;
+  String passerror;
+  String confirmpasserror;
   final _formKey = GlobalKey<FormState>();
   _signUp(AuthService auth) async {
     setState(() {
@@ -150,24 +148,14 @@ class _SignUpState extends State<SignUp> {
                                                                     const Radius
                                                                             .circular(
                                                                         10.0))),
-                                                        enabledBorder: !nameerror
-                                                            ? const OutlineInputBorder(
-                                                                borderSide: const BorderSide(
+                                                        enabledBorder: const OutlineInputBorder(
+                                                            borderSide:
+                                                                const BorderSide(
                                                                     color: Colors
                                                                         .white,
                                                                     width: 0.0),
-                                                                borderRadius: BorderRadius.all(
-                                                                    const Radius
-                                                                            .circular(
-                                                                        10.0)))
-                                                            : const OutlineInputBorder(
-                                                                borderSide:
-                                                                    const BorderSide(
-                                                                        color: Colors
-                                                                            .red,
-                                                                        width:
-                                                                            1.0),
-                                                                borderRadius: BorderRadius.all(
+                                                            borderRadius:
+                                                                BorderRadius.all(
                                                                     const Radius
                                                                             .circular(
                                                                         10.0))),
@@ -187,10 +175,14 @@ class _SignUpState extends State<SignUp> {
                                                       validator: (val) {
                                                         if (val.isEmpty) {
                                                           setState(() {
-                                                            nameerror = true;
+                                                            nameerror =
+                                                                'Please Enter your Name';
                                                           });
                                                           return '';
                                                         } else {
+                                                          setState(() {
+                                                            nameerror = null;
+                                                          });
                                                           return null;
                                                         }
                                                       },
@@ -199,7 +191,7 @@ class _SignUpState extends State<SignUp> {
                                                   SizedBox(
                                                     height: 8,
                                                   ),
-                                                  errornamemessage(),
+                                                  errorMessages(nameerror),
                                                 ],
                                               ),
                                             ],
@@ -241,31 +233,17 @@ class _SignUpState extends State<SignUp> {
                                                                   const Radius
                                                                           .circular(
                                                                       10.0))),
-                                                      enabledBorder: !emailerror
-                                                          ? const OutlineInputBorder(
-                                                              borderSide:
-                                                                  const BorderSide(
-                                                                      color: Colors
-                                                                          .white,
-                                                                      width:
-                                                                          0.0),
-                                                              borderRadius:
-                                                                  BorderRadius.all(
-                                                                      const Radius
-                                                                              .circular(
-                                                                          10.0)))
-                                                          : const OutlineInputBorder(
-                                                              borderSide:
-                                                                  const BorderSide(
-                                                                      color: Colors
-                                                                          .red,
-                                                                      width:
-                                                                          1.0),
-                                                              borderRadius:
-                                                                  BorderRadius.all(
-                                                                      const Radius
-                                                                              .circular(
-                                                                          10.0))),
+                                                      enabledBorder: const OutlineInputBorder(
+                                                          borderSide:
+                                                              const BorderSide(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  width: 0.0),
+                                                          borderRadius:
+                                                              BorderRadius.all(
+                                                                  const Radius
+                                                                          .circular(
+                                                                      10.0))),
                                                       border:
                                                           new OutlineInputBorder(
                                                         borderRadius:
@@ -282,10 +260,14 @@ class _SignUpState extends State<SignUp> {
                                                     validator: (val) {
                                                       if (val.isEmpty) {
                                                         setState(() {
-                                                          emailerror = true;
+                                                          emailerror =
+                                                              'Please Enter your Email';
                                                         });
                                                         return '';
                                                       } else {
+                                                        setState(() {
+                                                          emailerror = null;
+                                                        });
                                                         return null;
                                                       }
                                                     },
@@ -294,7 +276,7 @@ class _SignUpState extends State<SignUp> {
                                                 SizedBox(
                                                   height: 8,
                                                 ),
-                                                erroremailmessage(),
+                                                errorMessages(emailerror)
                                               ],
                                             ),
                                           ]),
@@ -326,14 +308,10 @@ class _SignUpState extends State<SignUp> {
                                                                       color: Colors
                                                                           .red,
                                                                       width: 2),
-                                                                  borderRadius:
-                                                                      BorderRadius.all(
-                                                                          const Radius.circular(
-                                                                              10.0))),
-                                                              errorStyle:
-                                                                  TextStyle(
-                                                                      height:
-                                                                          0),
+                                                                  borderRadius: BorderRadius.all(const Radius.circular(
+                                                                      10.0))),
+                                                              errorStyle: TextStyle(
+                                                                  height: 0),
                                                               prefixIcon: Icon(
                                                                 Icons
                                                                     .create_rounded,
@@ -348,23 +326,14 @@ class _SignUpState extends State<SignUp> {
                                                                           .green,
                                                                       width:
                                                                           2.0),
-                                                                  borderRadius:
-                                                                      BorderRadius.all(
-                                                                          const Radius.circular(
-                                                                              10.0))),
-                                                              enabledBorder:
-                                                                  !passerror
-                                                                      ? const OutlineInputBorder(
-                                                                          borderSide:
-                                                                              const BorderSide(color: Colors.white, width: 0.0),
-                                                                          borderRadius: BorderRadius.all(const Radius.circular(10.0)))
-                                                                      : const OutlineInputBorder(
-                                                                          borderSide: const BorderSide(
-                                                                              color: Colors.red,
-                                                                              width: 1.0),
-                                                                          borderRadius:
-                                                                              BorderRadius.all(const Radius.circular(10.0)),
-                                                                        ),
+                                                                  borderRadius: BorderRadius.all(
+                                                                      const Radius.circular(
+                                                                          10.0))),
+                                                              enabledBorder: const OutlineInputBorder(
+                                                                  borderSide: const BorderSide(
+                                                                      color: Colors.white,
+                                                                      width: 0.0),
+                                                                  borderRadius: BorderRadius.all(const Radius.circular(10.0))),
                                                               border: new OutlineInputBorder(
                                                                 borderRadius:
                                                                     const BorderRadius
@@ -396,11 +365,15 @@ class _SignUpState extends State<SignUp> {
                                                       validator: (val) {
                                                         if (val.length < 7) {
                                                           setState(() {
-                                                            passerror = true;
+                                                            passerror =
+                                                                'Password must be atleast 8 characters long';
                                                           });
-                                                          print(passerror);
+
                                                           return '';
                                                         } else {
+                                                          setState(() {
+                                                            passerror = null;
+                                                          });
                                                           return null;
                                                         }
                                                       },
@@ -411,7 +384,7 @@ class _SignUpState extends State<SignUp> {
                                                   SizedBox(
                                                     height: 8,
                                                   ),
-                                                  errorpassmessage(),
+                                                  errorMessages(passerror),
                                                 ],
                                               ),
                                             ],
@@ -444,14 +417,10 @@ class _SignUpState extends State<SignUp> {
                                                                       color: Colors
                                                                           .red,
                                                                       width: 2),
-                                                                  borderRadius:
-                                                                      BorderRadius.all(
-                                                                          const Radius.circular(
-                                                                              10.0))),
-                                                              errorStyle:
-                                                                  TextStyle(
-                                                                      height:
-                                                                          0),
+                                                                  borderRadius: BorderRadius.all(const Radius.circular(
+                                                                      10.0))),
+                                                              errorStyle: TextStyle(
+                                                                  height: 0),
                                                               prefixIcon: Icon(
                                                                 Icons
                                                                     .create_rounded,
@@ -466,23 +435,14 @@ class _SignUpState extends State<SignUp> {
                                                                           .green,
                                                                       width:
                                                                           2.0),
-                                                                  borderRadius:
-                                                                      BorderRadius.all(
-                                                                          const Radius.circular(
-                                                                              10.0))),
-                                                              enabledBorder:
-                                                                  !passerror
-                                                                      ? const OutlineInputBorder(
-                                                                          borderSide:
-                                                                              const BorderSide(color: Colors.white, width: 0.0),
-                                                                          borderRadius: BorderRadius.all(const Radius.circular(10.0)))
-                                                                      : const OutlineInputBorder(
-                                                                          borderSide: const BorderSide(
-                                                                              color: Colors.red,
-                                                                              width: 1.0),
-                                                                          borderRadius:
-                                                                              BorderRadius.all(const Radius.circular(10.0)),
-                                                                        ),
+                                                                  borderRadius: BorderRadius.all(
+                                                                      const Radius.circular(
+                                                                          10.0))),
+                                                              enabledBorder: const OutlineInputBorder(
+                                                                  borderSide: const BorderSide(
+                                                                      color: Colors.white,
+                                                                      width: 0.0),
+                                                                  borderRadius: BorderRadius.all(const Radius.circular(10.0))),
                                                               border: new OutlineInputBorder(
                                                                 borderRadius:
                                                                     const BorderRadius
@@ -514,26 +474,30 @@ class _SignUpState extends State<SignUp> {
                                                       validator: (val) {
                                                         if (val.isEmpty) {
                                                           setState(() {
-                                                            confirmpassemptyerror =
-                                                                true;
+                                                            confirmpasserror =
+                                                                'Please Re-Enter New Password';
                                                           });
 
                                                           return '';
                                                         } else if (val.length <
                                                             7) {
                                                           setState(() {
-                                                            confirmpasslesserro =
-                                                                true;
+                                                            confirmpasserror =
+                                                                'Password must be 8 characters long';
                                                           });
                                                           return '';
                                                         } else if (val !=
                                                             _password.text) {
                                                           setState(() {
-                                                            confirmpassnomatcherror =
-                                                                true;
+                                                            confirmpasserror =
+                                                                'Password must be same as above';
                                                           });
                                                           return '';
                                                         } else {
+                                                          setState(() {
+                                                            confirmpasserror =
+                                                                null;
+                                                          });
                                                           return null;
                                                         }
                                                       },
@@ -544,7 +508,8 @@ class _SignUpState extends State<SignUp> {
                                                   SizedBox(
                                                     height: 8,
                                                   ),
-                                                  errorconfirmpassmessage(),
+                                                  errorMessages(
+                                                      confirmpasserror),
                                                 ],
                                               ),
                                             ],
@@ -621,76 +586,13 @@ class _SignUpState extends State<SignUp> {
     );
   }
 
-  Widget erroremailmessage() {
-    if (emailerror) {
+  Widget errorMessages(String errmessage) {
+    if (errmessage != null) {
       return Container(
         margin: EdgeInsets.only(left: 10),
         alignment: Alignment.topLeft,
         child: Text(
-          'Please enter your email',
-          style: TextStyle(fontSize: 12, color: Colors.red[800]),
-        ),
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  Widget errorpassmessage() {
-    if (passerror) {
-      return Container(
-        margin: EdgeInsets.only(left: 10),
-        alignment: Alignment.topLeft,
-        child: Text(
-          'Enter a password 8+ characters long',
-          style: TextStyle(fontSize: 12, color: Colors.red[800]),
-        ),
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  Widget errornamemessage() {
-    if (nameerror) {
-      return Container(
-        margin: EdgeInsets.only(left: 10),
-        alignment: Alignment.topLeft,
-        child: Text(
-          'Please enter your name',
-          style: TextStyle(fontSize: 12, color: Colors.red[800]),
-        ),
-      );
-    } else {
-      return Container();
-    }
-  }
-
-  Widget errorconfirmpassmessage() {
-    if (confirmpassemptyerror) {
-      return Container(
-        margin: EdgeInsets.only(left: 10),
-        alignment: Alignment.topLeft,
-        child: Text(
-          'Please Re-Enter New Password',
-          style: TextStyle(fontSize: 12, color: Colors.red[800]),
-        ),
-      );
-    } else if (confirmpasslesserro) {
-      return Container(
-        margin: EdgeInsets.only(left: 10),
-        alignment: Alignment.topLeft,
-        child: Text(
-          'Password must be atleast 8 characters long',
-          style: TextStyle(fontSize: 12, color: Colors.red[800]),
-        ),
-      );
-    } else if (confirmpassnomatcherror) {
-      return Container(
-        margin: EdgeInsets.only(left: 10),
-        alignment: Alignment.topLeft,
-        child: Text(
-          'Password must be same as above',
+          errmessage,
           style: TextStyle(fontSize: 12, color: Colors.red[800]),
         ),
       );

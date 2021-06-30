@@ -79,8 +79,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
             child: Container(
                 color: Colors.white,
                 child: SingleChildScrollView(
-                    child: Form(
-                        child: Column(
+                    child: Column(
                   children: <Widget>[
                     SizedBox(
                       height: 80,
@@ -269,7 +268,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           )
                         : SizedBox()
                   ],
-                )))),
+                ))),
           ),
         ],
       ),
