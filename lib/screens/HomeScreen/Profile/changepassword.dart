@@ -41,7 +41,11 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
           backgroundColor: Colors.green,
           textColor: Colors.white,
           fontSize: 14.0);
-    } catch (e) {}
+    } catch (e) {
+      setState(() {
+        error = e.toString();
+      });
+    }
     setState(() {
       loading = false;
     });

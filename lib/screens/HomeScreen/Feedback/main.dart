@@ -13,6 +13,31 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   final _formKey = GlobalKey<FormState>();
   Server _server = Server();
   bool loading = false;
+  String error;
+
+  _submitFeedback() async {
+    setState(() {
+      loading = true;
+    });
+    try{
+      await _server.postFeedback(_feedbackTo, _feedbackText.text);
+      Navigator.pop(context);
+      Fluttertoast.showToast(
+        msg: "Thank you for your feedback",
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.green,
+        textColor: Colors.black,
+        fontSize: 14.0
+      );
+    } catch(e) {
+      setState(() {
+        error = e;
+      });
+    }
+    setState(() {
+      loading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +59,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               ),
               DropdownButtonFormField(
                 hint: Text(
-                  'feedbackTo',
+                  'Select feedback type',
                   style: TextStyle(color: Colors.grey, fontSize: 14),
                 ),
                 value: _feedbackTo,
@@ -65,7 +90,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
               ),
               TextFormField(
                 decoration: InputDecoration(
-                  labelText: 'Feedback',
+                  labelText: 'How can we improve?',
                 ),
                 maxLines: null,
                 controller: _feedbackText,
@@ -73,34 +98,28 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                     val.length < 10 ? 'Please write few more' : null,
               ),
               SizedBox(
-                height: 40,
+                height: 20,
+              ),
+              if(error != null) Center(
+                child: Text(
+                  error,
+                  style: TextStyle(color: Colors.red),
+                  ),
+              ),
+              SizedBox(
+                height: 20,
               ),
               Center(
                   child: ElevatedButton(
                       onPressed: () async {
-                        setState(() {
-                          loading=true;
-                        });
                         if (_formKey.currentState.validate()) {
-                          try{
-                          await _server.postFeedback(_feedbackTo, _feedbackText.text);
-                          Navigator.pop(context);
-                          Fluttertoast.showToast(
-                            msg: "Feedback Sent",
-                            toastLength: Toast.LENGTH_LONG,
-                            backgroundColor: Colors.white,
-                            textColor: Colors.black,
-                            fontSize: 14.0
-                          );}catch(e){}
+                          _submitFeedback();
                         }
-                        setState(() {
-                          loading=false;
-                        });
                       },
                       child: loading?CircularProgressIndicator(): Padding(
                         padding: const EdgeInsets.all(2.0),
                         child: Text(
-                          'Submit',
+                          'Send Feedback',
                           style: TextStyle(fontSize: 18),
                         ),
                       )))

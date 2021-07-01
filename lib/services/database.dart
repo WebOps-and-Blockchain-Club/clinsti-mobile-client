@@ -101,7 +101,9 @@ class DatabaseService extends ChangeNotifier {
     try {
       dynamic complaint = await http.getComplaint(_token, id);
       return complaint;
-    } catch (e) {}
+    } catch (e) {
+      throw (e);
+    }
   }
 
   Future next() async {
@@ -136,7 +138,9 @@ class DatabaseService extends ChangeNotifier {
     try {
       await http.postRequest(
           _token, description, location, type, zone, imgagesPath);
-    } catch (e) {}
+    } catch (e) {
+      throw (e);
+    }
   }
 
   Future postRequestFeedback(int id, int rating, String review) async {
@@ -145,6 +149,7 @@ class DatabaseService extends ChangeNotifier {
       await http.postRequestFeedback(_token, id, rating, review);
     } catch (e) {
       print("Error " + e.toString());
+      throw (e);
     }
   }
 
@@ -169,6 +174,7 @@ class DatabaseService extends ChangeNotifier {
       await http.deleteRequest(_token, id);
     } catch (e) {
       print("Error " + e.toString());
+      throw (e);
     }
   }
 
@@ -178,7 +184,8 @@ class DatabaseService extends ChangeNotifier {
       dynamic imgData = await http.getImage(_token, img);
       return base64Encode(imgData);
     } catch (e) {
-      print("Error "+ e.toString());
+      print("Error "+ e);
+      throw(e.toString());
     }
   }
 

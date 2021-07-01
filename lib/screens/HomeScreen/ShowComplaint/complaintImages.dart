@@ -15,6 +15,8 @@ class ComplaintImages extends StatefulWidget {
 class _ComplaintImagesState extends State<ComplaintImages> {
   List<String> imageString = [];
   bool loading = false;
+  String error;
+
   @override
   initState(){
     print(widget.imgNames);
@@ -33,7 +35,9 @@ class _ComplaintImagesState extends State<ComplaintImages> {
       }
       setState(() {});
     } catch(e) {
-
+      setState(() {
+        error = e.toString();
+      });
     }
     setState(() {
       loading = false;
@@ -42,6 +46,10 @@ class _ComplaintImagesState extends State<ComplaintImages> {
 
   @override
   Widget build(BuildContext context) {
+    if(error != null)
+      return Center(
+        child: Text("Oops! Something went wrong!"),
+      );
     return Scaffold(
       body: loading? Center(child: CircularProgressIndicator(),): Container(
                   child: ListView.builder(

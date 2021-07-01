@@ -68,7 +68,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
       Fluttertoast.showToast(
                           msg: "Request posted",
                           toastLength: Toast.LENGTH_LONG,
-                          backgroundColor: Colors.white,
+                          backgroundColor: Colors.green,
                           textColor: Colors.black,
                           fontSize: 14.0
                         );
@@ -227,7 +227,17 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                 ),
             ]),
             SizedBox(
-              height: 40,
+              height: 20,
+            ),
+            if (error != null)
+              Center(
+                child: Text(
+                  error,
+                  style: TextStyle(color: Colors.red),
+                  ),
+              ),
+            SizedBox(
+              height: 20,
             ),
             Center(
               child: ElevatedButton(
@@ -244,7 +254,6 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
               ),
             ),
             SizedBox(height: 20),
-            Text(error),
           ],
         ),
       ),
