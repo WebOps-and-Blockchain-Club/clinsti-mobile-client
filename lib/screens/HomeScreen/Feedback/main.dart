@@ -1,4 +1,5 @@
 import 'package:app_client/services/server.dart';
+import 'package:app_client/widgets/formErrorMessage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -91,7 +92,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
                   children: [
                     SizedBox(
-                      height: 100,
+                      height: 50,
                     ),
                     Center(
                       child: Text(
@@ -104,7 +105,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                       ),
                     ),
                     SizedBox(
-                      height: 80,
+                      height: 50,
                     ),
                     Material(
                       elevation: 5.0,
@@ -212,7 +213,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                                           ? Colors.red[800]
                                           : Colors.green)
                                       : Colors.black87)),
-                          maxLines: null,
+                          maxLines: 5,
                           controller: _feedbackText,
                           validator: (val) {
                             if (val.length < 10) {
@@ -279,18 +280,4 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
     );
   }
 
-  Widget errorMessages(String errmessage) {
-    if (errmessage != null) {
-      return Container(
-        margin: EdgeInsets.only(left: 10),
-        alignment: Alignment.topLeft,
-        child: Text(
-          errmessage,
-          style: TextStyle(fontSize: 12, color: Colors.red[800]),
-        ),
-      );
-    } else {
-      return Container();
-    }
-  }
 }
