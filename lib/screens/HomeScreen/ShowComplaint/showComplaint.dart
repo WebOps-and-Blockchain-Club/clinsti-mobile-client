@@ -119,9 +119,9 @@ class _ShowComplaintState extends State<ShowComplaint> {
       :
       SafeArea(
         child: ListView(
-          padding: EdgeInsets.all(20),
           children: <Widget>[
-            _buildRequestDetail(complaint['description']),
+            SizedBox(height: 20,),
+            _buildRequestDetail(complaint['description'], isDescription: true),
             SizedBox(height: 20,),
             _getLocationWidget(widget.complaint['_location'], context),
             SizedBox(height: 20,),
@@ -130,17 +130,66 @@ class _ShowComplaintState extends State<ShowComplaint> {
             // if(complaint['status'] != "Closed with due justification")
             SizedBox(height: 20,),
             if(complaint["admin_remark"] != null)
-            Text(
-              "Administration Remark",
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.red,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                "Administration Remark",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.red,
+                ),
               ),
             ),
             if(complaint["admin_remark"] != null)
             _buildRequestDetail(complaint["admin_remark"]),
             if(complaint["admin_remark"] != null)
             SizedBox(height: 20,),
+            if (complaint["status"] == "Pending transmission")
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                InkWell(
+                  onTap: () async {
+                    await widget.db
+                        .deleteRequest(widget.complaint['complaint_id']);
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(10.0),
+                    margin: EdgeInsets.only(bottom: 30),
+                    decoration: BoxDecoration(
+                      color: Colors.green[400],
+                      borderRadius: BorderRadius.circular(5)
+                    ),
+                    child: Text(
+                      'Resolve Complaint',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white
+                      ),
+                    ),
+                  ),
+                ),
+              ]),
+            if (complaint["status"]== 'Work completed' ||
+                complaint["status"] == 'Closed with due justification')
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(top: 10),
+                    width: width,
+                    height: 3,
+                    color: Colors.black,
+                  ),
+                  SizedBox(height: 5,),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Text(
+                      "Give your feedback",
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  )
+                ],
+              ),
             if (complaint["status"]== 'Work completed' ||
                 complaint["status"] == 'Closed with due justification')
               Center(
@@ -186,46 +235,53 @@ class _ShowComplaintState extends State<ShowComplaint> {
             if (complaint["status"]== 'Work completed' ||
                 complaint["status"] == 'Closed with due justification')
               SizedBox(height: 20),
-            if (complaint["status"] == "Work completed" ||
-                complaint["status"] == "Closed with due justification" && complaint["feedback_remark"] != null)
-              Text(
-              "Feedback",
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.red,
-              ),
+            if ((complaint["status"] == "Work completed" ||
+                complaint["status"] == "Closed with due justification") && complaint["feedback_remark"] != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Text(
+                "Feedback",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.red,
+                ),
             ),
+              ),
             if (complaint["status"] == "Work completed" ||
                 complaint["status"] == "Closed with due justification")
-                  Form(
-                      key: _formKey,
-                      child: TextFormField(
-                        maxLines: null,
-                        controller: feedback,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          return null;
-                        },
-                        enabled: (complaint != null &&
-                            complaint["feedback_remark"] == null),
-                        decoration: InputDecoration(
-                          border: OutlineInputBorder(),
-                          hintText: 'Rate & Give Feedback',
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Form(
+                        key: _formKey,
+                        child: TextFormField(
+                          maxLines: null,
+                          controller: feedback,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please enter some text';
+                            }
+                            return null;
+                          },
+                          enabled: (complaint != null &&
+                              complaint["feedback_remark"] == null),
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: 'Enter your feedback here',
+                          ),
                         ),
                       ),
-                    ),
+                  ),
             if (complaint["status"] == "Work completed" ||
                 complaint["status"] == "Closed with due justification")
               SizedBox(
-                height: 20,
+                height: 30,
               ),
             if (showSubmitButton)
               Center(
                 child: InkWell(
                   child: Container(
                     padding: const EdgeInsets.all(10.0),
+                    margin: EdgeInsets.only(bottom: 30),
                     decoration: BoxDecoration(
                       color: Colors.green[400],
                       borderRadius: BorderRadius.circular(5)
@@ -254,30 +310,6 @@ class _ShowComplaintState extends State<ShowComplaint> {
                   },
                 ),
               ),
-            if (complaint["status"] == "Pending transmission")
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                InkWell(
-                  onTap: () async {
-                    await widget.db
-                        .deleteRequest(widget.complaint['complaint_id']);
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      color: Colors.green[400],
-                      borderRadius: BorderRadius.circular(5)
-                    ),
-                    child: Text(
-                      'Resolve Complaint',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.white
-                      ),
-                    ),
-                  ),
-                ),
-              ]),
           ],
         ),
       ),
@@ -300,57 +332,66 @@ class _ShowComplaintState extends State<ShowComplaint> {
   }
 
   _buildProgressIndicator(List<Color> iconColors, double width){
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                _buildProgressIcon(statusColors[0], iconData: MdiIcons.clipboardClockOutline,),
-                _buildProgressText(Colors.black, complaint['created_time'], "Pending Transmission", false , width)
-              ],
-            ),
-            _buildProgressLine(statusColors[1]),
-            if(complaint['status'] != "Closed with due justification")
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                _buildProgressIcon(statusColors[2], iconData: MdiIcons.clockTimeThreeOutline,),
-                _buildProgressText(Colors.black, complaint['registered_time'] ?? "", "Work is pending", lineBools[0], width)
-            ],),
-            if(complaint['status'] != "Closed with due justification")
-            _buildProgressLine(statusColors[3]),
-            if(complaint['status'] != "Closed with due justification")
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                _buildProgressIcon(statusColors[4], iconData: Icons.hourglass_bottom),
-                _buildProgressText(Colors.black, complaint['work_started_time'] ?? "", "Work in progress", lineBools[1], width)              
-            ],),
-            if(complaint['status'] != "Closed with due justification")
-            _buildProgressLine(statusColors[5]),
-            if(complaint['status'] != "Closed with due justification")
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                _buildProgressIcon(iconColors[6], iconData: Icons.check_circle_outline),
-                _buildProgressText(Colors.black, complaint['completed_time'] ?? "", "Work completed", lineBools[2], width),
-              ],
-            ),
-            if(complaint['status'] == "Closed with due justification")
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                _buildProgressIcon(Colors.red, iconData: Icons.close),
-                _buildProgressText(Colors.black, complaint['completed_time'] ?? "", "Closed with due Justification", false, width),
-              ],
-            ),
-          ],
-        ),
-      ],
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        boxShadow: 
+            kElevationToShadow[3],
+            color: Theme.of(context).bottomAppBarColor,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  _buildProgressIcon(statusColors[0], iconData: MdiIcons.clipboardClockOutline,),
+                  _buildProgressText(Colors.black, complaint['created_time'], "Pending Transmission", false , width)
+                ],
+              ),
+              _buildProgressLine(statusColors[1]),
+              if(complaint['status'] != "Closed with due justification")
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  _buildProgressIcon(statusColors[2], iconData: MdiIcons.clockTimeThreeOutline,),
+                  _buildProgressText(Colors.black, complaint['registered_time'] ?? "", "Work is pending", lineBools[0], width)
+              ],),
+              if(complaint['status'] != "Closed with due justification")
+              _buildProgressLine(statusColors[3]),
+              if(complaint['status'] != "Closed with due justification")
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  _buildProgressIcon(statusColors[4], iconData: Icons.hourglass_bottom),
+                  _buildProgressText(Colors.black, complaint['work_started_time'] ?? "", "Work in progress", lineBools[1], width)              
+              ],),
+              if(complaint['status'] != "Closed with due justification")
+              _buildProgressLine(statusColors[5]),
+              if(complaint['status'] != "Closed with due justification")
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  _buildProgressIcon(iconColors[6], iconData: Icons.check_circle_outline),
+                  _buildProgressText(Colors.black, complaint['completed_time'] ?? "", "Work completed", lineBools[2], width),
+                ],
+              ),
+              if(complaint['status'] == "Closed with due justification")
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  _buildProgressIcon(Colors.red, iconData: Icons.close),
+                  _buildProgressText(Colors.black, complaint['completed_time'] ?? "", "Closed with due Justification", false, width),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -410,38 +451,44 @@ class _ShowComplaintState extends State<ShowComplaint> {
     );
   }
 
-  _buildRequestDetail(String requestDetail){
-    return 
-    Container(
+  _buildRequestDetail(String requestDetail, {bool isDescription = false}){
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20),
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.green[400],
-        ),
         borderRadius: BorderRadius.circular(5),
-        
+        boxShadow: 
+            kElevationToShadow[3],
+            color: Theme.of(context).bottomAppBarColor,
       ),
       padding: EdgeInsets.all(10),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            Icons.label,
-            color: Colors.green[400],
+          if(isDescription)
+          Text(
+            "Description",
+            style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
           ),
-          SizedBox(width: 10,),
-          Flexible(
-            child: Text(
-              requestDetail ?? "Description",
-              style: TextStyle(
-                fontSize: 17
+          Row(
+            children: [
+              Flexible(
+                child: Text(
+                  requestDetail ?? "Description",
+                  style: TextStyle(
+                    fontSize: 17
+                  ),
+                  softWrap: true,
+                ),
               ),
-              softWrap: true,
-            ),
+            ],
           ),
         ],
       ),
     );
   }
 }
+
+
 
 Widget _getLocationWidget(String loc, BuildContext context) {
     try {
@@ -469,31 +516,26 @@ Widget _getLocationWidget(String loc, BuildContext context) {
       );
     } catch (e) {
       return Container(
+        margin: EdgeInsets.symmetric(horizontal: 20),
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
-          border: Border.all(
-            color: Colors.green[400],
-          ),
-          borderRadius: BorderRadius.circular(5)
+          borderRadius: BorderRadius.circular(5),
+          boxShadow: kElevationToShadow[3],
+          color: Theme.of(context).bottomAppBarColor
         ),
         child: Row(
           children: [
             Icon(
               Icons.location_on,
-              color: Colors.green[400],
+              color: Colors.blue,
             ),
             SizedBox(width: 10,),
-            // Flexible(child: Text(
-                // loc,
-                // style: TextStyle(fontSize: 17),
-            //   )),
-            Expanded(child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
+            Flexible(
               child: Text(
                 loc,
                 style: TextStyle(fontSize: 17),
               ),
-            ),)
+            ),
           ],
         ),
       );
