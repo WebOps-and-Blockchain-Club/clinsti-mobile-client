@@ -1,4 +1,5 @@
 import 'package:app_client/services/auth.dart';
+import 'package:app_client/widgets/formErrorMessage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -382,20 +383,5 @@ class _SignInState extends State<SignIn> {
                       ],
                     ),
             ));
-  }
-
-  Widget errorMessages(String errmessage) {
-    if (errmessage != null) {
-      return Container(
-        margin: EdgeInsets.only(left: 10),
-        alignment: Alignment.topLeft,
-        child: Text(
-          errmessage,
-          style: TextStyle(fontSize: 12, color: Colors.red[800]),
-        ),
-      );
-    } else {
-      return Container();
-    }
   }
 }

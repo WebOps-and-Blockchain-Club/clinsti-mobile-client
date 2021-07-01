@@ -103,12 +103,19 @@ class Server {
       request.body = '{"name":"$name", "email":"$email"}';
     }
     request.headers.addAll(headers);
-    http.StreamedResponse response = await request.send();
-    if (response.statusCode == 200) {
-      User user = User(token: token, email: email, name: name);
-      return user;
-    } else {
-      throw (response);
+
+    try{
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        User user = User(token: token, email: email, name: name);
+        return user;
+      } else {
+        throw (await response.stream.bytesToString());
+      }
+    } on SocketException {
+      throw('server error');
+    } catch (e) {
+      throw(e);
     }
   }
 
@@ -125,12 +132,18 @@ class Server {
     request.body = '{"oldPassword": "$oldPass","newPassword":"$newPass"}';
     request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
+    try {
+      http.StreamedResponse response = await request.send();
 
-    if (response.statusCode == 200) {
-      return jsonDecode(await response.stream.bytesToString());
-    } else {
-      throw (response);
+      if (response.statusCode == 200) {
+        return jsonDecode(await response.stream.bytesToString());
+      } else {
+        throw (await response.stream.bytesToString());
+      }
+    } on SocketException {
+      throw('server error');
+    } catch (e) {
+      throw(e);
     }
   }
 
@@ -159,12 +172,18 @@ class Server {
 
     request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
+    try {
+      http.StreamedResponse response = await request.send();
 
-    if (response.statusCode == 201) {
-      print(await response.stream.bytesToString());
-    } else {
-      throw (response);
+      if (response.statusCode == 201) {
+        print(await response.stream.bytesToString());
+      } else {
+        throw (await response.stream.bytesToString());
+      }
+    } on SocketException {
+      throw('server error');
+    } catch(e) {
+      throw(e);
     }
   }
 
@@ -192,13 +211,19 @@ class Server {
     var request = http.Request('GET', Uri.parse(url));
     request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
+    try {
+      http.StreamedResponse response = await request.send();
 
-    if (response.statusCode == 200) {
-      var complaints = jsonDecode(await response.stream.bytesToString());
-      return complaints['complaints'];
-    } else {
-      throw (response);
+      if (response.statusCode == 200) {
+        var complaints = jsonDecode(await response.stream.bytesToString());
+        return complaints['complaints'];
+      } else {
+        throw (await response.stream.bytesToString());
+      }
+    } on SocketException {
+      throw('server error');
+    } catch(e) {
+      throw(e);
     }
   }
 
@@ -211,12 +236,18 @@ class Server {
 
     request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
+    try {
+      http.StreamedResponse response = await request.send();
 
-    if (response.statusCode == 200) {
-      return jsonDecode(await response.stream.bytesToString());
-    } else {
-      throw (response);
+      if (response.statusCode == 200) {
+        return jsonDecode(await response.stream.bytesToString());
+      } else {
+        throw (await response.stream.bytesToString());
+      }
+    } on SocketException {
+      throw('server error');
+    } catch(e) {
+      throw(e);
     }
   }
 
@@ -224,12 +255,19 @@ class Server {
   Future<dynamic> getImage(String token, String name) async {
     await init();
     var headers = {'Authorization': 'Bearer $token'};
-    var request = await http.get(Uri.parse('$baseUrl/client/images/$name'), headers: headers);
 
-    if (request.statusCode == 200) {
-      return (request.bodyBytes);
-    } else {
-      throw (request);
+    try {
+      var response = await http.get(Uri.parse('$baseUrl/client/images/$name'), headers: headers);
+
+      if (response.statusCode == 200) {
+        return (response.bodyBytes);
+      } else {
+        throw (response.bodyBytes);
+      }
+    } on SocketException {
+      throw('server error');
+    } catch(e) {
+      throw(e);
     }
   }
 
@@ -246,12 +284,18 @@ class Server {
     request.body = '''{"fbRating":$rating,"fbRemark":"$remark"}''';
     request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
+    try {
+      http.StreamedResponse response = await request.send();
 
-    if (response.statusCode == 202) {
-      return (await response.stream.bytesToString());
-    } else {
-      throw (response);
+      if (response.statusCode == 202) {
+        return (await response.stream.bytesToString());
+      } else {
+        throw (await response.stream.bytesToString());
+      }
+    } on SocketException {
+      throw('server error');
+    } catch(e) {
+      throw(e);
     }
   }
 
@@ -264,12 +308,18 @@ class Server {
     request.body = '''{"feedback":"$feedback","feedback_type":"$type"}''';
     request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
+    try {
+      http.StreamedResponse response = await request.send();
 
-    if (response.statusCode == 201) {
-      return (await response.stream.bytesToString());
-    } else {
-      throw (response);
+      if (response.statusCode == 201) {
+        return (await response.stream.bytesToString());
+      } else {
+        throw (await response.stream.bytesToString());
+      }
+    } on SocketException {
+      throw('server error');
+    } catch(e) {
+      throw(e);
     }
   }
 
@@ -281,12 +331,18 @@ class Server {
 
     request.headers.addAll(headers);
 
-    http.StreamedResponse response = await request.send();
+    try {
+      http.StreamedResponse response = await request.send();
 
-    if (response.statusCode == 200) {
-      return (await response.stream.bytesToString());
-    } else {
-      throw (response);
+      if (response.statusCode == 200) {
+        return (await response.stream.bytesToString());
+      } else {
+        throw (await response.stream.bytesToString());
+      }
+    } on SocketException {
+      throw('server error');
+    } catch(e) {
+      throw(e);
     }
   }
 }

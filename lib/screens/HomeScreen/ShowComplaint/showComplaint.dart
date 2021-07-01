@@ -4,6 +4,7 @@ import 'package:app_client/screens/HomeScreen/ShowComplaint/complaintImages.dart
 import 'package:app_client/screens/Map/main.dart';
 import 'package:app_client/services/database.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -21,7 +22,8 @@ class _ShowComplaintState extends State<ShowComplaint> {
   final _formKey = GlobalKey<FormState>();
   TextEditingController feedback = TextEditingController();
   Map<String,dynamic> complaint = {};
-  bool loading = false;  
+  bool loading = false;
+  String error;  
   List<Color> statusColors = []..length = 7;
   List<bool> lineBools = [false, false, false];
 
@@ -48,7 +50,9 @@ class _ShowComplaintState extends State<ShowComplaint> {
       _setIconStatus(complaint['status'].toString());
       feedback.text = complaint['feedback_remark'] ?? "";
     } catch(e) {
-
+      setState(() {
+        error = e.toString();
+      });
     }
     setState(() {
       loading = false;
@@ -98,6 +102,10 @@ class _ShowComplaintState extends State<ShowComplaint> {
   @override
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
+    if(error != null) 
+      return Center(
+        child: Text("Oops! Something went wrong!"),
+      );
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -151,6 +159,12 @@ class _ShowComplaintState extends State<ShowComplaint> {
                     await widget.db
                         .deleteRequest(widget.complaint['complaint_id']);
                     Navigator.pop(context);
+                    Fluttertoast.showToast(
+                      msg: "Request Removed",
+                      toastLength: Toast.LENGTH_LONG,
+                      backgroundColor: Colors.green,
+                      textColor: Colors.white,
+                      fontSize: 14.0);
                   },
                   child: Container(
                     padding: const EdgeInsets.all(10.0),
@@ -310,6 +324,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
                   },
                 ),
               ),
+
           ],
         ),
       ),

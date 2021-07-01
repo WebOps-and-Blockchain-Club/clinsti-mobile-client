@@ -118,6 +118,13 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
                                               Icons.person,
                                               color: Colors.green,
                                             ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10.0)),
+                                              borderSide: BorderSide(
+                                                  color: Colors.green,
+                                                  width: 2.0),
+                                            ),
                                             enabledBorder: OutlineInputBorder(
                                               borderRadius: BorderRadius.all(
                                                   Radius.circular(10.0)),
@@ -160,6 +167,13 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
                                             prefixIcon: Icon(
                                               Icons.email,
                                               color: Colors.green,
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10.0)),
+                                              borderSide: BorderSide(
+                                                  color: Colors.green,
+                                                  width: 2.0),
                                             ),
                                             enabledBorder: OutlineInputBorder(
                                               borderRadius: BorderRadius.all(

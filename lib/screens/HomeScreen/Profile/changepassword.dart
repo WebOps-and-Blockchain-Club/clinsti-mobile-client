@@ -41,7 +41,11 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
           backgroundColor: Colors.green,
           textColor: Colors.white,
           fontSize: 14.0);
-    } catch (e) {}
+    } catch (e) {
+      setState(() {
+        error = e.toString();
+      });
+    }
     setState(() {
       loading = false;
     });
@@ -98,6 +102,13 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                                             MdiIcons.pencilOffOutline,
                                             color: Colors.green,
                                           ),
+                                          focusedBorder: OutlineInputBorder(
+                                              borderRadius: BorderRadius.all(
+                                                  Radius.circular(10.0)),
+                                              borderSide: BorderSide(
+                                                  color: Colors.green,
+                                                  width: 2.0),
+                                            ),
                                           enabledBorder: OutlineInputBorder(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(10.0)),
@@ -113,7 +124,7 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                                               _obscureText1
                                                   ? Icons.visibility
                                                   : Icons.visibility_off,
-                                              color: Colors.green,
+                                              color: Colors.grey[600],
                                             ),
                                             onPressed: () {
                                               setState(() {
@@ -156,6 +167,13 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                                             MdiIcons.pencilOutline,
                                             color: Colors.green,
                                           ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10.0)),
+                                            borderSide: BorderSide(
+                                                color: Colors.green,
+                                                width: 2.0),
+                                          ),
                                           enabledBorder: OutlineInputBorder(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(10.0)),
@@ -171,7 +189,7 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                                               _obscureText2
                                                   ? Icons.visibility
                                                   : Icons.visibility_off,
-                                              color: Colors.green,
+                                              color: Colors.grey[600],
                                             ),
                                             onPressed: () {
                                               setState(() {
@@ -214,6 +232,13 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                                             MdiIcons.pencilOutline,
                                             color: Colors.green,
                                           ),
+                                          focusedBorder: OutlineInputBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10.0)),
+                                            borderSide: BorderSide(
+                                                color: Colors.green,
+                                                width: 2.0),
+                                          ),
                                           enabledBorder: OutlineInputBorder(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(10.0)),
@@ -229,7 +254,7 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                                               _obscureText3
                                                   ? Icons.visibility
                                                   : Icons.visibility_off,
-                                              color: Colors.green,
+                                              color: Colors.grey[600],
                                             ),
                                             onPressed: () {
                                               setState(() {
