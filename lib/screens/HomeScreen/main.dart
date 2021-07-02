@@ -56,6 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.green,
         leading: Icon(Icons.help_outline),
         title: Text("CLinsti"),
         actions: [
@@ -79,6 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       'assets/user-01.png',
                     ),
                     size: 50,
+                    color: Colors.green,
                   ),
                   backgroundColor: Colors.white,
                   radius: 20,
@@ -104,7 +106,7 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
         currentIndex: _index,
         onTap: _onItemTap,
-        selectedItemColor: Colors.amber[800],
+        selectedItemColor: Colors.green[300],
       ),
     );
   }

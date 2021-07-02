@@ -8,6 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:app_client/widgets/formErrorMessage.dart';
 
 class NewComplaintScreen extends StatefulWidget {
   @override
@@ -23,16 +24,42 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
   List<String> compressedImagesPath = [];
   String error = "";
   String error1;
+  String errormessagedesc;
+  String errormessagelocation;
+  String errormessagezoneselect;
+  String errormessagewasteselect;
   DatabaseService _db;
+  bool errorboxdesc = false;
+  bool errorboxloc = false;
   bool loading = false;
   bool geoLoc = false;
+  FocusNode _descnode;
+  FocusNode _locationnode;
+  FocusNode _zonenode;
+  FocusNode _wastenode;
+  bool _descfocused = false;
+  bool _locationfocused = false;
+
   final _formKey = GlobalKey<FormState>();
-  final List<String> zones=["Academic Zone","Hostel Zone","Residential Zone"];
-  final List<String> types=["Paper/Plastic","Bottles","Steel scrap","Construction debris",
-                  "Food waste","Furniture","Equipment","Package materials",
-                  "e-waste (Tubelight, Computer, Battery)",
-                  "Hazardous waste (chemical, oil, bitumen, empty chemical bottle)",
-                  "Bio-medical waste","Others"];
+  final List<String> zones = [
+    "Academic Zone",
+    "Hostel Zone",
+    "Residential Zone"
+  ];
+  final List<String> types = [
+    "Paper/Plastic",
+    "Bottles",
+    "Steel scrap",
+    "Construction debris",
+    "Food waste",
+    "Furniture",
+    "Equipment",
+    "Package materials",
+    "e-waste (Tubelight, Computer, Battery)",
+    "Hazardous waste (chemical, oil, bitumen, empty chemical bottle)",
+    "Bio-medical waste",
+    "Others"
+  ];
   _selectLocation(BuildContext context) async {
     final result = await Navigator.push(
         context,
@@ -55,6 +82,12 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _db = Provider.of<DatabaseService>(context, listen: false);
     });
+    _descnode = FocusNode();
+    _descnode.addListener(_handleFocusChange);
+    _locationnode = FocusNode();
+    _locationnode.addListener(_handleFocusChange);
+    _zonenode = FocusNode();
+    _wastenode = FocusNode();
   }
 
   postRequest() async {
@@ -62,16 +95,15 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
       loading = true;
       error = "";
     });
-    try{
+    try {
       await _db.postRequest(compDescription.text, compLocation.text, typeValue,
-        zoneValue, compressedImagesPath);
+          zoneValue, compressedImagesPath);
       Fluttertoast.showToast(
-                          msg: "Request posted",
-                          toastLength: Toast.LENGTH_LONG,
-                          backgroundColor: Colors.green,
-                          textColor: Colors.black,
-                          fontSize: 14.0
-                        );
+          msg: "Request posted",
+          toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.green,
+          textColor: Colors.black,
+          fontSize: 14.0);
       setState(() {
         compDescription.text = "";
         compLocation.text = "";
@@ -79,7 +111,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
         zoneValue = null;
       });
       clearImages();
-    }catch(e){
+    } catch (e) {
       setState(() {
         error = e.toString();
       });
@@ -89,175 +121,425 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
     });
   }
 
+  void _handleFocusChange() {
+    if (_descnode.hasFocus != _descfocused) {
+      setState(() {
+        _descfocused = _descnode.hasFocus;
+      });
+    } else if (_locationnode.hasFocus != _locationfocused) {
+      setState(() {
+        _locationfocused = _locationnode.hasFocus;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _descnode.dispose();
+    _locationnode.dispose();
+    _zonenode.dispose();
+    _wastenode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return loading? Center(child: CircularProgressIndicator(),): Container(
-      color: Colors.pinkAccent[50],
-      child: Form(
-        key: _formKey,
-        child: ListView(
-          children: [
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Description',
-                ),
-                validator: (val) =>
-                    val.length < 5 ? "please write few more words" : null,
-                maxLines: null,
-                controller: compDescription,
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: TextFormField(
-                decoration: InputDecoration(
-                    labelText: 'Location',
-                    suffixIcon: IconButton(
-                      icon: Icon(Icons.location_on),
-                      onPressed: () {
-                        _selectLocation(context);
+    return loading
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        : Container(
+            color: Colors.pinkAccent[50],
+            child: Form(
+              key: _formKey,
+              child: ListView(
+                children: [
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    child: Material(
+                      elevation: 5.0,
+                      shadowColor: Colors.white,
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.all(const Radius.circular(10.0)),
+                      child: TextFormField(
+                        focusNode: _descnode,
+                        onTap: () {
+                          if (_descfocused) {
+                            _descnode.unfocus();
+                          } else {
+                            _descnode.requestFocus();
+                          }
+                        },
+                        decoration: InputDecoration(
+                            errorStyle: TextStyle(height: 0),
+                            focusedBorder: const OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: Colors.green, width: 2.0),
+                                borderRadius: BorderRadius.all(
+                                    const Radius.circular(10.0))),
+                            enabledBorder: const OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: Colors.white, width: 0.0),
+                                borderRadius: BorderRadius.all(
+                                    const Radius.circular(10.0))),
+                            border: new OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                                const Radius.circular(10.0),
+                              ),
+                            ),
+                            labelText: 'Description',
+                            labelStyle: TextStyle(
+                                color: _descnode.hasFocus
+                                    ? (errorboxdesc
+                                        ? Colors.red[800]
+                                        : Colors.green)
+                                    : Colors.black87)),
+                        validator: (val) {
+                          if (val.length < 10) {
+                            setState(() {
+                              errorboxdesc = true;
+                              errormessagedesc =
+                                  'Please give us more information';
+                            });
+
+                            return '';
+                          } else {
+                            setState(() {
+                              errormessagedesc = null;
+                            });
+                            return null;
+                          }
+                        },
+                        maxLines: null,
+                        controller: compDescription,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  errorMessages(errormessagedesc),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    child: Material(
+                      elevation: 5.0,
+                      shadowColor: Colors.white,
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.all(const Radius.circular(10.0)),
+                      child: TextFormField(
+                        focusNode: _locationnode,
+                        onTap: () {
+                          if (_locationfocused) {
+                            _locationnode.unfocus();
+                          } else {
+                            _locationnode.requestFocus();
+                          }
+                        },
+                        decoration: InputDecoration(
+                            errorStyle: TextStyle(height: 0),
+                            focusedBorder: const OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: Colors.green, width: 2.0),
+                                borderRadius: BorderRadius.all(
+                                    const Radius.circular(10.0))),
+                            enabledBorder: const OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: Colors.white, width: 0.0),
+                                borderRadius: BorderRadius.all(
+                                    const Radius.circular(10.0))),
+                            border: new OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                                const Radius.circular(10.0),
+                              ),
+                            ),
+                            labelText: 'Location',
+                            labelStyle: TextStyle(
+                                color: _locationnode.hasFocus
+                                    ? (errorboxloc
+                                        ? Colors.red[800]
+                                        : Colors.green)
+                                    : Colors.black87),
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                Icons.location_on,
+                                color: Colors.green,
+                              ),
+                              onPressed: () {
+                                _selectLocation(context);
+                              },
+                            )),
+                        validator: (val) {
+                          if (val.length < 5) {
+                            setState(() {
+                              errorboxloc = true;
+                              errormessagelocation =
+                                  'Please write few more words';
+                            });
+
+                            return '';
+                          } else {
+                            setState(() {
+                              errormessagelocation = null;
+                            });
+                            return null;
+                          }
+                        },
+                        controller: compLocation,
+                        maxLines: null,
+                        readOnly: geoLoc,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  errorMessages(errormessagelocation),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Material(
+                      elevation: 5.0,
+                      shadowColor: Colors.white,
+                      color: Colors.white,
+                      borderRadius:
+                          BorderRadius.all(const Radius.circular(10.0)),
+                      child: Focus(
+                        focusNode: _zonenode,
+                        onFocusChange: (bool focus) {
+                          setState(() {});
+                        },
+                        child: Listener(
+                          onPointerDown: (_) {
+                            FocusScope.of(context).requestFocus(_zonenode);
+                          },
+                          child: DropdownButtonFormField(
+                            decoration: InputDecoration(
+                              errorStyle: TextStyle(height: 0),
+                              border: OutlineInputBorder(
+                                borderRadius: const BorderRadius.all(
+                                  const Radius.circular(10.0),
+                                ),
+                              ),
+                              enabledBorder: const OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.white, width: 0.0),
+                                  borderRadius: BorderRadius.all(
+                                      const Radius.circular(10.0))),
+                            ),
+                            value: zoneValue,
+                            icon: Icon(Icons.arrow_drop_down),
+                            iconSize: 24,
+                            elevation: 16,
+                            isExpanded: true,
+                            style: const TextStyle(color: Colors.black87),
+                            onChanged: (String newValue) {
+                              setState(() {
+                                zoneValue = newValue;
+                              });
+                            },
+                            items: zones
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                child: Text(value),
+                                value: value,
+                              );
+                            }).toList(),
+                            validator: (val) {
+                              if (val == null) {
+                                setState(() {
+                                  errormessagezoneselect = 'Please Select';
+                                });
+                                return '';
+                              } else {
+                                setState(() {
+                                  errormessagezoneselect = null;
+                                });
+                                return null;
+                              }
+                            },
+                            hint: Text(
+                              'zone',
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 14),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  errorMessages(errormessagezoneselect),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Material(
+                        elevation: 5.0,
+                        shadowColor: Colors.white,
+                        color: Colors.white,
+                        borderRadius:
+                            BorderRadius.all(const Radius.circular(10.0)),
+                        child: Focus(
+                          focusNode: _wastenode,
+                          onFocusChange: (bool focus) {
+                            setState(() {});
+                          },
+                          child: Listener(
+                            onPointerDown: (_) {
+                              FocusScope.of(context).requestFocus(_wastenode);
+                            },
+                            child: DropdownButtonFormField(
+                              decoration: InputDecoration(
+                                errorStyle: TextStyle(height: 0),
+                                border: OutlineInputBorder(
+                                  borderRadius: const BorderRadius.all(
+                                    const Radius.circular(10.0),
+                                  ),
+                                ),
+                                enabledBorder: const OutlineInputBorder(
+                                    borderSide: const BorderSide(
+                                        color: Colors.white, width: 0.0),
+                                    borderRadius: BorderRadius.all(
+                                        const Radius.circular(10.0))),
+                              ),
+                              value: typeValue,
+                              icon: Icon(Icons.arrow_drop_down),
+                              iconSize: 24,
+                              elevation: 16,
+                              isExpanded: true,
+                              style: const TextStyle(color: Colors.black87),
+                              validator: (val) {
+                                if (val == null) {
+                                  setState(() {
+                                    errormessagewasteselect = 'Please Select';
+                                  });
+                                  return '';
+                                } else {
+                                  setState(() {
+                                    errormessagewasteselect = null;
+                                  });
+                                  return null;
+                                }
+                              },
+                              onChanged: (String newValue) {
+                                setState(() {
+                                  typeValue = newValue;
+                                });
+                              },
+                              items: types.map<DropdownMenuItem<String>>(
+                                  (String value) {
+                                return DropdownMenuItem<String>(
+                                  child: Text(value),
+                                  value: value,
+                                );
+                              }).toList(),
+                              hint: Text(
+                                'Type of Waste',
+                                style:
+                                    TextStyle(color: Colors.grey, fontSize: 14),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  errorMessages(errormessagewasteselect),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  if (images.length != 0) dispImages(),
+                  SizedBox(
+                    height: 40,
+                  ),
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.green),
+                        elevation: MaterialStateProperty.all(5),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child:
+                            Text('Add Images', style: TextStyle(fontSize: 18)),
+                      ),
+                      onPressed: () async {
+                        await loadAssets();
+                        if (images.length != 0) {
+                          await compressImages();
+                        }
                       },
-                    )),
-                validator: (val) =>
-                    val.length < 5 ? "please write few more words" : null,
-                controller: compLocation,
-                maxLines: null,
-                readOnly: geoLoc,
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: DropdownButtonFormField(
-                value: zoneValue,
-                icon: Icon(Icons.arrow_drop_down),
-                iconSize: 24,
-                elevation: 16,
-                isExpanded: true,
-                style: const TextStyle(color: Colors.deepPurple),
-                onChanged: (String newValue) {
-                  setState(() {
-                    zoneValue = newValue;
-                  });
-                },
-                items: zones.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    child: Text(value),
-                    value: value,
-                  );
-                }).toList(),
-                validator: (val) => val == null ? "please select" : null,
-                hint: Text(
-                  'zone',
-                  style: TextStyle(color: Colors.grey, fontSize: 14),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: DropdownButtonFormField(
-                value: typeValue,
-                icon: Icon(Icons.arrow_drop_down),
-                iconSize: 24,
-                elevation: 16,
-                isExpanded: true,
-                style: const TextStyle(color: Colors.deepPurple),
-                validator: (val) => val == null ? "please select" : null,
-                onChanged: (String newValue) {
-                  setState(() {
-                    typeValue = newValue;
-                  });
-                },
-                items: types.map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    child: Text(value),
-                    value: value,
-                  );
-                }).toList(),
-                hint: Text(
-                  'Type of Waste',
-                  style: TextStyle(color: Colors.grey, fontSize: 14),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 40,
-            ),
-            if (images.length != 0) dispImages(),
-            SizedBox(
-              height: 40,
-            ),
-            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              ElevatedButton(
-                child: Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child: Text('Add Images', style: TextStyle(fontSize: 18)),
-                ),
-                onPressed: () async {
-                  await loadAssets();
-                  if (images.length != 0) {
-                    await compressImages();
-                  }
-                },
-              ),
-              if (images.length != 0)
-                SizedBox(
-                  width: 10,
-                ),
-              if (images.length != 0)
-                ElevatedButton(
-                  child: Padding(
-                    padding: const EdgeInsets.all(2.0),
-                    child: Text('Clear', style: TextStyle(fontSize: 18)),
+                    ),
+                    if (images.length != 0)
+                      SizedBox(
+                        width: 10,
+                      ),
+                    if (images.length != 0)
+                      ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                              MaterialStateProperty.all(Colors.green),
+                          elevation: MaterialStateProperty.all(5),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(2.0),
+                          child: Text('Clear', style: TextStyle(fontSize: 18)),
+                        ),
+                        onPressed: clearImages,
+                      ),
+                  ]),
+                  SizedBox(
+                    height: 20,
                   ),
-                  onPressed: clearImages,
-                ),
-            ]),
-            SizedBox(
-              height: 20,
-            ),
-            if (error != null)
-              Center(
-                child: Text(
-                  error,
-                  style: TextStyle(color: Colors.red),
+                  if (error != null)
+                    Center(
+                      child: Text(
+                        error,
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  SizedBox(
+                    height: 20,
                   ),
+                  Center(
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(Colors.green),
+                        elevation: MaterialStateProperty.all(5),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(2.0),
+                        child: Text('Submit Complaint',
+                            style: TextStyle(fontSize: 18)),
+                      ),
+                      onPressed: () async {
+                        if (_formKey.currentState.validate()) {
+                          await postRequest();
+                        }
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                ],
               ),
-            SizedBox(
-              height: 20,
             ),
-            Center(
-              child: ElevatedButton(
-                child: Padding(
-                  padding: const EdgeInsets.all(2.0),
-                  child:
-                      Text('Submit Complaint', style: TextStyle(fontSize: 18)),
-                ),
-                onPressed: () async {
-                  if (_formKey.currentState.validate()) {
-                    await postRequest();
-                  }
-                },
-              ),
-            ),
-            SizedBox(height: 20),
-          ],
-        ),
-      ),
-    );
+          );
   }
 
   Widget dispImages() {

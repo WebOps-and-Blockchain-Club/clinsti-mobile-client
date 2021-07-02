@@ -92,16 +92,16 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
                         _scrollToTop();
                       } catch (e) {
                         Fluttertoast.showToast(
-                          msg: 'No More Requests',
-                          toastLength: Toast.LENGTH_SHORT,
-                          backgroundColor: Colors.cyan,
-                          textColor: Colors.black,
-                          fontSize: 14.0);
+                            msg: 'No More Requests',
+                            toastLength: Toast.LENGTH_SHORT,
+                            backgroundColor: Colors.cyan,
+                            textColor: Colors.black,
+                            fontSize: 14.0);
                       }
                     },
                     style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            Colors.blueAccent)),
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.green)),
                     child: Text(
                       "<Prev",
                       style: TextStyle(color: Colors.black),
@@ -134,16 +134,16 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
                         _scrollToTop();
                       } catch (e) {
                         Fluttertoast.showToast(
-                          msg: 'No More Requests',
-                          toastLength: Toast.LENGTH_SHORT,
-                          backgroundColor: Colors.cyan,
-                          textColor: Colors.black,
-                          fontSize: 14.0);
+                            msg: 'No More Requests',
+                            toastLength: Toast.LENGTH_SHORT,
+                            backgroundColor: Colors.cyan,
+                            textColor: Colors.black,
+                            fontSize: 14.0);
                       }
                     },
                     style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all<Color>(
-                            Colors.blueAccent)),
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.green)),
                     child: Text(
                       "Next>",
                       style: TextStyle(color: Colors.black),
