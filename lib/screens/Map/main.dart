@@ -173,7 +173,9 @@ class MapSelectState extends State<MapSelect> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: Colors.green,
+      ),
       body: Column(
         children: [
           Expanded(
@@ -192,6 +194,7 @@ class MapSelectState extends State<MapSelect> {
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 50.0),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 IconButton(
                     icon: Icon(Icons.map),
@@ -210,7 +213,11 @@ class MapSelectState extends State<MapSelect> {
                         _returnLoc(context);
                       }
                     },
-                    child: Text(widget.select ? 'Select location' : "Back")),
+                    child: Text(widget.select ? 'Select location' : "Back"),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all(Colors.green[400]),
+                    ),
+                    ),
                 IconButton(
                     icon: Icon(Icons.my_location_rounded),
                     onPressed: () async {

@@ -85,14 +85,14 @@ class _ShowComplaintState extends State<ShowComplaint> {
 
   _setIconStatus(String currentStatus) {
     if (currentStatus == "Pending transmission") {
-      statusColors[0] = Colors.green;
+      statusColors[0] = Colors.green[300];
       for (int i = 1; i < 7; i++) {
         statusColors[i] = Colors.grey;
       }
       lineBools[0] = true;
     } else if (currentStatus == "Work is pending") {
       for (int i = 0; i < 3; i++) {
-        statusColors[i] = Colors.green[400];
+        statusColors[i] = Colors.green[300];
       }
       for (int i = 3; i < 7; i++) {
         statusColors[i] = Colors.grey;
@@ -100,20 +100,20 @@ class _ShowComplaintState extends State<ShowComplaint> {
       lineBools[1] = true;
     } else if (currentStatus == "Work in progress") {
       for (int i = 0; i < 5; i++) {
-        statusColors[i] = Colors.green[400];
+        statusColors[i] = Colors.green[300];
       }
       statusColors[5] = Colors.grey;
       statusColors[6] = Colors.grey;
       lineBools[2] = true;
     } else if (currentStatus == "Work completed") {
       for (int i = 0; i < 7; i++) {
-        statusColors[i] = Colors.green;
+        statusColors[i] = Colors.green[300];
       }
       lineBools[3] = true;
     } else if (currentStatus == "Closed with due justification") {
-      statusColors[0] = Colors.green;
-      statusColors[1] = Colors.green;
-      statusColors[2] = Colors.green;
+      statusColors[0] = Colors.green[300];
+      statusColors[1] = Colors.green[300];
+      statusColors[2] = Colors.green[300];
     }
   }
 
@@ -322,7 +322,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    _buildProgressIcon(Colors.green,
+                    _buildProgressIcon(Colors.green[300],
                         iconData: MdiIcons.lockCheckOutline),
                     _buildProgressText(
                         Colors.black,
@@ -348,7 +348,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
         icon: Icon(
           iconData,
           color: color,
-          size: 40,
+          size: 35,
         ),
         onPressed: null,
       ),
@@ -534,7 +534,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
           Form(
             key: _formKey,
             child: TextFormField(
-              maxLines: null,
+              maxLines: 3,
               controller: feedback,
               validator: (value) {
                 if (value == null || value.isEmpty) {

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:app_client/screens/HomeScreen/ShowComplaint/showComplaint.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ComplaintTile extends StatelessWidget {
   final dynamic complaint;
@@ -13,24 +14,24 @@ class ComplaintTile extends StatelessWidget {
       var obj = jsonDecode(loc);
       // ignore: unnecessary_statements
       obj['Latitude'];
-      return "geoLocation";
+      return "Location";
     } catch (e) {
       return loc;
     }
   }
   final Map<String,IconData> statusIcon = {
-    "Pending transmission":Icons.pending_actions_rounded,
-    "Work is pending":Icons.access_time,
-    "Work in progress":Icons.sync,
-    "Work completed":Icons.download_done_outlined,
-    "Closed with due justification":Icons.sync_disabled_rounded,
+    "Pending transmission":MdiIcons.clockTimeTwelveOutline,
+    "Work is pending":MdiIcons.clockTimeThreeOutline,
+    "Work in progress":MdiIcons.progressWrench,
+    "Work completed":MdiIcons.checkboxMarkedCircleOutline,
+    "Closed with due justification":MdiIcons.lockCheckOutline,
   };
   final Map<String,Color> statusColor = {
-    "Pending transmission":Colors.grey[200],
-    "Work is pending":Colors.orange[300],
-    "Work in progress":Color.fromRGBO(194, 194, 0, 1),
-    "Work completed":Colors.greenAccent,
-    "Closed with due justification":Colors.red[200],
+    "Pending transmission":Color(0xffd12d5e),
+    "Work is pending":Color(0xfff5ae5e),
+    "Work in progress":Color(0xfff88d13),
+    "Work completed":Color(0xff74c23d),
+    "Closed with due justification":Color.fromRGBO(29, 159, 163,1.0),
   };
 
   @override
@@ -38,14 +39,34 @@ class ComplaintTile extends StatelessWidget {
     return Padding(
         padding: const EdgeInsets.only(top: 8.0),
         child: Card(
+            elevation: 20.0,
+            shadowColor: Colors.white,
+            color: Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             child: ListTile(
-          leading: Icon(statusIcon[complaint["status"]]),
-          tileColor: statusColor[complaint["status"]],
-          title: Text(_getLocation(complaint["_location"])),
-          subtitle:
-              Text(complaint != null ? dateTimeString(complaint["created_time"]) : "Unknown"),
+              leading: Container(
+                width: 40,
+                child: Icon(
+                  statusIcon[complaint["status"]],
+                  color: statusColor[complaint["status"]],
+                  size: 40,
+                  ),
+              ),
+              title: Padding(
+                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                child: Text(
+                  _getLocation(complaint["_location"]),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  ),
+              ),
+              subtitle:
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: Text(complaint != null ? dateTimeString(complaint["created_time"]) : "Unknown"),
+                  ),
         )
-      )
+            )
     );
   }
 }

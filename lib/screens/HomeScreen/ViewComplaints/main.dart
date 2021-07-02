@@ -3,6 +3,7 @@ import 'package:app_client/screens/HomeScreen/ViewComplaints/complaint_tile.dart
 import 'package:app_client/services/database.dart';
 import "package:flutter/material.dart";
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 class ViewComplaintScreen extends StatefulWidget {
@@ -84,7 +85,9 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
                 Expanded(
                     child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
+                  child: IconButton(
+                    iconSize: 35,
+                    color: Colors.green,
                     onPressed: () async {
                       try {
                         await _db.prev();
@@ -99,13 +102,7 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
                             fontSize: 14.0);
                       }
                     },
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.green)),
-                    child: Text(
-                      "<Prev",
-                      style: TextStyle(color: Colors.black),
-                    ),
+                    icon: Icon(MdiIcons.arrowLeftCircle),
                   ),
                 )),
                 // Expanded(
@@ -126,7 +123,9 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
                 Expanded(
                     child: Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton(
+                  child: IconButton(
+                    color: Colors.green,
+                    iconSize: 35,
                     onPressed: () async {
                       try {
                         await _db.next();
@@ -141,13 +140,7 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
                             fontSize: 14.0);
                       }
                     },
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.green)),
-                    child: Text(
-                      "Next>",
-                      style: TextStyle(color: Colors.black),
-                    ),
+                    icon: Icon(MdiIcons.arrowRightCircle),
                   ),
                 )),
                 // Expanded(

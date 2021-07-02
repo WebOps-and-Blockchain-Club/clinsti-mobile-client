@@ -74,17 +74,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     print(e.toString());
                   }
                 },
-                icon: CircleAvatar(
-                  child: ImageIcon(
-                    AssetImage(
-                      'assets/user-01.png',
-                    ),
-                    size: 50,
-                    color: Colors.green,
-                  ),
-                  backgroundColor: Colors.white,
-                  radius: 20,
-                )),
+                icon: Icon(Icons.settings)),
           )
         ],
       ),
