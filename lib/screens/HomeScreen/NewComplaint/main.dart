@@ -68,7 +68,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                 loc: compLocation.text == "" ? null : compLocation.text)));
     if (result != null) {
       setState(() {
-        compLocation.text = result;
+        compLocation.text = "Location Added";
         setState(() {
           geoLoc = true;
         });
@@ -154,8 +154,18 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
               key: _formKey,
               child: ListView(
                 children: [
-                  SizedBox(
-                    height: 20,
+                  Center(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                      child: Text(
+                        "Post your request here",
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontSize: 19,
+                          fontWeight: FontWeight.bold
+                        ),
+                        ),
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -267,7 +277,19 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                                         ? Colors.red[800]
                                         : Colors.green)
                                     : Colors.black87),
-                            suffixIcon: IconButton(
+                            suffixIcon: geoLoc ? 
+                              IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    geoLoc = false;
+                                    compLocation.clear();
+                                  });
+                                },
+                                icon: Icon(
+                                  Icons.edit_outlined,
+                                  color: Colors.grey,
+                                ))
+                             : IconButton(
                               icon: Icon(
                                 Icons.location_on,
                                 color: Colors.green,
@@ -293,6 +315,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                           }
                         },
                         controller: compLocation,
+                        style: TextStyle(color: geoLoc ? Colors.green : Colors.black),
                         maxLines: null,
                         readOnly: geoLoc,
                       ),
@@ -460,12 +483,16 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                   ),
                   errorMessages(errormessagewasteselect),
                   SizedBox(
-                    height: 40,
+                    height: 20,
                   ),
                   if (images.length != 0) dispImages(),
                   SizedBox(
-                    height: 40,
+                    height: 20,
                   ),
+                  if (images.length != 0)
+                    Center(
+                      child: Text("Long press the image to delete"), 
+                    ),
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     ElevatedButton(
                       style: ButtonStyle(
@@ -498,7 +525,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(2.0),
-                          child: Text('Clear', style: TextStyle(fontSize: 18)),
+                          child: Text('Clear All Images', style: TextStyle(fontSize: 18)),
                         ),
                         onPressed: clearImages,
                       ),
@@ -551,10 +578,18 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
         itemBuilder: (context, index) {
           Asset image = images[index];
           return Card(
-            child: AssetThumb(
-              width: 300,
-              height: 300,
-              asset: image,
+            child: GestureDetector(
+              onLongPress: () {
+                setState(() {
+                  images.remove(image);
+                });
+                compressedImagesPath.removeAt(index);
+              },
+              child: AssetThumb(
+                width: 300,
+                height: 300,
+                asset: image,
+              ),
             ),
           );
         },
