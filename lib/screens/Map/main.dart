@@ -116,7 +116,7 @@ class MapSelectState extends State<MapSelect> {
 
   Future gotoCurrentLocation() async {
     // LocationPermission permission = await Geolocator.checkPermission();
-    if (_controller != null) {
+    if (_controller != null && _currentLocation != null) {
       final GoogleMapController controller = await _controller.future;
       controller.animateCamera(CameraUpdate.newCameraPosition(
           CameraPosition(target: _currentLocation, zoom: 16)));
@@ -124,7 +124,7 @@ class MapSelectState extends State<MapSelect> {
   }
 
   Future gotoSelectedLocation() async {
-    if (_controller != null) {
+    if (_controller != null && _selectedLocation != null) {
       final GoogleMapController controller = await _controller.future;
       controller.animateCamera(CameraUpdate.newCameraPosition(
           CameraPosition(target: _selectedLocation, zoom: 16)));
@@ -132,7 +132,7 @@ class MapSelectState extends State<MapSelect> {
   }
 
   void _onTap(LatLng latLng) {
-    if (widget.select) {
+    if (widget.select && latLng != null) {
       setState(() {
         _selectedLocation = latLng;
         _markerSelected =
@@ -202,22 +202,23 @@ class MapSelectState extends State<MapSelect> {
                       _toggleMapType();
                     }),
                 ElevatedButton(
-                    onPressed: () {
-                      if (widget.select) {
-                        if (_selectedLocation == null) {
-                          print('select first');
-                        } else {
-                          _returnLoc(context);
-                        }
+                  onPressed: () {
+                    if (widget.select) {
+                      if (_selectedLocation == null) {
+                        print('select first');
                       } else {
                         _returnLoc(context);
                       }
-                    },
-                    child: Text(widget.select ? 'Select location' : "Back"),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(Colors.green[400]),
-                    ),
-                    ),
+                    } else {
+                      _returnLoc(context);
+                    }
+                  },
+                  child: Text(widget.select ? 'Select location' : "Back"),
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all(Colors.green[400]),
+                  ),
+                ),
                 IconButton(
                     icon: Icon(Icons.my_location_rounded),
                     onPressed: () async {

@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:app_client/screens/Map/main.dart';
 import 'package:app_client/services/database.dart';
+import 'package:app_client/services/newRequestStore.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_image_compress/flutter_image_compress.dart';
@@ -39,6 +41,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
   FocusNode _wastenode;
   bool _descfocused = false;
   bool _locationfocused = false;
+  NewRequestStore _storage;
 
   final _formKey = GlobalKey<FormState>();
   final List<String> zones = [
@@ -69,11 +72,42 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
     if (result != null) {
       setState(() {
         compLocation.text = result;
-        setState(() {
-          geoLoc = true;
-        });
+        geoLoc = true;
       });
     }
+    storeRequest();
+  }
+
+  getStoredRequest() async {
+    try {
+      var stored = await _storage.getStoredRequest();
+      if (stored != null) {
+        setState(() {
+          String loc = stored["location"] ?? "";
+          try {
+            jsonDecode(loc);
+            setState(() {
+              geoLoc = true;
+            });
+          } catch (e) {}
+          compDescription.text = stored["description"] ?? "";
+          compLocation.text = loc;
+          zoneValue = stored["zone"] ?? null;
+          typeValue = stored["type"] ?? null;
+        });
+      }
+    } catch (e) {}
+  }
+
+  storeRequest() {
+    try {
+      _storage.setStoredRequest({
+        "description": compDescription.text.toString(),
+        "location": compLocation.text.toString(),
+        "zone": zoneValue.toString(),
+        "type": typeValue.toString()
+      });
+    } catch (e) {}
   }
 
   @override
@@ -82,6 +116,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _db = Provider.of<DatabaseService>(context, listen: false);
     });
+    _storage = new NewRequestStore();
     _descnode = FocusNode();
     _descnode.addListener(_handleFocusChange);
     _locationnode = FocusNode();
@@ -120,6 +155,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
     setState(() {
       loading = false;
     });
+    storeRequest();
   }
 
   void _handleFocusChange() {
@@ -132,6 +168,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
         _locationfocused = _locationnode.hasFocus;
       });
     }
+    storeRequest();
   }
 
   @override
@@ -145,6 +182,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
 
   @override
   Widget build(BuildContext context) {
+    getStoredRequest();
     return loading
         ? Center(
             child: CircularProgressIndicator(),
@@ -157,15 +195,15 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                 children: [
                   Center(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 20, horizontal: 20),
                       child: Text(
                         "Post your request here",
                         style: TextStyle(
-                          color: Colors.green,
-                          fontSize: 19,
-                          fontWeight: FontWeight.bold
-                        ),
-                        ),
+                            color: Colors.green,
+                            fontSize: 19,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ),
                   Padding(
@@ -278,27 +316,27 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                                         ? Colors.red[800]
                                         : Colors.green)
                                     : Colors.black87),
-                            suffixIcon: geoLoc ? 
-                              IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    geoLoc = false;
-                                    compLocation.clear();
-                                  });
-                                },
-                                icon: Icon(
-                                  Icons.edit_outlined,
-                                  color: Colors.grey,
-                                ))
-                             : IconButton(
-                              icon: Icon(
-                                Icons.location_on,
-                                color: Colors.green,
-                              ),
-                              onPressed: () {
-                                _selectLocation(context);
-                              },
-                            )),
+                            suffixIcon: geoLoc
+                                ? IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        geoLoc = false;
+                                        compLocation.clear();
+                                      });
+                                    },
+                                    icon: Icon(
+                                      Icons.edit_outlined,
+                                      color: Colors.grey,
+                                    ))
+                                : IconButton(
+                                    icon: Icon(
+                                      Icons.location_on,
+                                      color: Colors.green,
+                                    ),
+                                    onPressed: () {
+                                      _selectLocation(context);
+                                    },
+                                  )),
                         validator: (val) {
                           if (val.length < 5) {
                             setState(() {
@@ -315,8 +353,11 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                             return null;
                           }
                         },
-                        controller: geoLoc ? TextEditingController(text: "Location Added") : compLocation,
-                        style: TextStyle(color: geoLoc ? Colors.green : Colors.black),
+                        controller: geoLoc
+                            ? TextEditingController(text: "Location Added")
+                            : compLocation,
+                        style: TextStyle(
+                            color: geoLoc ? Colors.green : Colors.black),
                         maxLines: null,
                         readOnly: geoLoc,
                       ),
@@ -369,6 +410,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                             onChanged: (String newValue) {
                               setState(() {
                                 zoneValue = newValue;
+                                storeRequest();
                               });
                             },
                             items: zones
@@ -461,6 +503,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                               onChanged: (String newValue) {
                                 setState(() {
                                   typeValue = newValue;
+                                  storeRequest();
                                 });
                               },
                               items: types.map<DropdownMenuItem<String>>(
@@ -492,7 +535,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                   ),
                   if (images.length != 0)
                     Center(
-                      child: Text("Long press the image to delete"), 
+                      child: Text("Long press the image to delete"),
                     ),
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                     ElevatedButton(
@@ -526,7 +569,8 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.all(2.0),
-                          child: Text('Clear All Images', style: TextStyle(fontSize: 18)),
+                          child: Text('Clear All Images',
+                              style: TextStyle(fontSize: 18)),
                         ),
                         onPressed: clearImages,
                       ),

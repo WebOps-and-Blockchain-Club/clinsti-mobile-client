@@ -24,7 +24,7 @@ class DatabaseService extends ChangeNotifier {
   int _count;
 
   List<dynamic> get complaintS => _complaints ?? [];
-  int get nextCounts => _count - _skip - _limit ?? 0;
+  int get nextCounts => (_count ?? 0) - _skip - _limit ?? 0;
   int get prevCounts => _skip ?? 0;
 
   DatabaseService() {
@@ -34,8 +34,10 @@ class DatabaseService extends ChangeNotifier {
   _initState() async {
     notifyListeners();
     _token = null;
-    await _loadToken();
-    await _fetchComplaints();
+    try {
+      await _loadToken();
+      await _fetchComplaints();
+    } catch (e) {}
   }
 
   Future _initDB() async {
@@ -95,6 +97,7 @@ class DatabaseService extends ChangeNotifier {
       _count = int.parse(await arr["count"]);
       notifyListeners();
     } catch (e) {
+      _complaints = [];
       throw (e);
     }
     // _complaints = dummyComplaints;
@@ -169,7 +172,9 @@ class DatabaseService extends ChangeNotifier {
   // }
 
   Future synC() async {
-    await _fetchComplaints();
+    try {
+      await _fetchComplaints();
+    } catch (e) {}
   }
 
   Future deleteRequest(int id) async {
@@ -188,9 +193,7 @@ class DatabaseService extends ChangeNotifier {
       dynamic imgData = await http.getImage(_token, img);
       return base64Encode(imgData);
     } catch (e) {
-      print("Error "+ e);
-      throw(e.toString());
+      throw (e.toString());
     }
   }
-
 }
