@@ -50,132 +50,143 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 5.0),
-      width: MediaQuery.of(context).size.width,
-      //color: Colors.blue[100],
-      child: Column(
-        children: <Widget>[
-          Expanded(
-            child: ListView.builder(
-              itemCount: _db == null ? 0 : _db.complaintS.length,
-              controller: _scrollController,
-              itemBuilder: (context, i) {
-                return InkWell(
-                  child: ComplaintTile(complaint: _db.complaintS[i]),
-                  onTap: () async {
-                    await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => ShowComplaint(
-                                  complaint: _db.complaintS[i],
-                                  db: _db,
-                                )));
-                    await _db.synC();
-                    setState(() {});
-                  },
-                );
-              },
-            ),
-          ),
-          Container(
-            margin: EdgeInsets.only(bottom: 6.0),
-            child: Row(
-              children: [
-                Expanded(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: IconButton(
-                    iconSize: 35,
-                    color: Colors.green,
-                    onPressed: () async {
-                      try {
-                        await _db.prev();
-                        setState(() {});
-                        _scrollToTop();
-                      } catch (e) {
-                        Fluttertoast.showToast(
-                            msg: 'No More Requests',
-                            toastLength: Toast.LENGTH_SHORT,
-                            backgroundColor: Colors.cyan,
-                            textColor: Colors.black,
-                            fontSize: 14.0);
-                      }
+    return (_db == null) ? 
+      CircularProgressIndicator() : 
+      Container(
+        padding: EdgeInsets.symmetric(horizontal: 5.0),
+        width: MediaQuery.of(context).size.width,
+        //color: Colors.blue[100],
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: ListView.builder(
+                itemCount: _db.complaintS.length,
+                controller: _scrollController,
+                itemBuilder: (context, i) {
+                  return InkWell(
+                    child: ComplaintTile(complaint: _db.complaintS[i]),
+                    onTap: () async {
+                      await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ShowComplaint(
+                                    complaint: _db.complaintS[i],
+                                    db: _db,
+                                  )));
+                      await _db.synC();
+                      setState(() {});
                     },
-                    icon: Icon(MdiIcons.arrowLeftCircle),
-                  ),
-                )),
-                // Expanded(
-                //     child: DropdownButton(
-                //   items: <String>[
-                //     "Pending\n transmission",
-                //     "Work is\n pending",
-                //     "Work in\n progress",
-                //     "Work\n completed",
-                //     "Closed\n with due\n justification"
-                //   ].map<DropdownMenuItem<String>>((String value) {
-                //     return DropdownMenuItem<String>(
-                //       child: Text(value),
-                //       value: value,
-                //     );
-                //   }).toList(),
-                // )),
-                Expanded(
-                    child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: IconButton(
-                    color: Colors.green,
-                    iconSize: 35,
-                    onPressed: () async {
-                      try {
-                        await _db.next();
-                        setState(() {});
-                        _scrollToTop();
-                      } catch (e) {
-                        Fluttertoast.showToast(
-                            msg: 'No More Requests',
-                            toastLength: Toast.LENGTH_SHORT,
-                            backgroundColor: Colors.cyan,
-                            textColor: Colors.black,
-                            fontSize: 14.0);
-                      }
-                    },
-                    icon: Icon(MdiIcons.arrowRightCircle),
-                  ),
-                )),
-                // Expanded(
-                //   child: Container(
-                //     margin: EdgeInsets.symmetric(horizontal: 5.0),
-                //     color: Colors.blue[200],
-                //     child: DropdownButton(
-                //         dropdownColor: Colors.blue[200],
-                //         icon: Icon(Icons.filter_list),
-                //         value: filterBy,
-                //         onChanged: setFilter,
-                //         items: <String>[
-                //           'all',
-                //           "Pending transmission",
-                //           "Work is pending",
-                //           "Work in progress",
-                //           "Work completed",
-                //           "Closed with due justification"
-                //         ].map<DropdownMenuItem<String>>((String value) {
-                //           return DropdownMenuItem<String>(
-                //               value: value, child: Text(value));
-                //         }).toList()),
-                //   ),
-                // ),
-                // Expanded(
-                //   child: Container(
-                //     margin: EdgeInsets.symmetric(horizontal: 5.0),
-                //     color: Colors.blue[200],
-                //   ),
-                // ),
-              ],
+                  );
+                },
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+            if(_db.nextCounts > 0 || _db.prevCounts > 0)
+              Container(
+                margin: EdgeInsets.only(bottom: 6.0),
+                child: Row(
+                  children: [
+                    (_db.prevCounts > 0) ?
+                      Expanded(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: IconButton(
+                          iconSize: 35,
+                          color: Colors.green,
+                          onPressed: () async {
+                            try {
+                              await _db.prev();
+                              setState(() {});
+                              _scrollToTop();
+                            } catch (e) {
+                              Fluttertoast.showToast(
+                                  msg: 'No More Requests',
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  backgroundColor: Colors.cyan,
+                                  textColor: Colors.black,
+                                  fontSize: 14.0);
+                            }
+                          },
+                          icon: Icon(MdiIcons.arrowLeftCircle),
+                        ),
+                      )) : 
+                      Expanded(
+                        child: SizedBox(),
+                        ),
+                    // Expanded(
+                    //     child: DropdownButton(
+                    //   items: <String>[
+                    //     "Pending\n transmission",
+                    //     "Work is\n pending",
+                    //     "Work in\n progress",
+                    //     "Work\n completed",
+                    //     "Closed\n with due\n justification"
+                    //   ].map<DropdownMenuItem<String>>((String value) {
+                    //     return DropdownMenuItem<String>(
+                    //       child: Text(value),
+                    //       value: value,
+                    //     );
+                    //   }).toList(),
+                    // )),
+                    (_db.nextCounts > 0) ? 
+                      Expanded(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: IconButton(
+                          color: Colors.green,
+                          iconSize: 35,
+                          onPressed: () async {
+                            try {
+                              await _db.next();
+                              setState(() {});
+                              _scrollToTop();
+                            } catch (e) {
+                              Fluttertoast.showToast(
+                                  msg: 'No More Requests',
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  backgroundColor: Colors.cyan,
+                                  textColor: Colors.black,
+                                  fontSize: 14.0);
+                            }
+                          },
+                          icon: Icon(MdiIcons.arrowRightCircle),
+                        ),
+                      )) : 
+                      Expanded(
+                        child: SizedBox()
+                        ),
+                    // Expanded(
+                    //   child: Container(
+                    //     margin: EdgeInsets.symmetric(horizontal: 5.0),
+                    //     color: Colors.blue[200],
+                    //     child: DropdownButton(
+                    //         dropdownColor: Colors.blue[200],
+                    //         icon: Icon(Icons.filter_list),
+                    //         value: filterBy,
+                    //         onChanged: setFilter,
+                    //         items: <String>[
+                    //           'all',
+                    //           "Pending transmission",
+                    //           "Work is pending",
+                    //           "Work in progress",
+                    //           "Work completed",
+                    //           "Closed with due justification"
+                    //         ].map<DropdownMenuItem<String>>((String value) {
+                    //           return DropdownMenuItem<String>(
+                    //               value: value, child: Text(value));
+                    //         }).toList()),
+                    //   ),
+                    // ),
+                    // Expanded(
+                    //   child: Container(
+                    //     margin: EdgeInsets.symmetric(horizontal: 5.0),
+                    //     color: Colors.blue[200],
+                    //   ),
+                    // ),
+                  ],
+                ),
+              ),
+          ],
+        ),
+      );
   }
 }

@@ -68,7 +68,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                 loc: compLocation.text == "" ? null : compLocation.text)));
     if (result != null) {
       setState(() {
-        compLocation.text = "Location Added";
+        compLocation.text = result;
         setState(() {
           geoLoc = true;
         });
@@ -109,6 +109,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
         compLocation.text = "";
         typeValue = null;
         zoneValue = null;
+        geoLoc = false;
       });
       clearImages();
     } catch (e) {
@@ -314,7 +315,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                             return null;
                           }
                         },
-                        controller: compLocation,
+                        controller: geoLoc ? TextEditingController(text: "Location Added") : compLocation,
                         style: TextStyle(color: geoLoc ? Colors.green : Colors.black),
                         maxLines: null,
                         readOnly: geoLoc,

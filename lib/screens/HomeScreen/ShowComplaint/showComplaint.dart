@@ -60,6 +60,18 @@ class _ShowComplaintState extends State<ShowComplaint> {
     });
   }
 
+  _deleteComplaint() async {
+    await widget.db.deleteRequest(
+      widget.complaint['complaint_id']);
+    Fluttertoast.showToast(
+        msg: "Request Removed",
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 14.0);
+    Navigator.pop(context);
+  }
+
   _postComplaintFeedback() async {
     setState(() {
       loading = true;
@@ -191,17 +203,52 @@ class _ShowComplaintState extends State<ShowComplaint> {
                                     backgroundColor:
                                         MaterialStateProperty.all(Colors.green),
                                     elevation: MaterialStateProperty.all(10)),
-                                onPressed: () async {
-                                  await widget.db.deleteRequest(
-                                      widget.complaint['complaint_id']);
-                                  Navigator.pop(context);
-                                  Fluttertoast.showToast(
-                                      msg: "Request Removed",
-                                      toastLength: Toast.LENGTH_LONG,
-                                      backgroundColor: Colors.green,
-                                      textColor: Colors.white,
-                                      fontSize: 14.0);
-                                },
+                                    onPressed: () => showDialog<String>(
+                                      context: context,
+                                      builder: (BuildContext context) => AlertDialog(
+                                        title: Icon(
+                                                Icons.warning,
+                                                color: Colors.red,
+                                                ),
+                                              content: const Text(
+                                                'Are you sure to resolve complaint?',
+                                                style: TextStyle(
+                                                  fontSize: 18
+                                                ),
+                                                ),
+                                              actions: <Widget>[
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context, 'Cancel');
+                                                  },
+                                                  child: const Text(
+                                                    'Cancel',
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.white
+                                                    ),
+                                                  ),
+                                                  style: ButtonStyle(
+                                                    backgroundColor: MaterialStateProperty.all(Colors.green),),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                    _deleteComplaint();
+                                                  },
+                                                  child: const Text(
+                                                    'Yes',
+                                                    style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: Colors.white
+                                                    ),
+                                                  ),
+                                                  style: ButtonStyle(
+                                                    backgroundColor: MaterialStateProperty.all(Colors.green),),
+                                                ),
+                                              ]
+                                      ),
+                                    ),
                                 child: Text(
                                   'Resolve Complaint',
                                   style: TextStyle(

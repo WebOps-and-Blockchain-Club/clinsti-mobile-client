@@ -21,8 +21,11 @@ class DatabaseService extends ChangeNotifier {
   int _skip = 0;
   int _limit = 10;
   List<dynamic> _complaints = <dynamic>[];
+  int _count;
 
   List<dynamic> get complaintS => _complaints ?? [];
+  int get nextCounts => _count - _skip - _limit ?? 0;
+  int get prevCounts => _skip ?? 0;
 
   DatabaseService() {
     _initState();
@@ -88,7 +91,8 @@ class DatabaseService extends ChangeNotifier {
           skip: _skip,
           limit: _limit);
 
-      _complaints = arr;
+      _complaints = arr["complaints"];
+      _count = int.parse(await arr["count"]);
       notifyListeners();
     } catch (e) {
       throw (e);
