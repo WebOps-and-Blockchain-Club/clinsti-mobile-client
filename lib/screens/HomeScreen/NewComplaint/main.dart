@@ -123,6 +123,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
     _locationnode.addListener(_handleFocusChange);
     _zonenode = FocusNode();
     _wastenode = FocusNode();
+    getStoredRequest();
   }
 
   postRequest() async {
@@ -147,6 +148,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
         geoLoc = false;
       });
       clearImages();
+      _storage.deleteRequest();
     } catch (e) {
       setState(() {
         error = e.toString();
@@ -155,7 +157,6 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
     setState(() {
       loading = false;
     });
-    storeRequest();
   }
 
   void _handleFocusChange() {
@@ -182,7 +183,6 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
 
   @override
   Widget build(BuildContext context) {
-    getStoredRequest();
     return loading
         ? Center(
             child: CircularProgressIndicator(),
@@ -198,7 +198,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                       padding: const EdgeInsets.symmetric(
                           vertical: 20, horizontal: 20),
                       child: Text(
-                        "Post your request here",
+                        "Post your Complaint here",
                         style: TextStyle(
                             color: Colors.green,
                             fontSize: 19,
@@ -434,7 +434,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                               }
                             },
                             hint: Text(
-                              'zone',
+                              'Zone',
                               style:
                                   TextStyle(color: Colors.grey, fontSize: 14),
                             ),

@@ -27,4 +27,11 @@ class NewRequestStore {
       _prefs.setString('storedRequest', jsonString);
     } catch (e) {}
   }
+
+  deleteRequest() async {
+    try {
+      await init();
+      _prefs.remove('storedRequest');
+    } catch (e) {}
+  }
 }
