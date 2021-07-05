@@ -34,6 +34,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
   bool errorboxdesc = false;
   bool errorboxloc = false;
   bool loading = false;
+  bool imgLoading = false;
   bool geoLoc = false;
   FocusNode _descnode;
   FocusNode _locationnode;
@@ -94,6 +95,10 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
           compLocation.text = loc;
           if(zones.contains(stored["zone"])) zoneValue = stored["zone"];
           if(types.contains(stored["type"])) typeValue = stored["type"];
+          if(stored["imgPath"] != "") {
+            compressedImagesPath = [];
+            compressedImagesPath = (stored["imgPath"].toString()).split(",");
+          }
         });
       }
     } catch (e) {
@@ -107,7 +112,8 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
         "description": compDescription.text.toString(),
         "location": compLocation.text.toString(),
         "zone": zoneValue.toString(),
-        "type": typeValue.toString()
+        "type": typeValue.toString(),
+        "imgPath": compressedImagesPath.join(",")
       });
     } catch (e) {}
   }
@@ -545,11 +551,19 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                   SizedBox(
                     height: 20,
                   ),
-                  if (images.length != 0) dispImages(),
+                  if(imgLoading) Center(
+                    child: Text(
+                      "Image Loading...",
+                      style: TextStyle(
+                        fontSize: 16.0
+                      ),
+                      )
+                    ),
+                  if (compressedImagesPath.length != 0) dispImages(),
                   SizedBox(
                     height: 20,
                   ),
-                  if (images.length != 0)
+                  if (compressedImagesPath.length != 0)
                     Center(
                       child: Text("Long press the image to delete"),
                     ),
@@ -572,11 +586,11 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                         }
                       },
                     ),
-                    if (images.length != 0)
+                    if (compressedImagesPath.length != 0)
                       SizedBox(
                         width: 10,
                       ),
-                    if (images.length != 0)
+                    if (compressedImagesPath.length != 0)
                       ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor:
@@ -634,23 +648,28 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
     return Container(
       height: 200,
       child: ListView.builder(
-        itemCount: images.length,
+        itemCount: compressedImagesPath.length,
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          Asset image = images[index];
           return Card(
             child: GestureDetector(
-              onLongPress: () {
+              onLongPress: () async {
                 setState(() {
-                  images.remove(image);
+                  compressedImagesPath.removeAt(index);
+                  storeRequest();
                 });
-                compressedImagesPath.removeAt(index);
+                await deleteImageFile(File(compressedImagesPath[index]));
               },
-              child: AssetThumb(
+              child: Image.file(
+                File(compressedImagesPath[index]),
                 width: 300,
                 height: 300,
-                asset: image,
-              ),
+                ),
+              // child: AssetThumb(
+              //   width: 300,
+              //   height: 300,
+              //   asset: image,
+              // ),
             ),
           );
         },
@@ -660,10 +679,24 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
 
   void clearImages() {
     setState(() {
-      images.removeRange(0, images.length);
+      compressedImagesPath.removeRange(0, compressedImagesPath.length);
+      storeRequest();
     });
-    compressedImagesPath.removeRange(0, compressedImagesPath.length);
+    compressedImagesPath.forEach(
+      (_img) async {
+         await deleteImageFile(File(_img));
+      });
   }
+
+  Future<void> deleteImageFile(File file) async {
+  try {
+    if (await file.exists()) {
+      await file.delete();
+    }
+  } catch (e) {
+    print(e);
+  }
+}
 
   Future<void> loadAssets() async {
     List<Asset> resultList = [];
@@ -712,6 +745,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
             textColor: Colors.black,
             fontSize: 14.0);
       } else {
+        imgLoading = true;
         images = resultList;
       }
     });
@@ -736,14 +770,20 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
       temp = await compressImage(temp);
       compressedImagesPath.add(temp.path);
     }
+    storeRequest();
+    setState(() {
+      imgLoading = false;
+      images = [];
+    });
   }
 
   Future<File> compressImage(File file) async {
     final filePath = file.absolute.path;
-    final lastIndex = filePath.lastIndexOf(new RegExp(r'.jp'));
-    print(filePath);
-    final splitted = filePath.substring(0, (lastIndex));
-    final outPath = "${splitted}_out${filePath.substring(lastIndex)}";
+    final fileName = (filePath.split("/")).last;
+    final lastIndex = fileName.lastIndexOf(new RegExp(r'.jp'));
+    final String path = (await getApplicationDocumentsDirectory()).path;
+    final splitted = fileName.substring(0, (lastIndex));
+    final outPath = "$path/$splitted${fileName.substring(lastIndex)}";
     print(outPath);
     var result = await FlutterImageCompress.compressAndGetFile(
         filePath, outPath,
