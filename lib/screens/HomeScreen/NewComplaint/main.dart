@@ -92,11 +92,13 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
           } catch (e) {}
           compDescription.text = stored["description"] ?? "";
           compLocation.text = loc;
-          if(stored["zone"]) zoneValue = stored["zone"];
-          if(stored["type"]) typeValue = stored["type"];
+          if(zones.contains(stored["zone"])) zoneValue = stored["zone"];
+          if(types.contains(stored["type"])) typeValue = stored["type"];
         });
       }
-    } catch (e) {}
+    } catch (e) {
+      print(e);
+    }
   }
 
   storeRequest() {
