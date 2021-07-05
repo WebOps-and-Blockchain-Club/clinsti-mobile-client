@@ -92,8 +92,8 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
           } catch (e) {}
           compDescription.text = stored["description"] ?? "";
           compLocation.text = loc;
-          zoneValue = stored["zone"] ?? null;
-          typeValue = stored["type"] ?? null;
+          if(stored["zone"]) zoneValue = stored["zone"];
+          if(stored["type"]) typeValue = stored["type"];
         });
       }
     } catch (e) {}
@@ -246,7 +246,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                                     ? (errorboxdesc
                                         ? Colors.red[800]
                                         : Colors.green)
-                                    : Colors.black87)),
+                                    : Colors.grey)),
                         validator: (val) {
                           if (val.length < 10) {
                             setState(() {
@@ -315,19 +315,32 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                                     ? (errorboxloc
                                         ? Colors.red[800]
                                         : Colors.green)
-                                    : Colors.black87),
+                                    : Colors.grey),
                             suffixIcon: geoLoc
-                                ? IconButton(
-                                    onPressed: () {
-                                      setState(() {
-                                        geoLoc = false;
-                                        compLocation.clear();
-                                      });
-                                    },
-                                    icon: Icon(
-                                      Icons.edit_outlined,
-                                      color: Colors.grey,
-                                    ))
+                                ? Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        _selectLocation(context);
+                                      },
+                                      icon: Icon(
+                                        Icons.edit_location,
+                                        color: Colors.green,
+                                      )),
+                                    IconButton(
+                                        onPressed: () {
+                                          setState(() {
+                                            geoLoc = false;
+                                            compLocation.clear();
+                                          });
+                                        },
+                                        icon: Icon(
+                                          Icons.location_off,
+                                          color: Colors.green,
+                                        ))
+                                  ],
+                                )
                                 : IconButton(
                                     icon: Icon(
                                       Icons.location_on,
@@ -336,7 +349,8 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                                     onPressed: () {
                                       _selectLocation(context);
                                     },
-                                  )),
+                                  )
+                                  ),
                         validator: (val) {
                           if (val.length < 5) {
                             setState(() {
