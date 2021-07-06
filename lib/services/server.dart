@@ -217,6 +217,8 @@ class Server {
       if (response.statusCode == 200) {
         var complaints = jsonDecode(await response.stream.bytesToString());
         return {"complaints":complaints['complaints'], "count":complaints["complaintsCount"]};
+      } else if (response.statusCode == 404) {
+        return await response.stream.bytesToString();
       } else {
         throw (await response.stream.bytesToString());
       }

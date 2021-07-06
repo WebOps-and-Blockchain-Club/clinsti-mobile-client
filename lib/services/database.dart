@@ -93,11 +93,17 @@ class DatabaseService extends ChangeNotifier {
           skip: _skip,
           limit: _limit);
 
+      if(arr == "No Complaint Registered yet!") {
+        _complaints = [];
+        _count = 0;
+        return;
+      }
+
       _complaints = arr["complaints"];
       _count = int.parse(await arr["count"]);
       notifyListeners();
     } catch (e) {
-      _complaints = [];
+      //_complaints = [];
       throw (e);
     }
     // _complaints = dummyComplaints;
