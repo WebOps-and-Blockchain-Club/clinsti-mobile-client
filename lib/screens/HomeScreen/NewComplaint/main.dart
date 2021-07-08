@@ -785,14 +785,35 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
   Future<File> compressImage(File file) async {
     final filePath = file.absolute.path;
     final fileName = (filePath.split("/")).last;
-    final lastIndex = fileName.lastIndexOf(new RegExp(r'.jp'));
+    final lastIndex = fileName.lastIndexOf(".");
     final String path = (await getApplicationDocumentsDirectory()).path;
     final splitted = fileName.substring(0, (lastIndex));
     final outPath = "$path/$splitted${fileName.substring(lastIndex)}";
     print(outPath);
     var result = await FlutterImageCompress.compressAndGetFile(
         filePath, outPath,
-        quality: 70, minWidth: 1000, minHeight: 1000);
+        quality: 70, minWidth: 1000, minHeight: 1000, format: getImageFormat(fileName));
     return result;
+  }
+
+  getImageFormat(String filename){
+    String ext = filename.split(".").last;
+    switch(ext){
+      case("png"): {
+        return CompressFormat.png;
+      }
+      case("jpg"): {
+        return CompressFormat.jpeg;
+      }
+      case("jpeg"): {
+        return CompressFormat.jpeg;
+      }
+      case("webp"): {
+        return CompressFormat.webp;
+      }
+      case("heic"): {
+        return CompressFormat.heic;
+      }
+    }
   }
 }
