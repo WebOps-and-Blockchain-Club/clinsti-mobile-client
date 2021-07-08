@@ -651,19 +651,24 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
         itemCount: compressedImagesPath.length,
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
+          File img = File(compressedImagesPath[index]);
           return Card(
             child: GestureDetector(
-              onLongPress: () async {
+              onLongPress: () {
                 setState(() {
                   compressedImagesPath.removeAt(index);
-                  storeRequest();
                 });
-                await deleteImageFile(File(compressedImagesPath[index]));
+                storeRequest();
+                print(img);
+                deleteImageFile(img);
               },
               child: Image.file(
-                File(compressedImagesPath[index]),
+                img,
                 width: 300,
                 height: 300,
+                errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
+                                return Container();
+                              },
                 ),
               // child: AssetThumb(
               //   width: 300,
@@ -703,7 +708,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
 
     try {
       resultList = await MultiImagePicker.pickImages(
-        maxImages: 8,
+        maxImages: 8 - compressedImagesPath.length,
         enableCamera: true,
         selectedAssets: images,
         cupertinoOptions: CupertinoOptions(
