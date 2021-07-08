@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,7 @@ class NewComplaintScreen extends StatefulWidget {
 class _NewComplaintScreenState extends State<NewComplaintScreen> {
   TextEditingController compLocation = TextEditingController();
   TextEditingController compDescription = TextEditingController();
+  TextEditingController compLandmark = TextEditingController();
   String zoneValue;
   String typeValue;
   List<Asset> images = [];
@@ -28,20 +30,24 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
   String error1;
   String errormessagedesc;
   String errormessagelocation;
+  String errormessagelandmark;
   String errormessagezoneselect;
   String errormessagewasteselect;
   DatabaseService _db;
   bool errorboxdesc = false;
   bool errorboxloc = false;
+  bool errorboxland = false;
   bool loading = false;
   bool imgLoading = false;
   bool geoLoc = false;
   FocusNode _descnode;
   FocusNode _locationnode;
+  FocusNode _landmarknode;
   FocusNode _zonenode;
   FocusNode _wastenode;
   bool _descfocused = false;
   bool _locationfocused = false;
+  bool _landmarkfocused = false;
   NewRequestStore _storage;
 
   final _formKey = GlobalKey<FormState>();
@@ -71,8 +77,11 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
             builder: (context) => MapSelect(
                 loc: compLocation.text == "" ? null : compLocation.text)));
     if (result != null) {
+      var obj = jsonDecode(result);
+      List<Placemark> placemarks = await placemarkFromCoordinates(obj['Latitude'], obj['Longitude']);
       setState(() {
         compLocation.text = result;
+        compLandmark.text = placemarks[0].name;
         geoLoc = true;
       });
     }
@@ -93,6 +102,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
           } catch (e) {}
           compDescription.text = stored["description"] ?? "";
           compLocation.text = loc;
+          compLandmark.text = stored["landmark"] ?? "";
           if(zones.contains(stored["zone"])) zoneValue = stored["zone"];
           if(types.contains(stored["type"])) typeValue = stored["type"];
           if(stored["imgPath"] != "") {
@@ -111,6 +121,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
       _storage.setStoredRequest({
         "description": compDescription.text.toString(),
         "location": compLocation.text.toString(),
+        "landmark": compLandmark.text.toString(),
         "zone": zoneValue.toString(),
         "type": typeValue.toString(),
         "imgPath": compressedImagesPath.join(",")
@@ -129,6 +140,8 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
     _descnode.addListener(_handleFocusChange);
     _locationnode = FocusNode();
     _locationnode.addListener(_handleFocusChange);
+    _landmarknode = FocusNode();
+    _landmarknode.addListener(_handleFocusChange);
     _zonenode = FocusNode();
     _wastenode = FocusNode();
     getStoredRequest();
@@ -140,7 +153,16 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
       error = "";
     });
     try {
-      await _db.postRequest(compDescription.text, compLocation.text, typeValue,
+      String compFinalLoc;
+      try {
+        var locObj = jsonDecode(compLocation.text);
+        locObj["landmark"] = compLandmark.text;
+        compFinalLoc = jsonEncode(locObj).toString();
+      } catch (e) {
+        compFinalLoc = compLocation.text;
+      }
+      print(compFinalLoc);
+      await _db.postRequest(compDescription.text, compFinalLoc, typeValue,
           zoneValue, compressedImagesPath);
       Fluttertoast.showToast(
           msg: "Request posted",
@@ -151,6 +173,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
       setState(() {
         compDescription.text = "";
         compLocation.text = "";
+        compLandmark.text = "";
         typeValue = null;
         zoneValue = null;
         geoLoc = false;
@@ -176,6 +199,10 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
       setState(() {
         _locationfocused = _locationnode.hasFocus;
       });
+    } else if (_landmarknode.hasFocus != _landmarkfocused) {
+      setState(() {
+        _landmarkfocused = _landmarknode.hasFocus;
+      });
     }
     storeRequest();
   }
@@ -184,6 +211,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
   void dispose() {
     _descnode.dispose();
     _locationnode.dispose();
+    _landmarknode.dispose();
     _zonenode.dispose();
     _wastenode.dispose();
     super.dispose();
@@ -392,6 +420,82 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                   SizedBox(
                     height: 20,
                   ),
+                  if(geoLoc)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      child: Material(
+                        elevation: 5.0,
+                        shadowColor: Colors.white,
+                        color: Colors.white,
+                        borderRadius:
+                            BorderRadius.all(const Radius.circular(10.0)),
+                        child: TextFormField(
+                          focusNode: _landmarknode,
+                          onTap: () {
+                            if (_landmarkfocused) {
+                              _landmarknode.unfocus();
+                            } else {
+                              _landmarknode.requestFocus();
+                            }
+                          },
+                          decoration: InputDecoration(
+                              errorStyle: TextStyle(height: 0),
+                              focusedBorder: const OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.green, width: 2.0),
+                                  borderRadius: BorderRadius.all(
+                                      const Radius.circular(10.0))),
+                              enabledBorder: const OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Colors.white, width: 0.0),
+                                  borderRadius: BorderRadius.all(
+                                      const Radius.circular(10.0))),
+                              border: new OutlineInputBorder(
+                                borderRadius: const BorderRadius.all(
+                                  const Radius.circular(10.0),
+                                ),
+                              ),
+                              labelText: 'Landmark',
+                              labelStyle: TextStyle(
+                                  color: _locationnode.hasFocus
+                                      ? (errorboxland
+                                          ? Colors.red[800]
+                                          : Colors.green)
+                                      : Colors.grey),
+                                    ),
+                          validator: (val) {
+                            if (val.length < 2) {
+                              setState(() {
+                                errorboxland = true;
+                                errormessagelandmark =
+                                    'Please write few more words';
+                              });
+
+                              return '';
+                            } else {
+                              setState(() {
+                                errormessagelandmark = null;
+                              });
+                              return null;
+                            }
+                          },
+                          controller: compLandmark,
+                          style: TextStyle(
+                              color: Colors.black),
+                          maxLines: null,
+                        ),
+                      ),
+                    ),
+                  if(geoLoc)
+                    SizedBox(
+                      height: 5,
+                    ),
+                  if(geoLoc)
+                    errorMessages(errormessagelandmark),
+                  if(geoLoc)
+                    SizedBox(
+                      height: 20,
+                    ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     child: Material(
@@ -560,9 +664,10 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                       )
                     ),
                   if (compressedImagesPath.length != 0) dispImages(),
-                  SizedBox(
-                    height: 20,
-                  ),
+                  if (compressedImagesPath.length != 0)
+                    SizedBox(
+                      height: 20,
+                    ),
                   if (compressedImagesPath.length != 0)
                     Center(
                       child: Text("Long press the image to delete"),
@@ -605,9 +710,10 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                         onPressed: clearImages,
                       ),
                   ]),
-                  SizedBox(
-                    height: 20,
-                  ),
+                  if (error != null)
+                    SizedBox(
+                      height: 10,
+                    ),
                   if (error != null)
                     Center(
                       child: Text(
@@ -616,7 +722,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                       ),
                     ),
                   SizedBox(
-                    height: 20,
+                    height: 5,
                   ),
                   Center(
                     child: ElevatedButton(

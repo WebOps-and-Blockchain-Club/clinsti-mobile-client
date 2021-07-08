@@ -12,9 +12,7 @@ class ComplaintTile extends StatelessWidget {
     }
     try {
       var obj = jsonDecode(loc);
-      // ignore: unnecessary_statements
-      obj['Latitude'];
-      return "Location";
+      return obj["landmark"] ?? "Unknown";
     } catch (e) {
       return loc;
     }

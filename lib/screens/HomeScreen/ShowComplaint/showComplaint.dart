@@ -484,8 +484,6 @@ class _ShowComplaintState extends State<ShowComplaint> {
   Widget _getLocationWidget(String loc, BuildContext context) {
     try {
       var obj = jsonDecode(loc);
-      // ignore: unnecessary_statements
-      obj['Latitude'];
       return GestureDetector(
         onTap: () {
           Navigator.push(
@@ -507,8 +505,9 @@ class _ShowComplaintState extends State<ShowComplaint> {
           child: Row(
             children: [
               Icon(Icons.location_on),
-              Text("Location",
-                  style: TextStyle(
+              Text(
+                obj["landmark"] ?? "Unknown",
+                style: TextStyle(
                       color: Colors.blue,
                       decoration: TextDecoration.underline)),
             ],
