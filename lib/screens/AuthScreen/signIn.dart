@@ -2,6 +2,8 @@ import 'package:app_client/services/auth.dart';
 import 'package:app_client/widgets/formErrorMessage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:app_client/screens/AuthScreen/forgotpassword.dart';
 
 class SignIn extends StatefulWidget {
   final Function toggleView;
@@ -56,27 +58,18 @@ class _SignInState extends State<SignIn> {
                                 ),
                                 child: Column(
                                   children: [
-                                    Row(
-                                      children: [
-                                        Expanded(
-                                            child: Container(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: 40),
-                                          color: Colors.white,
-                                        )),
-                                      ],
+                                    SizedBox(
+                                      height: 90,
                                     ),
                                     Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 20,
-                                        vertical: 80,
-                                      ),
-                                      decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          image: DecorationImage(
-                                              image:
-                                                  AssetImage('assets/82.png'),
-                                              fit: BoxFit.cover)),
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.15,
+                                      child: SvgPicture.asset(
+                                          'assets/clinsti_logo-01.svg'),
+                                    ),
+                                    SizedBox(
+                                      height: 40,
                                     ),
                                     Text(
                                       'Welcome Back! ',
@@ -221,17 +214,10 @@ class _SignInState extends State<SignIn> {
                                                           child: TextFormField(
                                                             decoration:
                                                                 InputDecoration(
-                                                                    focusedErrorBorder: const OutlineInputBorder(
-                                                                        borderSide: const BorderSide(
-                                                                            color: Colors
-                                                                                .red,
-                                                                            width:
-                                                                                2),
-                                                                        borderRadius: BorderRadius.all(const Radius.circular(
-                                                                            10.0))),
-                                                                    errorStyle: TextStyle(
-                                                                        height:
-                                                                            0),
+                                                                    errorStyle:
+                                                                        TextStyle(
+                                                                            height:
+                                                                                0),
                                                                     prefixIcon:
                                                                         Icon(
                                                                       Icons
@@ -251,10 +237,15 @@ class _SignInState extends State<SignIn> {
                                                                             10.0))),
                                                                     enabledBorder: const OutlineInputBorder(
                                                                         borderSide: const BorderSide(
-                                                                            color: Colors.white,
-                                                                            width: 0.0),
-                                                                        borderRadius: BorderRadius.all(const Radius.circular(10.0))),
-                                                                    border: new OutlineInputBorder(
+                                                                            color: Colors
+                                                                                .white,
+                                                                            width:
+                                                                                0.0),
+                                                                        borderRadius:
+                                                                            BorderRadius.all(const Radius.circular(
+                                                                                10.0))),
+                                                                    border:
+                                                                        new OutlineInputBorder(
                                                                       borderRadius:
                                                                           const BorderRadius
                                                                               .all(
@@ -262,7 +253,8 @@ class _SignInState extends State<SignIn> {
                                                                             10.0),
                                                                       ),
                                                                     ),
-                                                                    suffixIcon: IconButton(
+                                                                    suffixIcon:
+                                                                        IconButton(
                                                                       icon:
                                                                           Icon(
                                                                         _obscureText
@@ -311,6 +303,32 @@ class _SignInState extends State<SignIn> {
                                                       ],
                                                     ),
                                                   ],
+                                                ),
+                                                SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Padding(
+                                                  padding: EdgeInsets.only(
+                                                      left: 220),
+                                                  child: GestureDetector(
+                                                    onTap: () {
+                                                      try {
+                                                        Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        ForgotPassword()));
+                                                      } catch (e) {
+                                                        print(e.toString());
+                                                      }
+                                                    },
+                                                    child: Text(
+                                                      'Forgot Password?',
+                                                      style: TextStyle(
+                                                          color: Colors.green),
+                                                    ),
+                                                  ),
                                                 ),
                                                 SizedBox(height: 15.0),
                                                 Center(

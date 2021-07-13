@@ -2,6 +2,7 @@ import 'package:app_client/services/auth.dart';
 import 'package:app_client/widgets/formErrorMessage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SignUp extends StatefulWidget {
   final Function toggleView;
@@ -61,25 +62,17 @@ class _SignUpState extends State<SignUp> {
                           ),
                           child: Column(
                             children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                      child: Container(
-                                    padding: EdgeInsets.symmetric(vertical: 20),
-                                    color: Colors.white,
-                                  )),
-                                ],
+                              SizedBox(
+                                height: 70,
                               ),
                               Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                  vertical: 70,
-                                ),
-                                decoration: BoxDecoration(
-                                    color: Colors.white,
-                                    image: DecorationImage(
-                                        image: AssetImage('assets/82.png'),
-                                        fit: BoxFit.cover)),
+                                height:
+                                    MediaQuery.of(context).size.height * 0.15,
+                                child: SvgPicture.asset(
+                                    'assets/clinsti_logo-01.svg'),
+                              ),
+                              SizedBox(
+                                height: 30,
                               ),
                               Text(
                                 'Welcome',
@@ -304,15 +297,10 @@ class _SignUpState extends State<SignUp> {
                                                     child: TextFormField(
                                                       decoration:
                                                           InputDecoration(
-                                                              focusedErrorBorder: const OutlineInputBorder(
-                                                                  borderSide: const BorderSide(
-                                                                      color: Colors
-                                                                          .red,
-                                                                      width: 2),
-                                                                  borderRadius: BorderRadius.all(const Radius.circular(
-                                                                      10.0))),
-                                                              errorStyle: TextStyle(
-                                                                  height: 0),
+                                                              errorStyle:
+                                                                  TextStyle(
+                                                                      height:
+                                                                          0),
                                                               prefixIcon: Icon(
                                                                 Icons
                                                                     .create_rounded,
@@ -327,15 +315,21 @@ class _SignUpState extends State<SignUp> {
                                                                           .green,
                                                                       width:
                                                                           2.0),
-                                                                  borderRadius: BorderRadius.all(
-                                                                      const Radius.circular(
-                                                                          10.0))),
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          const Radius.circular(
+                                                                              10.0))),
                                                               enabledBorder: const OutlineInputBorder(
                                                                   borderSide: const BorderSide(
-                                                                      color: Colors.white,
-                                                                      width: 0.0),
-                                                                  borderRadius: BorderRadius.all(const Radius.circular(10.0))),
-                                                              border: new OutlineInputBorder(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      width:
+                                                                          0.0),
+                                                                  borderRadius:
+                                                                      BorderRadius.all(const Radius.circular(
+                                                                          10.0))),
+                                                              border:
+                                                                  new OutlineInputBorder(
                                                                 borderRadius:
                                                                     const BorderRadius
                                                                         .all(
@@ -344,7 +338,8 @@ class _SignUpState extends State<SignUp> {
                                                                       10.0),
                                                                 ),
                                                               ),
-                                                              suffixIcon: IconButton(
+                                                              suffixIcon:
+                                                                  IconButton(
                                                                 icon: Icon(
                                                                   _obscureText1
                                                                       ? Icons
@@ -413,15 +408,10 @@ class _SignUpState extends State<SignUp> {
                                                     child: TextFormField(
                                                       decoration:
                                                           InputDecoration(
-                                                              focusedErrorBorder: const OutlineInputBorder(
-                                                                  borderSide: const BorderSide(
-                                                                      color: Colors
-                                                                          .red,
-                                                                      width: 2),
-                                                                  borderRadius: BorderRadius.all(const Radius.circular(
-                                                                      10.0))),
-                                                              errorStyle: TextStyle(
-                                                                  height: 0),
+                                                              errorStyle:
+                                                                  TextStyle(
+                                                                      height:
+                                                                          0),
                                                               prefixIcon: Icon(
                                                                 Icons
                                                                     .create_rounded,
@@ -429,22 +419,28 @@ class _SignUpState extends State<SignUp> {
                                                                     .green,
                                                               ),
                                                               hintText:
-                                                                  'Password',
+                                                                  'Confirm Password',
                                                               focusedBorder: const OutlineInputBorder(
                                                                   borderSide: const BorderSide(
                                                                       color: Colors
                                                                           .green,
                                                                       width:
                                                                           2.0),
-                                                                  borderRadius: BorderRadius.all(
-                                                                      const Radius.circular(
-                                                                          10.0))),
+                                                                  borderRadius:
+                                                                      BorderRadius.all(
+                                                                          const Radius.circular(
+                                                                              10.0))),
                                                               enabledBorder: const OutlineInputBorder(
                                                                   borderSide: const BorderSide(
-                                                                      color: Colors.white,
-                                                                      width: 0.0),
-                                                                  borderRadius: BorderRadius.all(const Radius.circular(10.0))),
-                                                              border: new OutlineInputBorder(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      width:
+                                                                          0.0),
+                                                                  borderRadius:
+                                                                      BorderRadius.all(const Radius.circular(
+                                                                          10.0))),
+                                                              border:
+                                                                  new OutlineInputBorder(
                                                                 borderRadius:
                                                                     const BorderRadius
                                                                         .all(
@@ -453,7 +449,8 @@ class _SignUpState extends State<SignUp> {
                                                                       10.0),
                                                                 ),
                                                               ),
-                                                              suffixIcon: IconButton(
+                                                              suffixIcon:
+                                                                  IconButton(
                                                                 icon: Icon(
                                                                   _obscureText2
                                                                       ? Icons
