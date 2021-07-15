@@ -6,6 +6,7 @@ import 'package:app_client/services/auth.dart';
 import "package:flutter/material.dart";
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_svg_provider/flutter_svg_provider.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -57,8 +58,10 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
-        leading: Icon(Icons.help_outline),
-        title: Text("CLinsti"),
+        leading: ImageIcon(
+          Svg('assets/clinsti_logo-01.svg'),
+          size: 45,
+        ),
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 5),
