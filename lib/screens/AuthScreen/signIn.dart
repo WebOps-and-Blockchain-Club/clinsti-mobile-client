@@ -340,29 +340,30 @@ class _SignInState extends State<SignIn> with TickerProviderStateMixin {
                                                 ),
                                                 FadeAnimation(
                                                   3750,
-                                                  Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 220),
-                                                    child: GestureDetector(
-                                                      onTap: () {
-                                                        try {
-                                                          Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          ForgotPassword()));
-                                                        } catch (e) {
-                                                          print(e.toString());
-                                                        }
-                                                      },
-                                                      child: Text(
-                                                        'Forgot Password?',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.green),
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.end,
+                                                    children: [
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          try {
+                                                            Navigator.push(
+                                                                context,
+                                                                MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            ForgotPassword(auth: auth,)));
+                                                          } catch (e) {
+                                                            print(e.toString());
+                                                          }
+                                                        },
+                                                        child: Text(
+                                                          'Forgot Password?',
+                                                          style: TextStyle(
+                                                              color:
+                                                                  Colors.green),
+                                                        ),
                                                       ),
-                                                    ),
+                                                    ],
                                                   ),
                                                 ),
                                                 SizedBox(height: 15.0),

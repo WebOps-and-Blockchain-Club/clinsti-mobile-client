@@ -124,6 +124,26 @@ class AuthService extends ChangeNotifier {
     }
   }
 
+  Future<String> getOTP( String email) async {
+    try {
+      dynamic obj = await http.getOtp(email);
+      return obj["message"];
+    } catch (e) {
+      throw(e);
+    }
+  }
+
+  Future resetPassword(String email, String otp, String password) async {
+    try{
+      dynamic obj = await http.resetPassword(email, otp, password);
+      print('My password reset by janithmsmm19b035'+obj.toString());
+      _setToken(obj['message']);
+    }
+    catch(e) {
+      throw(e);
+    }
+  }
+
   Future signOut() async {
     await _resetUser();
   }

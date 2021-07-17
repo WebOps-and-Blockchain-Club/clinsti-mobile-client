@@ -2,30 +2,92 @@ import 'package:flutter/material.dart';
 import 'package:app_client/services/auth.dart';
 import 'package:flutter/rendering.dart';
 import 'package:app_client/widgets/formErrorMessage.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:timer_button/timer_button.dart';
 
 class ForgotPassword extends StatefulWidget {
+  final AuthService auth;
+  ForgotPassword({this.auth});
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();
 }
 
 class _ForgotPasswordState extends State<ForgotPassword> {
   final TextEditingController _email = TextEditingController();
+  final TextEditingController _otp = TextEditingController();
   final TextEditingController _password = TextEditingController();
   final TextEditingController _confirmpass = TextEditingController();
   bool otpsent = false;
   bool otpsubmit = false;
   bool _obscureText1 = true;
   bool _obscureText2 = true;
+  bool loading = false;
+  String error;
   String emailerror;
+  String otperror;
   String passerror;
   String confirmpasserror;
   final _formKey = GlobalKey<FormState>();
 
+  _getOTP(AuthService auth) async {
+    setState(() {
+      loading = true;
+      error = null;
+    });
+    try {
+      await auth.getOTP(_email.text);
+      setState(() {
+        otpsent = true;
+        loading = false;
+      });
+      Fluttertoast.showToast(
+          msg: "OTP Sent!",
+          toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 14.0);
+    } catch (e) {
+      setState(() {
+        error = e.toString();
+        loading = false;
+      });
+    }
+  }
+
+  _resetPassword(AuthService auth) async {
+    setState(() {
+      loading = true;
+      error = null;
+    });
+    try {
+      await auth.resetPassword(_email.text, _otp.text, _password.text);
+      Navigator.pop(context);
+      Fluttertoast.showToast(
+          msg: "Password Updated",
+          toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 14.0);
+    } catch (e) {
+      setState(() {
+        error = e.toString();
+      });
+    }
+    setState(() {
+      loading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      backgroundColor: Colors.white,
+      body: loading
+        ? Center(
+            child: CircularProgressIndicator(),
+          )
+        :  Column(
         children: [
           Container(
             width: double.infinity,
@@ -50,7 +112,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               SizedBox(
-                                height: 120,
+                                height: 60,
                               ),
                               Text(
                                 'Change Password ',
@@ -249,11 +311,22 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                     elevation: MaterialStateProperty.all(10),
                                   ),
                                   child: Text('Submit'),
-                                  onPressed: () {
-                                    Navigator.pop(context);
+                                  onPressed: () async {
+                                    if(_formKey.currentState.validate()){
+                                      await _resetPassword(widget.auth);
+                                    }
                                   },
                                 ),
+                              ),
+                            SizedBox(height: 6.0),
+                            error != null
+                            ? Text(
+                                error,
+                                style: TextStyle(
+                                    color: Colors.red),
+                                textAlign: TextAlign.center,
                               )
+                            : SizedBox(),
                             ],
                           )
                         : Column(
@@ -320,6 +393,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                 ),
                               ),
                               SizedBox(
+                                height: 8,
+                              ),
+                              errorMessages(emailerror),
+                              SizedBox(
                                 height: 20,
                               ),
                               otpsent
@@ -334,8 +411,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                           child: TextFormField(
                                             decoration: InputDecoration(
                                               errorStyle: TextStyle(height: 0),
-                                              prefixIcon: ImageIcon(
-                                                AssetImage('assets/otp.png'),
+                                              prefixIcon: Icon(
+                                                MdiIcons.messageCog,
                                                 color: Colors.green,
                                               ),
                                               focusedBorder:
@@ -367,18 +444,43 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                               hintText: 'OTP',
                                             ),
                                             maxLines: null,
+                                            controller: _otp,
+                                            validator: (val) {
+                                              if (val.isEmpty) {
+                                                setState(() {
+                                                  otperror = 'Please Enter OTP';
+                                                });
+                                                return '';
+                                              } else {
+                                                setState(() {
+                                                  otperror = null;
+                                                });
+                                                return null;
+                                              }
+                                            },
                                           ),
                                         ),
                                         SizedBox(
-                                          height: 20,
+                                          height: 4,
                                         ),
-                                        Center(
-                                          child: TimerButton(
-                                            label: "Resend OTP",
-                                            timeOutInSeconds: 15,
-                                            color: Colors.green,
-                                            onPressed: () {},
-                                          ),
+                                        errorMessages(otperror),
+                                        SizedBox(
+                                          height: 4,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            TimerButton(
+                                              label: "Resend OTP",
+                                              timeOutInSeconds: 30,
+                                              color: null,
+                                              activeTextStyle: TextStyle(color: Colors.green),
+                                              buttonType: ButtonType.FlatButton,
+                                              onPressed: () async {
+                                                await _getOTP(widget.auth);
+                                              },
+                                            ),
+                                          ],
                                         ),
                                         SizedBox(
                                           height: 20,
@@ -394,9 +496,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                             ),
                                             child: Text('Submit OTP'),
                                             onPressed: () {
-                                              setState(() {
-                                                otpsubmit = true;
-                                              });
+                                              if(_formKey.currentState.validate()){
+                                                setState(() {
+                                                  otpsubmit = true;
+                                                });
+                                              }
                                             },
                                           ),
                                         )
@@ -415,13 +519,22 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                           'Send OTP',
                                           style: TextStyle(color: Colors.white),
                                         ),
-                                        onPressed: () {
-                                          setState(() {
-                                            otpsent = true;
-                                          });
+                                        onPressed: () async {
+                                          if(_formKey.currentState.validate()) {
+                                            await _getOTP(widget.auth);
+                                          }
                                         },
                                       ),
                                     ),
+                            SizedBox(height: 6.0),
+                            error != null
+                            ? Text(
+                                error,
+                                style: TextStyle(
+                                    color: Colors.red),
+                                textAlign: TextAlign.center,
+                              )
+                            : SizedBox(),
                             ],
                           ),
                   ),

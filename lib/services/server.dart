@@ -146,6 +146,50 @@ class Server {
       throw(e);
     }
   }
+  ///otp request
+  Future<dynamic> getOtp( String email ) async {
+    await init();
+    var headers = {...jsonHead};
+    var request = http.Request('GET', Uri.parse('$baseUrl/client/accounts/resetpassword'));
+    request.body = '{"email": "$email"}';
+    request.headers.addAll(headers);
+
+    try{
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        return jsonDecode(await response.stream.bytesToString());
+      } else {
+          throw (await response.stream.bytesToString());
+      }
+    } on SocketException {
+      throw('server error');
+    } catch(e){
+      throw(e);
+    }
+  }
+
+  ///reset password
+  Future<dynamic> resetPassword( String email, String otp, String password ) async {
+    await init();
+    var headers = {...jsonHead};
+    var request =
+        http.Request('POST', Uri.parse('$baseUrl/client/accounts/resetpassword'));
+    request.body = '{"email": "$email", "otp": "$otp",   "password": "$password"}';
+    request.headers.addAll(headers);
+    
+    try{
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        return jsonDecode(await response.stream.bytesToString());
+      } else  {
+          throw (await response.stream.bytesToString());
+      }
+    } on SocketException {
+      throw('server error');
+    } catch(e){
+      throw(e);
+    }
+  }
 
   ////Complaints Requests
 
