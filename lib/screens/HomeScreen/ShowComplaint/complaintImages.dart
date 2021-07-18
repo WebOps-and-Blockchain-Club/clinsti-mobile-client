@@ -47,11 +47,19 @@ class _ComplaintImagesState extends State<ComplaintImages> {
   @override
   Widget build(BuildContext context) {
     if(error != null)
-      return Center(
-        child: Text("Oops! Something went wrong!"),
+      return Scaffold(
+        body: Center(
+          child: Text(
+            "Oops! Something went wrong!",
+            style: TextStyle(
+                color: Colors.red,
+                fontSize: 19,
+                fontWeight: FontWeight.bold),
+          )
+        ),
       );
     return Scaffold(
-      body: loading? Center(child: CircularProgressIndicator(),): Container(
+      body: loading ? Center(child: CircularProgressIndicator(),): Container(
                   child: ListView.builder(
                     itemCount: imageString.length,
                     scrollDirection: Axis.vertical,

@@ -133,12 +133,28 @@ class _ShowComplaintState extends State<ShowComplaint> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     if (error != null)
-      return Center(
-        child: Text("Oops! Something went wrong!"),
+      return Scaffold(
+        body: Center(
+          child: Text(
+            "Oops! Something went wrong!",
+            style: TextStyle(
+                color: Colors.red,
+                fontSize: 19,
+                fontWeight: FontWeight.bold),
+          ),
+        ),
       );
     if (complaint == null)
-      return Center(
-        child: Text("No data found"),
+      return Scaffold(
+        body: Center(
+          child: Text(
+            "No data found",
+            style: TextStyle(
+                color: Colors.red,
+                fontSize: 19,
+                fontWeight: FontWeight.bold),
+          ),
+        ),
       );
     return Scaffold(
       body: loading

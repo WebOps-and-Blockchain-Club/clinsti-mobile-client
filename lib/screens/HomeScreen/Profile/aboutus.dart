@@ -14,7 +14,6 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double height = MediaQuery.of(context).size.height;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -39,47 +38,43 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Column(
-                  children: [
-                    Text(
-                      content,
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 15,
-                      ),
-                      maxLines: readmore ? null : 15,
-                    ),
-                    readmore
-                      ? Align(
-                        alignment: Alignment.centerRight,
-                        child: GestureDetector(
-                            child: Text(
-                              'Read less',
-                              style: TextStyle(color: Colors.blue),
-                              ),
-                            onTap: () {
-                              setState(() {
-                                readmore = false;
-                              });
-                            },
-                          ),
-                      )
-                      : Align(
-                        alignment: Alignment.centerRight,
-                        child: GestureDetector(
-                            child: Text(
-                              'Read more...',
-                              style: TextStyle(color: Colors.blue),
-                              ),
-                            onTap: () {
-                              setState(() {
-                                readmore = true;
-                              });
-                            },
-                          ),
-                      )
-                  ],
+                Text(
+                  content,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 15,
+                  ),
+                  maxLines: readmore ? null : 15,
                 ),
+                readmore
+                  ? Align(
+                    alignment: Alignment.centerRight,
+                    child: GestureDetector(
+                        child: Text(
+                          'Read less',
+                          style: TextStyle(color: Colors.blue),
+                          ),
+                        onTap: () {
+                          setState(() {
+                            readmore = false;
+                          });
+                        },
+                      ),
+                  )
+                  : Align(
+                    alignment: Alignment.centerRight,
+                    child: GestureDetector(
+                        child: Text(
+                          'Read more...',
+                          style: TextStyle(color: Colors.blue),
+                          ),
+                        onTap: () {
+                          setState(() {
+                            readmore = true;
+                          });
+                        },
+                      ),
+                  ),
                 SizedBox(
                   height: 20,
                 ),
@@ -183,7 +178,7 @@ class _AboutUsScreenState extends State<AboutUsScreen> {
                   height: 10,
                 ),
                 Container(
-                  height: height*0.2,
+                  height: 160,
                   child: GestureDetector(
                     onTap: () {
                       launch(

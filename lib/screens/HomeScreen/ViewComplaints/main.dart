@@ -52,7 +52,19 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
   Widget build(BuildContext context) {
     return (_db == null) ? 
       CircularProgressIndicator() : 
-      Container(
+      ((_db.complaintS.length ==0) 
+      ?  Scaffold(
+        body: Center(
+          child: Text(
+            "No Complaints Registered Yet!",
+            style: TextStyle(
+                color: Colors.green,
+                fontSize: 19,
+                fontWeight: FontWeight.bold),
+          ),
+        ),
+      )
+      : Container(
         padding: EdgeInsets.symmetric(horizontal: 5.0),
         width: MediaQuery.of(context).size.width,
         //color: Colors.blue[100],
@@ -187,6 +199,6 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
               ),
           ],
         ),
-      );
+      ));
   }
 }
