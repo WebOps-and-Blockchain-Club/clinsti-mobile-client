@@ -18,7 +18,7 @@ class NewComplaintScreen extends StatefulWidget {
   _NewComplaintScreenState createState() => _NewComplaintScreenState();
 }
 
-class _NewComplaintScreenState extends State<NewComplaintScreen> {
+class _NewComplaintScreenState extends State<NewComplaintScreen> with WidgetsBindingObserver {
   TextEditingController compLocation = TextEditingController();
   TextEditingController compDescription = TextEditingController();
   TextEditingController compLandmark = TextEditingController();
@@ -85,7 +85,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
         geoLoc = true;
       });
     }
-    storeRequest();
+    //storeRequest();
   }
 
   getStoredRequest() async {
@@ -132,6 +132,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _db = Provider.of<DatabaseService>(context, listen: false);
     });
@@ -204,17 +205,35 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
         _landmarkfocused = _landmarknode.hasFocus;
       });
     }
-    storeRequest();
+    //storeRequest();
   }
 
   @override
   void dispose() {
+    storeRequest();
+    WidgetsBinding.instance.removeObserver(this);
     _descnode.dispose();
     _locationnode.dispose();
     _landmarknode.dispose();
     _zonenode.dispose();
     _wastenode.dispose();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) return;
+
+    final isBackground = state == AppLifecycleState.paused;
+
+    if (isBackground) {
+      storeRequest();
+    } else {
+      getStoredRequest();
+    }
   }
 
   @override
@@ -536,7 +555,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                             onChanged: (String newValue) {
                               setState(() {
                                 zoneValue = newValue;
-                                storeRequest();
+                                //storeRequest();
                               });
                             },
                             items: zones
@@ -629,7 +648,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                               onChanged: (String newValue) {
                                 setState(() {
                                   typeValue = newValue;
-                                  storeRequest();
+                                  //storeRequest();
                                 });
                               },
                               items: types.map<DropdownMenuItem<String>>(
@@ -764,7 +783,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
                 setState(() {
                   compressedImagesPath.removeAt(index);
                 });
-                storeRequest();
+                //storeRequest();
                 print(img);
                 deleteImageFile(img);
               },
@@ -791,7 +810,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
   void clearImages() {
     setState(() {
       compressedImagesPath.removeRange(0, compressedImagesPath.length);
-      storeRequest();
+      //storeRequest();
     });
     compressedImagesPath.forEach(
       (_img) async {
@@ -881,7 +900,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> {
       temp = await compressImage(temp);
       compressedImagesPath.add(temp.path);
     }
-    storeRequest();
+    //storeRequest();
     setState(() {
       imgLoading = false;
       images = [];
