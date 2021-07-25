@@ -609,8 +609,6 @@ class _SignUpState extends State<SignUp> {
                       Image(
                         image: AssetImage(
                             'assets/CFI_Logo.png'),
-                        width: 30,
-                        height: 30,
                       ),
                     ],
                   ),

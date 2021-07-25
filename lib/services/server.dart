@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Server {
   String baseUrl =
-      "http://ec2-15-206-1-172.ap-south-1.compute.amazonaws.com:9000"; 
+      "http://localhost:9000"; //TODO: Add server URI here
   final String signup = "/client/accounts/signup";
   final String signin = '/client/accounts/signin';
   var jsonHead = {'Content-Type': 'application/json'};
