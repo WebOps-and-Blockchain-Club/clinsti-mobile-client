@@ -1,7 +1,5 @@
 import 'dart:ui';
-
 import 'package:app_client/services/auth.dart';
-
 import 'package:app_client/widgets/formErrorMessage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -38,6 +36,13 @@ class _SignInState extends State<SignIn> {
       setState(() {
         error = e.toString();
       });
+      final snackBar = SnackBar(
+        content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text(error)]),
+        backgroundColor: Colors.red,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
     setState(() {
       loading = false;
@@ -50,7 +55,7 @@ class _SignInState extends State<SignIn> {
         builder: (context, auth, child) => Scaffold(
               body: loading
                   ? Center(
-                      child: CircularProgressIndicator(),
+                      child: CircularProgressIndicator(color: Colors.green),
                     )
                   : Column(
                       children: [
@@ -68,12 +73,10 @@ class _SignInState extends State<SignIn> {
                                     height: 90,
                                   ),
                                   Container(
-                                    height:
-                                        MediaQuery.of(context).size.height *
-                                            0.2,
+                                    height: MediaQuery.of(context).size.height *
+                                        0.2,
                                     width:
-                                        MediaQuery.of(context).size.width *
-                                            0.6,
+                                        MediaQuery.of(context).size.width * 0.6,
                                     decoration: BoxDecoration(
                                         color: Colors.white,
                                         image: DecorationImage(
@@ -119,51 +122,50 @@ class _SignInState extends State<SignIn> {
                                                     decoration: BoxDecoration(
                                                       color: Colors.white,
                                                       borderRadius:
-                                                          BorderRadius
-                                                              .circular(10),
+                                                          BorderRadius.circular(
+                                                              10),
                                                     )),
                                                 Column(
                                                   children: [
                                                     Material(
                                                       elevation: 20.0,
-                                                      shadowColor:
-                                                          Colors.white,
+                                                      shadowColor: Colors.white,
                                                       color: Colors.white,
-                                                      borderRadius:
-                                                          BorderRadius.all(
-                                                              const Radius
-                                                                      .circular(
-                                                                  10.0)),
+                                                      borderRadius: BorderRadius
+                                                          .all(const Radius
+                                                              .circular(10.0)),
                                                       child: TextFormField(
                                                         decoration:
                                                             InputDecoration(
-                                                          errorStyle:
-                                                              TextStyle(
-                                                                  height:
-                                                                      0),
+                                                          errorStyle: TextStyle(
+                                                              height: 0),
                                                           prefixIcon: Icon(
                                                               Icons.email,
-                                                              color: Colors
-                                                                  .green),
+                                                              color:
+                                                                  Colors.green),
                                                           focusedBorder: const OutlineInputBorder(
-                                                              borderSide: const BorderSide(
-                                                                  color: Colors
-                                                                      .green,
-                                                                  width:
-                                                                      2.0),
+                                                              borderSide:
+                                                                  const BorderSide(
+                                                                      color: Colors
+                                                                          .green,
+                                                                      width:
+                                                                          2.0),
                                                               borderRadius:
                                                                   BorderRadius.all(
-                                                                      const Radius.circular(
+                                                                      const Radius
+                                                                              .circular(
                                                                           10.0))),
                                                           enabledBorder: const OutlineInputBorder(
-                                                              borderSide: const BorderSide(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  width:
-                                                                      0.0),
+                                                              borderSide:
+                                                                  const BorderSide(
+                                                                      color: Colors
+                                                                          .white,
+                                                                      width:
+                                                                          0.0),
                                                               borderRadius:
                                                                   BorderRadius.all(
-                                                                      const Radius.circular(
+                                                                      const Radius
+                                                                              .circular(
                                                                           10.0))),
                                                           border:
                                                               new OutlineInputBorder(
@@ -188,8 +190,7 @@ class _SignInState extends State<SignIn> {
                                                             return '';
                                                           } else {
                                                             setState(() {
-                                                              emailerror =
-                                                                  null;
+                                                              emailerror = null;
                                                             });
                                                             return null;
                                                           }
@@ -208,8 +209,7 @@ class _SignInState extends State<SignIn> {
                                                 children: [
                                                   Container(
                                                       height: 70,
-                                                      decoration:
-                                                          BoxDecoration(
+                                                      decoration: BoxDecoration(
                                                         color: Colors.white,
                                                         borderRadius:
                                                             BorderRadius
@@ -221,26 +221,25 @@ class _SignInState extends State<SignIn> {
                                                         elevation: 20.0,
                                                         shadowColor:
                                                             Colors.white,
-                                                        color:
-                                                            Colors.white,
+                                                        color: Colors.white,
                                                         borderRadius:
                                                             BorderRadius.all(
                                                                 const Radius
                                                                         .circular(
                                                                     10.0)),
-                                                        child:
-                                                            TextFormField(
+                                                        child: TextFormField(
                                                           decoration:
                                                               InputDecoration(
-                                                                  errorStyle: TextStyle(
-                                                                      height:
-                                                                          0),
+                                                                  errorStyle:
+                                                                      TextStyle(
+                                                                          height:
+                                                                              0),
                                                                   prefixIcon:
                                                                       Icon(
                                                                     Icons
                                                                         .create_rounded,
-                                                                    color:
-                                                                        Colors.green,
+                                                                    color: Colors
+                                                                        .green,
                                                                   ),
                                                                   hintText:
                                                                       'Password',
@@ -250,55 +249,59 @@ class _SignInState extends State<SignIn> {
                                                                               .green,
                                                                           width:
                                                                               2.0),
-                                                                      borderRadius: BorderRadius.all(const Radius.circular(
-                                                                          10.0))),
+                                                                      borderRadius: BorderRadius.all(
+                                                                          const Radius.circular(
+                                                                              10.0))),
                                                                   enabledBorder: const OutlineInputBorder(
                                                                       borderSide: const BorderSide(
                                                                           color: Colors
                                                                               .white,
                                                                           width:
                                                                               0.0),
-                                                                      borderRadius: BorderRadius.all(const Radius.circular(
-                                                                          10.0))),
+                                                                      borderRadius:
+                                                                          BorderRadius.all(const Radius.circular(
+                                                                              10.0))),
                                                                   border:
                                                                       new OutlineInputBorder(
                                                                     borderRadius:
-                                                                        const BorderRadius.all(
-                                                                      const Radius.circular(10.0),
+                                                                        const BorderRadius
+                                                                            .all(
+                                                                      const Radius
+                                                                              .circular(
+                                                                          10.0),
                                                                     ),
                                                                   ),
                                                                   suffixIcon:
                                                                       IconButton(
-                                                                    icon:
-                                                                        Icon(
+                                                                    icon: Icon(
                                                                       _obscureText
-                                                                          ? Icons.visibility
-                                                                          : Icons.visibility_off,
-                                                                      color:
-                                                                          Colors.grey[600],
+                                                                          ? Icons
+                                                                              .visibility
+                                                                          : Icons
+                                                                              .visibility_off,
+                                                                      color: Colors
+                                                                              .grey[
+                                                                          600],
                                                                     ),
                                                                     onPressed:
                                                                         () {
-                                                                      setState(() {
-                                                                        _obscureText = !_obscureText;
+                                                                      setState(
+                                                                          () {
+                                                                        _obscureText =
+                                                                            !_obscureText;
                                                                       });
                                                                     },
                                                                   )),
-                                                          controller:
-                                                              _password,
-                                                          validator:
-                                                              (val) {
-                                                            if (val
-                                                                .isEmpty) {
-                                                              setState(
-                                                                  () {
+                                                          controller: _password,
+                                                          validator: (val) {
+                                                            if (val.isEmpty) {
+                                                              setState(() {
                                                                 passerror =
                                                                     'Enter your Password';
                                                               });
                                                               return '';
                                                             } else {
-                                                              setState(
-                                                                  () {
+                                                              setState(() {
                                                                 passerror =
                                                                     null;
                                                               });
@@ -312,8 +315,7 @@ class _SignInState extends State<SignIn> {
                                                       SizedBox(
                                                         height: 8,
                                                       ),
-                                                      errorMessages(
-                                                          passerror),
+                                                      errorMessages(passerror),
                                                     ],
                                                   ),
                                                 ],
@@ -322,7 +324,8 @@ class _SignInState extends State<SignIn> {
                                                 height: 5,
                                               ),
                                               Row(
-                                                mainAxisAlignment: MainAxisAlignment.end,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
                                                 children: [
                                                   GestureDetector(
                                                     onTap: () {
@@ -332,7 +335,10 @@ class _SignInState extends State<SignIn> {
                                                             MaterialPageRoute(
                                                                 builder:
                                                                     (context) =>
-                                                                        ForgotPassword(auth: auth,)));
+                                                                        ForgotPassword(
+                                                                          auth:
+                                                                              auth,
+                                                                        )));
                                                       } catch (e) {
                                                         print(e.toString());
                                                       }
@@ -340,8 +346,7 @@ class _SignInState extends State<SignIn> {
                                                     child: Text(
                                                       'Forgot Password?',
                                                       style: TextStyle(
-                                                          color:
-                                                              Colors.green),
+                                                          color: Colors.green),
                                                     ),
                                                   ),
                                                 ],
@@ -356,8 +361,7 @@ class _SignInState extends State<SignIn> {
                                                   style: ButtonStyle(
                                                     backgroundColor:
                                                         MaterialStateProperty
-                                                            .all(Colors
-                                                                .green),
+                                                            .all(Colors.green),
                                                     elevation:
                                                         MaterialStateProperty
                                                             .all(10),
@@ -365,12 +369,10 @@ class _SignInState extends State<SignIn> {
                                                   label: Text(
                                                     'Login',
                                                     style: TextStyle(
-                                                        color:
-                                                            Colors.white),
+                                                        color: Colors.white),
                                                   ),
                                                   onPressed: () async {
-                                                    if (_formKey
-                                                        .currentState
+                                                    if (_formKey.currentState
                                                         .validate()) {
                                                       await _signIn(auth);
                                                     }
@@ -378,31 +380,21 @@ class _SignInState extends State<SignIn> {
                                                 ),
                                               ),
                                               SizedBox(height: 6.0),
-                                              error != null
-                                                  ? Text(
-                                                      error,
-                                                      style: TextStyle(
-                                                          color: Colors.red),
-                                                    )
-                                                  : SizedBox(),
                                               SizedBox(
                                                 height: 20,
                                               ),
                                               Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .center,
+                                                    MainAxisAlignment.center,
                                                 children: [
                                                   Text(
                                                       "Don't have an Account ? "),
                                                   GestureDetector(
-                                                    onTap:
-                                                        widget.toggleView,
+                                                    onTap: widget.toggleView,
                                                     child: Text(
                                                       "Sign Up",
                                                       style: TextStyle(
-                                                          color:
-                                                              Colors.green),
+                                                          color: Colors.green),
                                                     ),
                                                   )
                                                 ],
@@ -421,29 +413,30 @@ class _SignInState extends State<SignIn> {
                         ),
                       ],
                     ),
-                    bottomNavigationBar: Container(
-                      color: Colors.white,
-                      padding: EdgeInsets.symmetric(vertical: 10),
-                      height: MediaQuery.of(context).size.height*0.06,
-                      child: GestureDetector(
-                        onTap: () {
-                              launch(
-                                'http://cfi.iitm.ac.in',
-                              );
-                            },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text('Developed with ❤️ by  ',),
-                            Image(
-                              image: AssetImage(
-                                  'assets/CFI_Logo.png'),
-                            ),
-                          ],
-                        ),
+              bottomNavigationBar: Container(
+                color: Colors.white,
+                padding: EdgeInsets.symmetric(vertical: 10),
+                height: MediaQuery.of(context).size.height * 0.06,
+                child: GestureDetector(
+                  onTap: () {
+                    launch(
+                      'http://cfi.iitm.ac.in',
+                    );
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        'Developed with ❤️ by  ',
                       ),
-                    ),
+                      Image(
+                        image: AssetImage('assets/CFI_Logo.png'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ));
   }
 }

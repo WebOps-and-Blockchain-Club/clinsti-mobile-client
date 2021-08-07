@@ -37,6 +37,13 @@ class _SignUpState extends State<SignUp> {
       setState(() {
         error = e;
       });
+      final snackBar = SnackBar(
+        content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text(error)]),
+        backgroundColor: Colors.red,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
     setState(() {
       loading = false;
@@ -49,7 +56,7 @@ class _SignUpState extends State<SignUp> {
       builder: (context, auth, child) => Scaffold(
         body: loading
             ? Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(color: Colors.green),
               )
             : Column(
                 children: [
@@ -69,8 +76,7 @@ class _SignUpState extends State<SignUp> {
                               Container(
                                 height:
                                     MediaQuery.of(context).size.height * 0.15,
-                                width:
-                                    MediaQuery.of(context).size.width * 0.56,
+                                width: MediaQuery.of(context).size.width * 0.56,
                                 decoration: BoxDecoration(
                                     color: Colors.white,
                                     image: DecorationImage(
@@ -143,8 +149,7 @@ class _SignUpState extends State<SignUp> {
                                                                 const BorderSide(
                                                                     color: Colors
                                                                         .green,
-                                                                    width:
-                                                                        2.0),
+                                                                    width: 2.0),
                                                             borderRadius:
                                                                 BorderRadius.all(
                                                                     const Radius
@@ -155,8 +160,7 @@ class _SignUpState extends State<SignUp> {
                                                                 const BorderSide(
                                                                     color: Colors
                                                                         .white,
-                                                                    width:
-                                                                        0.0),
+                                                                    width: 0.0),
                                                             borderRadius:
                                                                 BorderRadius.all(
                                                                     const Radius
@@ -168,8 +172,7 @@ class _SignUpState extends State<SignUp> {
                                                               const BorderRadius
                                                                   .all(
                                                             const Radius
-                                                                    .circular(
-                                                                10.0),
+                                                                .circular(10.0),
                                                           ),
                                                         ),
                                                         hintText: 'Name',
@@ -215,18 +218,17 @@ class _SignUpState extends State<SignUp> {
                                                   elevation: 20.0,
                                                   shadowColor: Colors.white,
                                                   color: Colors.white,
-                                                  borderRadius: BorderRadius
-                                                      .all(const Radius
-                                                          .circular(10.0)),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          const Radius.circular(
+                                                              10.0)),
                                                   child: TextFormField(
-                                                    decoration:
-                                                        InputDecoration(
-                                                      errorStyle: TextStyle(
-                                                          height: 0),
+                                                    decoration: InputDecoration(
+                                                      errorStyle:
+                                                          TextStyle(height: 0),
                                                       prefixIcon: Icon(
                                                           Icons.email,
-                                                          color:
-                                                              Colors.green),
+                                                          color: Colors.green),
                                                       focusedBorder: const OutlineInputBorder(
                                                           borderSide:
                                                               const BorderSide(
@@ -254,8 +256,8 @@ class _SignUpState extends State<SignUp> {
                                                         borderRadius:
                                                             const BorderRadius
                                                                 .all(
-                                                          const Radius
-                                                              .circular(10.0),
+                                                          const Radius.circular(
+                                                              10.0),
                                                         ),
                                                       ),
                                                       hintText: 'Email',
@@ -308,10 +310,11 @@ class _SignUpState extends State<SignUp> {
                                                     child: TextFormField(
                                                       decoration:
                                                           InputDecoration(
-                                                              errorStyle: TextStyle(
-                                                                  height: 0),
-                                                              prefixIcon:
-                                                                  Icon(
+                                                              errorStyle:
+                                                                  TextStyle(
+                                                                      height:
+                                                                          0),
+                                                              prefixIcon: Icon(
                                                                 Icons
                                                                     .create_rounded,
                                                                 color: Colors
@@ -326,8 +329,9 @@ class _SignUpState extends State<SignUp> {
                                                                       width:
                                                                           2.0),
                                                                   borderRadius:
-                                                                      BorderRadius.all(const Radius.circular(
-                                                                          10.0))),
+                                                                      BorderRadius.all(
+                                                                          const Radius.circular(
+                                                                              10.0))),
                                                               enabledBorder: const OutlineInputBorder(
                                                                   borderSide: const BorderSide(
                                                                       color: Colors
@@ -359,10 +363,8 @@ class _SignUpState extends State<SignUp> {
                                                                           .grey[
                                                                       600],
                                                                 ),
-                                                                onPressed:
-                                                                    () {
-                                                                  setState(
-                                                                      () {
+                                                                onPressed: () {
+                                                                  setState(() {
                                                                     _obscureText1 =
                                                                         !_obscureText1;
                                                                   });
@@ -418,10 +420,11 @@ class _SignUpState extends State<SignUp> {
                                                     child: TextFormField(
                                                       decoration:
                                                           InputDecoration(
-                                                              errorStyle: TextStyle(
-                                                                  height: 0),
-                                                              prefixIcon:
-                                                                  Icon(
+                                                              errorStyle:
+                                                                  TextStyle(
+                                                                      height:
+                                                                          0),
+                                                              prefixIcon: Icon(
                                                                 Icons
                                                                     .create_rounded,
                                                                 color: Colors
@@ -436,8 +439,9 @@ class _SignUpState extends State<SignUp> {
                                                                       width:
                                                                           2.0),
                                                                   borderRadius:
-                                                                      BorderRadius.all(const Radius.circular(
-                                                                          10.0))),
+                                                                      BorderRadius.all(
+                                                                          const Radius.circular(
+                                                                              10.0))),
                                                               enabledBorder: const OutlineInputBorder(
                                                                   borderSide: const BorderSide(
                                                                       color: Colors
@@ -469,17 +473,14 @@ class _SignUpState extends State<SignUp> {
                                                                           .grey[
                                                                       600],
                                                                 ),
-                                                                onPressed:
-                                                                    () {
-                                                                  setState(
-                                                                      () {
+                                                                onPressed: () {
+                                                                  setState(() {
                                                                     _obscureText2 =
                                                                         !_obscureText2;
                                                                   });
                                                                 },
                                                               )),
-                                                      controller:
-                                                          _confirmpass,
+                                                      controller: _confirmpass,
                                                       validator: (val) {
                                                         if (val.isEmpty) {
                                                           setState(() {
@@ -487,8 +488,7 @@ class _SignUpState extends State<SignUp> {
                                                                 'Please Re-Enter New Password';
                                                           });
                                                           return '';
-                                                        } else if (val
-                                                                .length <
+                                                        } else if (val.length <
                                                             7) {
                                                           setState(() {
                                                             confirmpasserror =
@@ -552,13 +552,6 @@ class _SignUpState extends State<SignUp> {
                                             ),
                                           ),
                                           SizedBox(height: 6.0),
-                                          error != null
-                                              ? Text(
-                                                  error,
-                                                  style: TextStyle(
-                                                      color: Colors.red),
-                                                )
-                                              : SizedBox(),
                                           SizedBox(
                                             height: 20,
                                           ),
@@ -591,29 +584,30 @@ class _SignUpState extends State<SignUp> {
                   ),
                 ],
               ),
-              bottomNavigationBar: Container(
-                color: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 10),
-                height: MediaQuery.of(context).size.height*0.06,
-                child: GestureDetector(
-                  onTap: () {
-                        launch(
-                          'http://cfi.iitm.ac.in',
-                        );
-                      },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text('Developed with ❤️ by  ',),
-                      Image(
-                        image: AssetImage(
-                            'assets/CFI_Logo.png'),
-                      ),
-                    ],
-                  ),
+        bottomNavigationBar: Container(
+          color: Colors.white,
+          padding: EdgeInsets.symmetric(vertical: 10),
+          height: MediaQuery.of(context).size.height * 0.06,
+          child: GestureDetector(
+            onTap: () {
+              launch(
+                'http://cfi.iitm.ac.in',
+              );
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  'Developed with ❤️ by  ',
                 ),
-              ),
+                Image(
+                  image: AssetImage('assets/CFI_Logo.png'),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

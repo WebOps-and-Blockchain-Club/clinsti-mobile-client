@@ -52,6 +52,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         error = e.toString();
         loading = false;
       });
+      final snackBar = SnackBar(
+        content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text(error)]),
+        backgroundColor: Colors.red,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
   }
 
@@ -73,6 +80,13 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       setState(() {
         error = e.toString();
       });
+      final snackBar = SnackBar(
+        content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text(error)]),
+        backgroundColor: Colors.red,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
     setState(() {
       loading = false;
@@ -84,429 +98,252 @@ class _ForgotPasswordState extends State<ForgotPassword> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: loading
-        ? Center(
-            child: CircularProgressIndicator(),
-          )
-        :  Column(
-        children: [
-          Container(
-            width: double.infinity,
-            height: 120,
-            alignment: Alignment.centerLeft,
-            decoration: BoxDecoration(
-              color: Colors.white,
-            ),
-            child: BackButton(),
-          ),
-          Expanded(
-            child: Container(
-              color: Colors.white,
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-                  child: Form(
-                    key: _formKey,
-                    child: otpsubmit
-                        ? Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              SizedBox(
-                                height: 60,
-                              ),
-                              Text(
-                                'Change Password ',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(
-                                height: 80,
-                              ),
-                              Material(
-                                elevation: 20.0,
-                                shadowColor: Colors.white,
-                                color: Colors.white,
-                                borderRadius: BorderRadius.all(
-                                    const Radius.circular(10.0)),
-                                child: TextFormField(
-                                  enabled: false,
-                                  readOnly: true,
-                                  decoration: InputDecoration(
-                                    enabledBorder: const OutlineInputBorder(
-                                        borderSide: const BorderSide(
-                                            color: Colors.white, width: 0.0),
-                                        borderRadius: BorderRadius.all(
-                                            const Radius.circular(10.0))),
-                                    border: new OutlineInputBorder(
-                                      borderRadius: const BorderRadius.all(
-                                        const Radius.circular(10.0),
-                                      ),
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : Column(
+              children: [
+                Container(
+                  width: double.infinity,
+                  height: 120,
+                  alignment: Alignment.centerLeft,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                  ),
+                  child: BackButton(),
+                ),
+                Expanded(
+                  child: Container(
+                    color: Colors.white,
+                    child: SingleChildScrollView(
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 25, vertical: 10),
+                        child: Form(
+                          key: _formKey,
+                          child: otpsubmit
+                              ? Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    SizedBox(
+                                      height: 60,
                                     ),
-                                    prefixIcon:
-                                        Icon(Icons.email, color: Colors.green),
-                                    hintText: _email.text,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Material(
-                                elevation: 20.0,
-                                shadowColor: Colors.white,
-                                color: Colors.white,
-                                borderRadius: BorderRadius.all(
-                                    const Radius.circular(10.0)),
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                      errorStyle: TextStyle(height: 0),
-                                      prefixIcon: Icon(
-                                        Icons.create_rounded,
-                                        color: Colors.green,
+                                    Text(
+                                      'Change Password ',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.w500,
                                       ),
-                                      hintText: 'New Password',
-                                      focusedBorder: const OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                              color: Colors.green, width: 2.0),
-                                          borderRadius: BorderRadius.all(
-                                              const Radius.circular(10.0))),
-                                      enabledBorder: const OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                              color: Colors.white, width: 0.0),
-                                          borderRadius: BorderRadius.all(
-                                              const Radius.circular(10.0))),
-                                      border: new OutlineInputBorder(
-                                        borderRadius: const BorderRadius.all(
-                                          const Radius.circular(10.0),
-                                        ),
-                                      ),
-                                      suffixIcon: IconButton(
-                                        icon: Icon(
-                                          _obscureText1
-                                              ? Icons.visibility
-                                              : Icons.visibility_off,
-                                          color: Colors.grey[600],
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            _obscureText1 = !_obscureText1;
-                                          });
-                                        },
-                                      )),
-                                  controller: _password,
-                                  validator: (val) {
-                                    if (val.length < 7) {
-                                      setState(() {
-                                        passerror =
-                                            'Password must be atleast 8 characters long';
-                                      });
-
-                                      return '';
-                                    } else {
-                                      setState(() {
-                                        passerror = null;
-                                      });
-                                      return null;
-                                    }
-                                  },
-                                  obscureText: _obscureText1,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              errorMessages(passerror),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Material(
-                                elevation: 20.0,
-                                shadowColor: Colors.white,
-                                color: Colors.white,
-                                borderRadius: BorderRadius.all(
-                                    const Radius.circular(10.0)),
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                      errorStyle: TextStyle(height: 0),
-                                      prefixIcon: Icon(
-                                        Icons.create_rounded,
-                                        color: Colors.green,
-                                      ),
-                                      hintText: 'Confirm New Password',
-                                      focusedBorder: const OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                              color: Colors.green, width: 2.0),
-                                          borderRadius: BorderRadius.all(
-                                              const Radius.circular(10.0))),
-                                      enabledBorder: const OutlineInputBorder(
-                                          borderSide: const BorderSide(
-                                              color: Colors.white, width: 0.0),
-                                          borderRadius: BorderRadius.all(
-                                              const Radius.circular(10.0))),
-                                      border: new OutlineInputBorder(
-                                        borderRadius: const BorderRadius.all(
-                                          const Radius.circular(10.0),
-                                        ),
-                                      ),
-                                      suffixIcon: IconButton(
-                                        icon: Icon(
-                                          _obscureText2
-                                              ? Icons.visibility
-                                              : Icons.visibility_off,
-                                          color: Colors.grey[600],
-                                        ),
-                                        onPressed: () {
-                                          setState(() {
-                                            _obscureText2 = !_obscureText2;
-                                          });
-                                        },
-                                      )),
-                                  controller: _confirmpass,
-                                  validator: (val) {
-                                    if (val.isEmpty) {
-                                      setState(() {
-                                        confirmpasserror =
-                                            'Please Re-Enter New Password';
-                                      });
-
-                                      return '';
-                                    } else if (val.length < 7) {
-                                      setState(() {
-                                        confirmpasserror =
-                                            'Password must be 8 characters long';
-                                      });
-                                      return '';
-                                    } else if (val != _password.text) {
-                                      setState(() {
-                                        confirmpasserror =
-                                            'Password must be same as above';
-                                      });
-                                      return '';
-                                    } else {
-                                      setState(() {
-                                        confirmpasserror = null;
-                                      });
-                                      return null;
-                                    }
-                                  },
-                                  obscureText: _obscureText2,
-                                ),
-                              ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              errorMessages(confirmpasserror),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              Center(
-                                child: ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all(Colors.green),
-                                    elevation: MaterialStateProperty.all(10),
-                                  ),
-                                  child: Text('Submit'),
-                                  onPressed: () async {
-                                    if(_formKey.currentState.validate()){
-                                      await _resetPassword(widget.auth);
-                                    }
-                                  },
-                                ),
-                              ),
-                            SizedBox(height: 6.0),
-                            error != null
-                            ? Text(
-                                error,
-                                style: TextStyle(
-                                    color: Colors.red),
-                                textAlign: TextAlign.center,
-                              )
-                            : SizedBox(),
-                            ],
-                          )
-                        : Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              SizedBox(
-                                height: 120,
-                              ),
-                              Text(
-                                'Forgot Password ',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 25,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                              SizedBox(
-                                height: 80,
-                              ),
-                              Material(
-                                elevation: 20.0,
-                                shadowColor: Colors.white,
-                                color: Colors.white,
-                                borderRadius: BorderRadius.all(
-                                    const Radius.circular(10.0)),
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                    errorStyle: TextStyle(height: 0),
-                                    prefixIcon:
-                                        Icon(Icons.email, color: Colors.green),
-                                    focusedBorder: const OutlineInputBorder(
-                                        borderSide: const BorderSide(
-                                            color: Colors.green, width: 2.0),
-                                        borderRadius: BorderRadius.all(
-                                            const Radius.circular(10.0))),
-                                    enabledBorder: const OutlineInputBorder(
-                                        borderSide: const BorderSide(
-                                            color: Colors.white, width: 0.0),
-                                        borderRadius: BorderRadius.all(
-                                            const Radius.circular(10.0))),
-                                    border: new OutlineInputBorder(
-                                      borderRadius: const BorderRadius.all(
-                                        const Radius.circular(10.0),
-                                      ),
+                                      textAlign: TextAlign.center,
                                     ),
-                                    hintText: 'Email',
-                                  ),
-                                  maxLines: null,
-                                  controller: _email,
-                                  validator: (val) {
-                                    if (val.isEmpty) {
-                                      setState(() {
-                                        emailerror = 'Please Enter your Email';
-                                      });
-                                      return '';
-                                    } else {
-                                      setState(() {
-                                        emailerror = null;
-                                      });
-                                      return null;
-                                    }
-                                  },
-                                ),
-                              ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              errorMessages(emailerror),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              otpsent
-                                  ? Column(
-                                      children: [
-                                        Material(
-                                          elevation: 20.0,
-                                          shadowColor: Colors.white,
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.all(
-                                              const Radius.circular(10.0)),
-                                          child: TextFormField(
-                                            decoration: InputDecoration(
-                                              errorStyle: TextStyle(height: 0),
-                                              prefixIcon: Icon(
-                                                MdiIcons.messageCog,
-                                                color: Colors.green,
-                                              ),
-                                              focusedBorder:
-                                                  const OutlineInputBorder(
-                                                      borderSide:
-                                                          const BorderSide(
-                                                              color:
-                                                                  Colors.green,
-                                                              width: 2.0),
-                                                      borderRadius: BorderRadius
-                                                          .all(const Radius
-                                                              .circular(10.0))),
-                                              enabledBorder:
-                                                  const OutlineInputBorder(
-                                                      borderSide:
-                                                          const BorderSide(
-                                                              color:
-                                                                  Colors.white,
-                                                              width: 0.0),
-                                                      borderRadius: BorderRadius
-                                                          .all(const Radius
-                                                              .circular(10.0))),
-                                              border: new OutlineInputBorder(
-                                                borderRadius:
-                                                    const BorderRadius.all(
-                                                  const Radius.circular(10.0),
-                                                ),
-                                              ),
-                                              hintText: 'OTP',
+                                    SizedBox(
+                                      height: 80,
+                                    ),
+                                    Material(
+                                      elevation: 20.0,
+                                      shadowColor: Colors.white,
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.all(
+                                          const Radius.circular(10.0)),
+                                      child: TextFormField(
+                                        enabled: false,
+                                        readOnly: true,
+                                        decoration: InputDecoration(
+                                          enabledBorder:
+                                              const OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                      color: Colors.white,
+                                                      width: 0.0),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          const Radius.circular(
+                                                              10.0))),
+                                          border: new OutlineInputBorder(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                              const Radius.circular(10.0),
                                             ),
-                                            maxLines: null,
-                                            controller: _otp,
-                                            validator: (val) {
-                                              if (val.isEmpty) {
-                                                setState(() {
-                                                  otperror = 'Please Enter OTP';
-                                                });
-                                                return '';
-                                              } else {
-                                                setState(() {
-                                                  otperror = null;
-                                                });
-                                                return null;
-                                              }
-                                            },
                                           ),
+                                          prefixIcon: Icon(Icons.email,
+                                              color: Colors.green),
+                                          hintText: _email.text,
                                         ),
-                                        SizedBox(
-                                          height: 4,
-                                        ),
-                                        errorMessages(otperror),
-                                        SizedBox(
-                                          height: 4,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          children: [
-                                            TimerButton(
-                                              label: "Resend OTP",
-                                              timeOutInSeconds: 30,
-                                              color: null,
-                                              activeTextStyle: TextStyle(color: Colors.green),
-                                              buttonType: ButtonType.FlatButton,
-                                              onPressed: () async {
-                                                await _getOTP(widget.auth);
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Material(
+                                      elevation: 20.0,
+                                      shadowColor: Colors.white,
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.all(
+                                          const Radius.circular(10.0)),
+                                      child: TextFormField(
+                                        decoration: InputDecoration(
+                                            errorStyle: TextStyle(height: 0),
+                                            prefixIcon: Icon(
+                                              Icons.create_rounded,
+                                              color: Colors.green,
+                                            ),
+                                            hintText: 'New Password',
+                                            focusedBorder:
+                                                const OutlineInputBorder(
+                                                    borderSide:
+                                                        const BorderSide(
+                                                            color: Colors.green,
+                                                            width: 2.0),
+                                                    borderRadius: BorderRadius
+                                                        .all(const Radius
+                                                            .circular(10.0))),
+                                            enabledBorder:
+                                                const OutlineInputBorder(
+                                                    borderSide:
+                                                        const BorderSide(
+                                                            color: Colors.white,
+                                                            width: 0.0),
+                                                    borderRadius: BorderRadius
+                                                        .all(const Radius
+                                                            .circular(10.0))),
+                                            border: new OutlineInputBorder(
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                const Radius.circular(10.0),
+                                              ),
+                                            ),
+                                            suffixIcon: IconButton(
+                                              icon: Icon(
+                                                _obscureText1
+                                                    ? Icons.visibility
+                                                    : Icons.visibility_off,
+                                                color: Colors.grey[600],
+                                              ),
+                                              onPressed: () {
+                                                setState(() {
+                                                  _obscureText1 =
+                                                      !_obscureText1;
+                                                });
                                               },
+                                            )),
+                                        controller: _password,
+                                        validator: (val) {
+                                          if (val.length < 7) {
+                                            setState(() {
+                                              passerror =
+                                                  'Password must be atleast 8 characters long';
+                                            });
+
+                                            return '';
+                                          } else {
+                                            setState(() {
+                                              passerror = null;
+                                            });
+                                            return null;
+                                          }
+                                        },
+                                        obscureText: _obscureText1,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    errorMessages(passerror),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Material(
+                                      elevation: 20.0,
+                                      shadowColor: Colors.white,
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.all(
+                                          const Radius.circular(10.0)),
+                                      child: TextFormField(
+                                        decoration: InputDecoration(
+                                            errorStyle: TextStyle(height: 0),
+                                            prefixIcon: Icon(
+                                              Icons.create_rounded,
+                                              color: Colors.green,
                                             ),
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          height: 20,
-                                        ),
-                                        Center(
-                                          child: ElevatedButton(
-                                            style: ButtonStyle(
-                                              backgroundColor:
-                                                  MaterialStateProperty.all(
-                                                      Colors.green),
-                                              elevation:
-                                                  MaterialStateProperty.all(10),
+                                            hintText: 'Confirm New Password',
+                                            focusedBorder:
+                                                const OutlineInputBorder(
+                                                    borderSide:
+                                                        const BorderSide(
+                                                            color: Colors.green,
+                                                            width: 2.0),
+                                                    borderRadius: BorderRadius
+                                                        .all(const Radius
+                                                            .circular(10.0))),
+                                            enabledBorder:
+                                                const OutlineInputBorder(
+                                                    borderSide:
+                                                        const BorderSide(
+                                                            color: Colors.white,
+                                                            width: 0.0),
+                                                    borderRadius: BorderRadius
+                                                        .all(const Radius
+                                                            .circular(10.0))),
+                                            border: new OutlineInputBorder(
+                                              borderRadius:
+                                                  const BorderRadius.all(
+                                                const Radius.circular(10.0),
+                                              ),
                                             ),
-                                            child: Text('Submit OTP'),
-                                            onPressed: () {
-                                              if(_formKey.currentState.validate()){
+                                            suffixIcon: IconButton(
+                                              icon: Icon(
+                                                _obscureText2
+                                                    ? Icons.visibility
+                                                    : Icons.visibility_off,
+                                                color: Colors.grey[600],
+                                              ),
+                                              onPressed: () {
                                                 setState(() {
-                                                  otpsubmit = true;
+                                                  _obscureText2 =
+                                                      !_obscureText2;
                                                 });
-                                              }
-                                            },
-                                          ),
-                                        )
-                                      ],
-                                    )
-                                  : Center(
+                                              },
+                                            )),
+                                        controller: _confirmpass,
+                                        validator: (val) {
+                                          if (val.isEmpty) {
+                                            setState(() {
+                                              confirmpasserror =
+                                                  'Please Re-Enter New Password';
+                                            });
+
+                                            return '';
+                                          } else if (val.length < 7) {
+                                            setState(() {
+                                              confirmpasserror =
+                                                  'Password must be 8 characters long';
+                                            });
+                                            return '';
+                                          } else if (val != _password.text) {
+                                            setState(() {
+                                              confirmpasserror =
+                                                  'Password must be same as above';
+                                            });
+                                            return '';
+                                          } else {
+                                            setState(() {
+                                              confirmpasserror = null;
+                                            });
+                                            return null;
+                                          }
+                                        },
+                                        obscureText: _obscureText2,
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    errorMessages(confirmpasserror),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    Center(
                                       child: ElevatedButton(
                                         style: ButtonStyle(
                                           backgroundColor:
@@ -515,35 +352,262 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                           elevation:
                                               MaterialStateProperty.all(10),
                                         ),
-                                        child: Text(
-                                          'Send OTP',
-                                          style: TextStyle(color: Colors.white),
-                                        ),
+                                        child: Text('Submit'),
                                         onPressed: () async {
-                                          if(_formKey.currentState.validate()) {
-                                            await _getOTP(widget.auth);
+                                          if (_formKey.currentState
+                                              .validate()) {
+                                            await _resetPassword(widget.auth);
                                           }
                                         },
                                       ),
                                     ),
-                            SizedBox(height: 6.0),
-                            error != null
-                            ? Text(
-                                error,
-                                style: TextStyle(
-                                    color: Colors.red),
-                                textAlign: TextAlign.center,
-                              )
-                            : SizedBox(),
-                            ],
-                          ),
+                                    SizedBox(height: 6.0),
+                                    error != null
+                                        ? Text(
+                                            error,
+                                            style: TextStyle(color: Colors.red),
+                                            textAlign: TextAlign.center,
+                                          )
+                                        : SizedBox(),
+                                  ],
+                                )
+                              : Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    SizedBox(
+                                      height: 120,
+                                    ),
+                                    Text(
+                                      'Forgot Password ',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 25,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    SizedBox(
+                                      height: 80,
+                                    ),
+                                    Material(
+                                      elevation: 20.0,
+                                      shadowColor: Colors.white,
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.all(
+                                          const Radius.circular(10.0)),
+                                      child: TextFormField(
+                                        decoration: InputDecoration(
+                                          errorStyle: TextStyle(height: 0),
+                                          prefixIcon: Icon(Icons.email,
+                                              color: Colors.green),
+                                          focusedBorder:
+                                              const OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                      color: Colors.green,
+                                                      width: 2.0),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          const Radius.circular(
+                                                              10.0))),
+                                          enabledBorder:
+                                              const OutlineInputBorder(
+                                                  borderSide: const BorderSide(
+                                                      color: Colors.white,
+                                                      width: 0.0),
+                                                  borderRadius:
+                                                      BorderRadius.all(
+                                                          const Radius.circular(
+                                                              10.0))),
+                                          border: new OutlineInputBorder(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                              const Radius.circular(10.0),
+                                            ),
+                                          ),
+                                          hintText: 'Email',
+                                        ),
+                                        maxLines: null,
+                                        controller: _email,
+                                        validator: (val) {
+                                          if (val.isEmpty) {
+                                            setState(() {
+                                              emailerror =
+                                                  'Please Enter your Email';
+                                            });
+                                            return '';
+                                          } else {
+                                            setState(() {
+                                              emailerror = null;
+                                            });
+                                            return null;
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    errorMessages(emailerror),
+                                    SizedBox(
+                                      height: 20,
+                                    ),
+                                    otpsent
+                                        ? Column(
+                                            children: [
+                                              Material(
+                                                elevation: 20.0,
+                                                shadowColor: Colors.white,
+                                                color: Colors.white,
+                                                borderRadius: BorderRadius.all(
+                                                    const Radius.circular(
+                                                        10.0)),
+                                                child: TextFormField(
+                                                  decoration: InputDecoration(
+                                                    errorStyle:
+                                                        TextStyle(height: 0),
+                                                    prefixIcon: Icon(
+                                                      MdiIcons.messageCog,
+                                                      color: Colors.green,
+                                                    ),
+                                                    focusedBorder:
+                                                        const OutlineInputBorder(
+                                                            borderSide:
+                                                                const BorderSide(
+                                                                    color: Colors
+                                                                        .green,
+                                                                    width: 2.0),
+                                                            borderRadius:
+                                                                BorderRadius.all(
+                                                                    const Radius
+                                                                            .circular(
+                                                                        10.0))),
+                                                    enabledBorder:
+                                                        const OutlineInputBorder(
+                                                            borderSide:
+                                                                const BorderSide(
+                                                                    color: Colors
+                                                                        .white,
+                                                                    width: 0.0),
+                                                            borderRadius:
+                                                                BorderRadius.all(
+                                                                    const Radius
+                                                                            .circular(
+                                                                        10.0))),
+                                                    border:
+                                                        new OutlineInputBorder(
+                                                      borderRadius:
+                                                          const BorderRadius
+                                                              .all(
+                                                        const Radius.circular(
+                                                            10.0),
+                                                      ),
+                                                    ),
+                                                    hintText: 'OTP',
+                                                  ),
+                                                  maxLines: null,
+                                                  controller: _otp,
+                                                  validator: (val) {
+                                                    if (val.isEmpty) {
+                                                      setState(() {
+                                                        otperror =
+                                                            'Please Enter OTP';
+                                                      });
+                                                      return '';
+                                                    } else {
+                                                      setState(() {
+                                                        otperror = null;
+                                                      });
+                                                      return null;
+                                                    }
+                                                  },
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                height: 4,
+                                              ),
+                                              errorMessages(otperror),
+                                              SizedBox(
+                                                height: 4,
+                                              ),
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  TimerButton(
+                                                    label: "Resend OTP",
+                                                    timeOutInSeconds: 30,
+                                                    color: null,
+                                                    activeTextStyle: TextStyle(
+                                                        color: Colors.green),
+                                                    buttonType:
+                                                        ButtonType.FlatButton,
+                                                    onPressed: () async {
+                                                      await _getOTP(
+                                                          widget.auth);
+                                                    },
+                                                  ),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 20,
+                                              ),
+                                              Center(
+                                                child: ElevatedButton(
+                                                  style: ButtonStyle(
+                                                    backgroundColor:
+                                                        MaterialStateProperty
+                                                            .all(Colors.green),
+                                                    elevation:
+                                                        MaterialStateProperty
+                                                            .all(10),
+                                                  ),
+                                                  child: Text('Submit OTP'),
+                                                  onPressed: () {
+                                                    if (_formKey.currentState
+                                                        .validate()) {
+                                                      setState(() {
+                                                        otpsubmit = true;
+                                                      });
+                                                    }
+                                                  },
+                                                ),
+                                              )
+                                            ],
+                                          )
+                                        : Center(
+                                            child: ElevatedButton(
+                                              style: ButtonStyle(
+                                                backgroundColor:
+                                                    MaterialStateProperty.all(
+                                                        Colors.green),
+                                                elevation:
+                                                    MaterialStateProperty.all(
+                                                        10),
+                                              ),
+                                              child: Text(
+                                                'Send OTP',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              onPressed: () async {
+                                                if (_formKey.currentState
+                                                    .validate()) {
+                                                  await _getOTP(widget.auth);
+                                                }
+                                              },
+                                            ),
+                                          ),
+                                    SizedBox(height: 6.0),
+                                  ],
+                                ),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
+              ],
             ),
-          ),
-        ],
-      ),
     );
   }
 }

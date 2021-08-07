@@ -54,6 +54,15 @@ class _ShowComplaintState extends State<ShowComplaint> {
       setState(() {
         error = e.toString();
       });
+      final snackBar = SnackBar(
+        content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text(error)]),
+        backgroundColor: Colors.red,
+      );
+      error != null
+          ? ScaffoldMessenger.of(context).showSnackBar(snackBar)
+          : SizedBox();
     }
     setState(() {
       loading = false;
@@ -61,8 +70,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
   }
 
   _deleteComplaint() async {
-    await widget.db.deleteRequest(
-      widget.complaint['complaint_id']);
+    await widget.db.deleteRequest(widget.complaint['complaint_id']);
     Fluttertoast.showToast(
         msg: "Request Removed",
         toastLength: Toast.LENGTH_LONG,
@@ -138,9 +146,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
           child: Text(
             "Oops! Something went wrong!",
             style: TextStyle(
-                color: Colors.red,
-                fontSize: 19,
-                fontWeight: FontWeight.bold),
+                color: Colors.red, fontSize: 19, fontWeight: FontWeight.bold),
           ),
         ),
       );
@@ -150,9 +156,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
           child: Text(
             "No data found",
             style: TextStyle(
-                color: Colors.red,
-                fontSize: 19,
-                fontWeight: FontWeight.bold),
+                color: Colors.red, fontSize: 19, fontWeight: FontWeight.bold),
           ),
         ),
       );
@@ -219,52 +223,54 @@ class _ShowComplaintState extends State<ShowComplaint> {
                                     backgroundColor:
                                         MaterialStateProperty.all(Colors.green),
                                     elevation: MaterialStateProperty.all(10)),
-                                    onPressed: () => showDialog<String>(
-                                      context: context,
-                                      builder: (BuildContext context) => AlertDialog(
-                                        title: Icon(
-                                                Icons.warning,
-                                                color: Colors.red,
-                                                ),
-                                              content: const Text(
-                                                'Are you sure to resolve complaint?',
-                                                style: TextStyle(
-                                                  fontSize: 18
-                                                ),
-                                                ),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context, 'Cancel');
-                                                  },
-                                                  child: const Text(
-                                                    'Cancel',
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: Colors.white
-                                                    ),
-                                                  ),
-                                                  style: ButtonStyle(
-                                                    backgroundColor: MaterialStateProperty.all(Colors.green),),
-                                                ),
-                                                TextButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                    _deleteComplaint();
-                                                  },
-                                                  child: const Text(
-                                                    'Yes',
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      color: Colors.white
-                                                    ),
-                                                  ),
-                                                  style: ButtonStyle(
-                                                    backgroundColor: MaterialStateProperty.all(Colors.green),),
-                                                ),
-                                              ]
-                                      ),
-                                    ),
+                                onPressed: () => showDialog<String>(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      AlertDialog(
+                                          title: Icon(
+                                            Icons.warning,
+                                            color: Colors.red,
+                                          ),
+                                          content: const Text(
+                                            'Are you sure to resolve complaint?',
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                          actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context, 'Cancel');
+                                          },
+                                          child: const Text(
+                                            'Cancel',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.white),
+                                          ),
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.green),
+                                          ),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            _deleteComplaint();
+                                          },
+                                          child: const Text(
+                                            'Yes',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.white),
+                                          ),
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.green),
+                                          ),
+                                        ),
+                                      ]),
+                                ),
                                 child: Text(
                                   'Resolve Complaint',
                                   style: TextStyle(
@@ -521,9 +527,8 @@ class _ShowComplaintState extends State<ShowComplaint> {
           child: Row(
             children: [
               Icon(Icons.location_on),
-              Text(
-                obj["landmark"] ?? "Unknown",
-                style: TextStyle(
+              Text(obj["landmark"] ?? "Unknown",
+                  style: TextStyle(
                       color: Colors.blue,
                       decoration: TextDecoration.underline)),
             ],

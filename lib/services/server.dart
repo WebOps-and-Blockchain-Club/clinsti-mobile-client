@@ -5,8 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Server {
-  String baseUrl =
-      "http://localhost:9000"; //TODO: Add server URI here
+  String baseUrl = "http://localhost:9000"; //TODO: Add server URI here
   final String signup = "/client/accounts/signup";
   final String signin = '/client/accounts/signin';
   var jsonHead = {'Content-Type': 'application/json'};
@@ -16,7 +15,7 @@ class Server {
     init();
   }
 
-  init()async {}
+  init() async {}
 
   ////Account Requests
   ///SignUp
@@ -28,17 +27,17 @@ class Server {
         '{"name": "$name","email": "$email","password": "$password"}';
     request.headers.addAll(headers);
 
-    try{
+    try {
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 201) {
         return jsonDecode(await response.stream.bytesToString());
-      } else{
-          throw (await response.stream.bytesToString());
-        }
+      } else {
+        throw (await response.stream.bytesToString());
+      }
     } on SocketException {
-      throw('server error');
-    } catch(e){
-      throw(e);
+      throw ('server error');
+    } catch (e) {
+      throw (e);
     }
   }
 
@@ -50,18 +49,18 @@ class Server {
         http.Request('POST', Uri.parse('$baseUrl/client/accounts/signin'));
     request.body = '{"email": "$email",   "password": "$password"}';
     request.headers.addAll(headers);
-    
-    try{
+
+    try {
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 200) {
         return jsonDecode(await response.stream.bytesToString());
-      } else  {
-          throw (await response.stream.bytesToString());
+      } else {
+        throw (await response.stream.bytesToString());
       }
     } on SocketException {
-      throw('server error');
-    } catch(e){
-      throw(e);
+      throw ('server error');
+    } catch (e) {
+      throw (e);
     }
   }
 
@@ -104,7 +103,7 @@ class Server {
     }
     request.headers.addAll(headers);
 
-    try{
+    try {
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 200) {
         User user = User(token: token, email: email, name: name);
@@ -113,9 +112,9 @@ class Server {
         throw (await response.stream.bytesToString());
       }
     } on SocketException {
-      throw('server error');
+      throw ('server error');
     } catch (e) {
-      throw(e);
+      throw (e);
     }
   }
 
@@ -127,8 +126,8 @@ class Server {
       'Authorization': 'Bearer $token',
       'Content-Type': 'application/json'
     };
-    var request =
-        http.Request('POST', Uri.parse('$baseUrl/client/accounts/changePassword'));
+    var request = http.Request(
+        'POST', Uri.parse('$baseUrl/client/accounts/changePassword'));
     request.body = '{"oldPassword": "$oldPass","newPassword":"$newPass"}';
     request.headers.addAll(headers);
 
@@ -141,53 +140,57 @@ class Server {
         throw (await response.stream.bytesToString());
       }
     } on SocketException {
-      throw('server error');
+      throw ('server error');
     } catch (e) {
-      throw(e);
+      throw (e);
     }
   }
+
   ///otp request
-  Future<dynamic> getOtp( String email ) async {
+  Future<dynamic> getOtp(String email) async {
     await init();
     var headers = {...jsonHead};
-    var request = http.Request('GET', Uri.parse('$baseUrl/client/accounts/resetpassword'));
+    var request = http.Request(
+        'GET', Uri.parse('$baseUrl/client/accounts/resetpassword'));
     request.body = '{"email": "$email"}';
     request.headers.addAll(headers);
 
-    try{
+    try {
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 200) {
         return jsonDecode(await response.stream.bytesToString());
       } else {
-          throw (await response.stream.bytesToString());
+        throw (await response.stream.bytesToString());
       }
     } on SocketException {
-      throw('server error');
-    } catch(e){
-      throw(e);
+      throw ('server error');
+    } catch (e) {
+      throw (e);
     }
   }
 
   ///reset password
-  Future<dynamic> resetPassword( String email, String otp, String password ) async {
+  Future<dynamic> resetPassword(
+      String email, String otp, String password) async {
     await init();
     var headers = {...jsonHead};
-    var request =
-        http.Request('POST', Uri.parse('$baseUrl/client/accounts/resetpassword'));
-    request.body = '{"email": "$email", "otp": "$otp",   "password": "$password"}';
+    var request = http.Request(
+        'POST', Uri.parse('$baseUrl/client/accounts/resetpassword'));
+    request.body =
+        '{"email": "$email", "otp": "$otp",   "password": "$password"}';
     request.headers.addAll(headers);
-    
-    try{
+
+    try {
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 200) {
         return jsonDecode(await response.stream.bytesToString());
-      } else  {
-          throw (await response.stream.bytesToString());
+      } else {
+        throw (await response.stream.bytesToString());
       }
     } on SocketException {
-      throw('server error');
-    } catch(e){
-      throw(e);
+      throw ('server error');
+    } catch (e) {
+      throw (e);
     }
   }
 
@@ -207,9 +210,10 @@ class Server {
       'zone': zone
     });
 
-    if(imagesPath.length != null){
-      for(int i = 0; i < imagesPath.length; i++){
-        request.files.add(await http.MultipartFile.fromPath('images', imagesPath[i]));
+    if (imagesPath.length != null) {
+      for (int i = 0; i < imagesPath.length; i++) {
+        request.files
+            .add(await http.MultipartFile.fromPath('images', imagesPath[i]));
         print(imagesPath[i]);
       }
     }
@@ -225,9 +229,9 @@ class Server {
         throw (await response.stream.bytesToString());
       }
     } on SocketException {
-      throw('server error');
-    } catch(e) {
-      throw(e);
+      throw ('server error');
+    } catch (e) {
+      throw (e);
     }
   }
 
@@ -260,16 +264,19 @@ class Server {
 
       if (response.statusCode == 200) {
         var complaints = jsonDecode(await response.stream.bytesToString());
-        return {"complaints":complaints['complaints'], "count":complaints["complaintsCount"]};
+        return {
+          "complaints": complaints['complaints'],
+          "count": complaints["complaintsCount"]
+        };
       } else if (response.statusCode == 404) {
         return await response.stream.bytesToString();
       } else {
         throw (await response.stream.bytesToString());
       }
     } on SocketException {
-      throw('server error');
-    } catch(e) {
-      throw(e);
+      throw ('server error');
+    } catch (e) {
+      throw (e);
     }
   }
 
@@ -291,9 +298,9 @@ class Server {
         throw (await response.stream.bytesToString());
       }
     } on SocketException {
-      throw('server error');
-    } catch(e) {
-      throw(e);
+      throw ('server error');
+    } catch (e) {
+      throw (e);
     }
   }
 
@@ -303,7 +310,8 @@ class Server {
     var headers = {'Authorization': 'Bearer $token'};
 
     try {
-      var response = await http.get(Uri.parse('$baseUrl/client/images/$name'), headers: headers);
+      var response = await http.get(Uri.parse('$baseUrl/client/images/$name'),
+          headers: headers);
 
       if (response.statusCode == 200) {
         return (response.bodyBytes);
@@ -311,9 +319,9 @@ class Server {
         throw (response.bodyBytes);
       }
     } on SocketException {
-      throw('server error');
-    } catch(e) {
-      throw(e);
+      throw ('server error');
+    } catch (e) {
+      throw (e);
     }
   }
 
@@ -339,17 +347,15 @@ class Server {
         throw (await response.stream.bytesToString());
       }
     } on SocketException {
-      throw('server error');
-    } catch(e) {
-      throw(e);
+      throw ('server error');
+    } catch (e) {
+      throw (e);
     }
   }
 
   Future<dynamic> postFeedback(String type, String feedback) async {
     await init();
-    var headers = {
-      'Content-Type': 'application/json'
-    };
+    var headers = {'Content-Type': 'application/json'};
     var request = http.Request('POST', Uri.parse('$baseUrl/client/feedback'));
     request.body = '''{"feedback":"$feedback","feedback_type":"$type"}''';
     request.headers.addAll(headers);
@@ -363,9 +369,9 @@ class Server {
         throw (await response.stream.bytesToString());
       }
     } on SocketException {
-      throw('server error');
-    } catch(e) {
-      throw(e);
+      throw ('server error');
+    } catch (e) {
+      throw (e);
     }
   }
 
@@ -386,9 +392,9 @@ class Server {
         throw (await response.stream.bytesToString());
       }
     } on SocketException {
-      throw('server error');
-    } catch(e) {
-      throw(e);
+      throw ('server error');
+    } catch (e) {
+      throw (e);
     }
   }
 }

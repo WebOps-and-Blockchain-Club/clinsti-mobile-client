@@ -60,6 +60,13 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       setState(() {
         error = e;
       });
+      final snackBar = SnackBar(
+        content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text(error)]),
+        backgroundColor: Colors.red,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
     setState(() {
       loading = false;
@@ -239,13 +246,6 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    if (error != null)
-                      Center(
-                        child: Text(
-                          error,
-                          style: TextStyle(color: Colors.red),
-                        ),
-                      ),
                     SizedBox(
                       height: 20,
                     ),
@@ -279,5 +279,4 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       ),
     );
   }
-
 }

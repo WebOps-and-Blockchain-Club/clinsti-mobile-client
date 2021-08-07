@@ -18,7 +18,8 @@ class NewComplaintScreen extends StatefulWidget {
   _NewComplaintScreenState createState() => _NewComplaintScreenState();
 }
 
-class _NewComplaintScreenState extends State<NewComplaintScreen> with WidgetsBindingObserver {
+class _NewComplaintScreenState extends State<NewComplaintScreen>
+    with WidgetsBindingObserver {
   TextEditingController compLocation = TextEditingController();
   TextEditingController compDescription = TextEditingController();
   TextEditingController compLandmark = TextEditingController();
@@ -78,7 +79,8 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> with WidgetsBin
                 loc: compLocation.text == "" ? null : compLocation.text)));
     if (result != null) {
       var obj = jsonDecode(result);
-      List<Placemark> placemarks = await placemarkFromCoordinates(obj['Latitude'], obj['Longitude']);
+      List<Placemark> placemarks =
+          await placemarkFromCoordinates(obj['Latitude'], obj['Longitude']);
       setState(() {
         compLocation.text = result;
         compLandmark.text = placemarks[0].name;
@@ -103,9 +105,9 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> with WidgetsBin
           compDescription.text = stored["description"] ?? "";
           compLocation.text = loc;
           compLandmark.text = stored["landmark"] ?? "";
-          if(zones.contains(stored["zone"])) zoneValue = stored["zone"];
-          if(types.contains(stored["type"])) typeValue = stored["type"];
-          if(stored["imgPath"] != "") {
+          if (zones.contains(stored["zone"])) zoneValue = stored["zone"];
+          if (types.contains(stored["type"])) typeValue = stored["type"];
+          if (stored["imgPath"] != "") {
             compressedImagesPath = [];
             compressedImagesPath = (stored["imgPath"].toString()).split(",");
           }
@@ -373,29 +375,29 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> with WidgetsBin
                                     : Colors.grey),
                             suffixIcon: geoLoc
                                 ? Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    IconButton(
-                                      onPressed: () {
-                                        _selectLocation(context);
-                                      },
-                                      icon: Icon(
-                                        Icons.edit_location,
-                                        color: Colors.green,
-                                      )),
-                                    IconButton(
-                                        onPressed: () {
-                                          setState(() {
-                                            geoLoc = false;
-                                            compLocation.clear();
-                                          });
-                                        },
-                                        icon: Icon(
-                                          Icons.location_off,
-                                          color: Colors.green,
-                                        ))
-                                  ],
-                                )
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                          onPressed: () {
+                                            _selectLocation(context);
+                                          },
+                                          icon: Icon(
+                                            Icons.edit_location,
+                                            color: Colors.green,
+                                          )),
+                                      IconButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              geoLoc = false;
+                                              compLocation.clear();
+                                            });
+                                          },
+                                          icon: Icon(
+                                            Icons.location_off,
+                                            color: Colors.green,
+                                          ))
+                                    ],
+                                  )
                                 : IconButton(
                                     icon: Icon(
                                       Icons.location_on,
@@ -404,8 +406,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> with WidgetsBin
                                     onPressed: () {
                                       _selectLocation(context);
                                     },
-                                  )
-                                  ),
+                                  )),
                         validator: (val) {
                           if (val.length < 5) {
                             setState(() {
@@ -439,7 +440,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> with WidgetsBin
                   SizedBox(
                     height: 20,
                   ),
-                  if(geoLoc)
+                  if (geoLoc)
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15.0),
                       child: Material(
@@ -458,30 +459,30 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> with WidgetsBin
                             }
                           },
                           decoration: InputDecoration(
-                              errorStyle: TextStyle(height: 0),
-                              focusedBorder: const OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.green, width: 2.0),
-                                  borderRadius: BorderRadius.all(
-                                      const Radius.circular(10.0))),
-                              enabledBorder: const OutlineInputBorder(
-                                  borderSide: const BorderSide(
-                                      color: Colors.white, width: 0.0),
-                                  borderRadius: BorderRadius.all(
-                                      const Radius.circular(10.0))),
-                              border: new OutlineInputBorder(
-                                borderRadius: const BorderRadius.all(
-                                  const Radius.circular(10.0),
-                                ),
+                            errorStyle: TextStyle(height: 0),
+                            focusedBorder: const OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: Colors.green, width: 2.0),
+                                borderRadius: BorderRadius.all(
+                                    const Radius.circular(10.0))),
+                            enabledBorder: const OutlineInputBorder(
+                                borderSide: const BorderSide(
+                                    color: Colors.white, width: 0.0),
+                                borderRadius: BorderRadius.all(
+                                    const Radius.circular(10.0))),
+                            border: new OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                                const Radius.circular(10.0),
                               ),
-                              labelText: 'Landmark',
-                              labelStyle: TextStyle(
-                                  color: _locationnode.hasFocus
-                                      ? (errorboxland
-                                          ? Colors.red[800]
-                                          : Colors.green)
-                                      : Colors.grey),
-                                    ),
+                            ),
+                            labelText: 'Landmark',
+                            labelStyle: TextStyle(
+                                color: _locationnode.hasFocus
+                                    ? (errorboxland
+                                        ? Colors.red[800]
+                                        : Colors.green)
+                                    : Colors.grey),
+                          ),
                           validator: (val) {
                             if (val.length < 2) {
                               setState(() {
@@ -499,19 +500,17 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> with WidgetsBin
                             }
                           },
                           controller: compLandmark,
-                          style: TextStyle(
-                              color: Colors.black),
+                          style: TextStyle(color: Colors.black),
                           maxLines: null,
                         ),
                       ),
                     ),
-                  if(geoLoc)
+                  if (geoLoc)
                     SizedBox(
                       height: 5,
                     ),
-                  if(geoLoc)
-                    errorMessages(errormessagelandmark),
-                  if(geoLoc)
+                  if (geoLoc) errorMessages(errormessagelandmark),
+                  if (geoLoc)
                     SizedBox(
                       height: 20,
                     ),
@@ -674,14 +673,12 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> with WidgetsBin
                   SizedBox(
                     height: 20,
                   ),
-                  if(imgLoading) Center(
-                    child: Text(
+                  if (imgLoading)
+                    Center(
+                        child: Text(
                       "Image Loading...",
-                      style: TextStyle(
-                        fontSize: 16.0
-                      ),
-                      )
-                    ),
+                      style: TextStyle(fontSize: 16.0),
+                    )),
                   if (compressedImagesPath.length != 0) dispImages(),
                   if (compressedImagesPath.length != 0)
                     SizedBox(
@@ -791,10 +788,11 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> with WidgetsBin
                 img,
                 width: 300,
                 height: 300,
-                errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
-                                return Container();
-                              },
-                ),
+                errorBuilder: (BuildContext context, Object exception,
+                    StackTrace stackTrace) {
+                  return Container();
+                },
+              ),
               // child: AssetThumb(
               //   width: 300,
               //   height: 300,
@@ -812,21 +810,20 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> with WidgetsBin
       compressedImagesPath.removeRange(0, compressedImagesPath.length);
       //storeRequest();
     });
-    compressedImagesPath.forEach(
-      (_img) async {
-         await deleteImageFile(File(_img));
-      });
+    compressedImagesPath.forEach((_img) async {
+      await deleteImageFile(File(_img));
+    });
   }
 
   Future<void> deleteImageFile(File file) async {
-  try {
-    if (await file.exists()) {
-      await file.delete();
+    try {
+      if (await file.exists()) {
+        await file.delete();
+      }
+    } catch (e) {
+      print(e);
     }
-  } catch (e) {
-    print(e);
   }
-}
 
   Future<void> loadAssets() async {
     List<Asset> resultList = [];
@@ -855,12 +852,15 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> with WidgetsBin
       setState(() {
         error1 = e.toString();
       });
-      Fluttertoast.showToast(
-          msg: error1,
-          toastLength: Toast.LENGTH_SHORT,
-          backgroundColor: Colors.white,
-          textColor: Colors.black,
-          fontSize: 14.0);
+      final snackBar = SnackBar(
+        content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text(error1)]),
+        backgroundColor: Colors.red,
+      );
+      error != null
+          ? ScaffoldMessenger.of(context).showSnackBar(snackBar)
+          : SizedBox();
     }
 
     if (!mounted) return;
@@ -917,28 +917,36 @@ class _NewComplaintScreenState extends State<NewComplaintScreen> with WidgetsBin
     print(outPath);
     var result = await FlutterImageCompress.compressAndGetFile(
         filePath, outPath,
-        quality: 70, minWidth: 1000, minHeight: 1000, format: getImageFormat(fileName));
+        quality: 70,
+        minWidth: 1000,
+        minHeight: 1000,
+        format: getImageFormat(fileName));
     return result;
   }
 
-  getImageFormat(String filename){
+  getImageFormat(String filename) {
     String ext = filename.split(".").last;
-    switch(ext){
-      case("png"): {
-        return CompressFormat.png;
-      }
-      case("jpg"): {
-        return CompressFormat.jpeg;
-      }
-      case("jpeg"): {
-        return CompressFormat.jpeg;
-      }
-      case("webp"): {
-        return CompressFormat.webp;
-      }
-      case("heic"): {
-        return CompressFormat.heic;
-      }
+    switch (ext) {
+      case ("png"):
+        {
+          return CompressFormat.png;
+        }
+      case ("jpg"):
+        {
+          return CompressFormat.jpeg;
+        }
+      case ("jpeg"):
+        {
+          return CompressFormat.jpeg;
+        }
+      case ("webp"):
+        {
+          return CompressFormat.webp;
+        }
+      case ("heic"):
+        {
+          return CompressFormat.heic;
+        }
     }
   }
 }

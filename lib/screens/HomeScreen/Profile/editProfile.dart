@@ -61,6 +61,15 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
       setState(() {
         error = e.toString();
       });
+      final snackBar = SnackBar(
+        content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text(error)]),
+        backgroundColor: Colors.red,
+      );
+      error != null
+          ? ScaffoldMessenger.of(context).showSnackBar(snackBar)
+          : SizedBox();
     }
     setState(() {
       loading = false;

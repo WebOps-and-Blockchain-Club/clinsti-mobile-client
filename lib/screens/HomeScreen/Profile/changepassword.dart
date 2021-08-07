@@ -45,6 +45,15 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
       setState(() {
         error = e.toString();
       });
+      final snackBar = SnackBar(
+        content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text(error)]),
+        backgroundColor: Colors.red,
+      );
+      error != null
+          ? ScaffoldMessenger.of(context).showSnackBar(snackBar)
+          : SizedBox();
     }
     setState(() {
       loading = false;
@@ -103,12 +112,12 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                                             color: Colors.green,
                                           ),
                                           focusedBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10.0)),
-                                              borderSide: BorderSide(
-                                                  color: Colors.green,
-                                                  width: 2.0),
-                                            ),
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(10.0)),
+                                            borderSide: BorderSide(
+                                                color: Colors.green,
+                                                width: 2.0),
+                                          ),
                                           enabledBorder: OutlineInputBorder(
                                             borderRadius: BorderRadius.all(
                                                 Radius.circular(10.0)),
