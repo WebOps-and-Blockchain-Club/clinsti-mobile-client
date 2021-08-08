@@ -1,5 +1,6 @@
 import 'package:app_client/services/auth.dart';
 import 'package:app_client/widgets/formErrorMessage.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_svg_provider/flutter_svg_provider.dart';
@@ -271,7 +272,14 @@ class _SignUpState extends State<SignUp> {
                                                               'Please Enter your Email';
                                                         });
                                                         return '';
-                                                      } else {
+                                                      }
+                                                      else if(!EmailValidator.validate(val.trim())){
+                                                            setState(() {
+                                                              emailerror = 'Please enter valid Email';
+                                                            });
+                                                            return '';
+                                                        } 
+                                                      else {
                                                         setState(() {
                                                           emailerror = null;
                                                         });

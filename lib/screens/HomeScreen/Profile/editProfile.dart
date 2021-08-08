@@ -1,6 +1,7 @@
 import 'package:app_client/models/user.dart';
 import 'package:app_client/services/auth.dart';
 import 'package:app_client/widgets/formErrorMessage.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -203,7 +204,14 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
                                               emailerror = "Please Enter Email";
                                             });
                                             return '';
-                                          } else {
+                                          }
+                                          else if(!EmailValidator.validate(val.trim())){
+                                            setState(() {
+                                              emailerror = 'Please enter valid Email';
+                                            });
+                                            return '';
+                                          }
+                                          else {
                                             setState(() {
                                               emailerror = null;
                                             });
