@@ -33,7 +33,7 @@ class _SignUpState extends State<SignUp> {
       loading = true;
     });
     try {
-      await auth.signUp(_email.text, _password.text, _name.text);
+      await auth.signUp(_email.text.trim(), _password.text, _name.text);
     } catch (e) {
       setState(() {
         error = e;
@@ -184,7 +184,7 @@ class _SignUpState extends State<SignUp> {
                                                         if (val.isEmpty) {
                                                           setState(() {
                                                             nameerror =
-                                                                'Please Enter your Name';
+                                                                'Please enter your name';
                                                           });
                                                           return '';
                                                         } else {
@@ -269,13 +269,13 @@ class _SignUpState extends State<SignUp> {
                                                       if (val.isEmpty) {
                                                         setState(() {
                                                           emailerror =
-                                                              'Please Enter your Email';
+                                                              'Please enter your email';
                                                         });
                                                         return '';
                                                       }
                                                       else if(!EmailValidator.validate(val.trim())){
                                                             setState(() {
-                                                              emailerror = 'Please enter valid Email';
+                                                              emailerror = 'Please enter valid email';
                                                             });
                                                             return '';
                                                         } 

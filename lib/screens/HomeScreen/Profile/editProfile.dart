@@ -50,7 +50,7 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
       loading = true;
     });
     try {
-      await auth.updateProfile(email: email, name: name);
+      await auth.updateProfile(email: email.trim(), name: name);
       Navigator.pop(context);
       Fluttertoast.showToast(
           msg: "Profile Updated",

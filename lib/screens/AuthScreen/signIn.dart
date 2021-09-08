@@ -32,7 +32,7 @@ class _SignInState extends State<SignIn> {
       loading = true;
     });
     try {
-      await auth.signIn(_email.text, _password.text);
+      await auth.signIn(_email.text.trim(), _password.text);
     } catch (e) {
       setState(() {
         error = e.toString();
@@ -192,7 +192,7 @@ class _SignInState extends State<SignIn> {
                                                           } 
                                                           else if(!EmailValidator.validate(val.trim())){
                                                             setState(() {
-                                                              emailerror = 'Please enter valid Email';
+                                                              emailerror = 'Please enter valid email';
                                                             });
                                                             return '';
                                                           }

@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Server {
-  String baseUrl = "http://localhost:9000"; //TODO: Add server URI here
+  String baseUrl = "https://clinsti-server.herokuapp.com"; //TODO: Add server URI here
   final String signup = "/client/accounts/signup";
   final String signin = '/client/accounts/signin';
   var jsonHead = {'Content-Type': 'application/json'};

@@ -1,3 +1,4 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:app_client/services/auth.dart';
 import 'package:flutter/rendering.dart';
@@ -68,7 +69,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       error = null;
     });
     try {
-      await auth.resetPassword(_email.text, _otp.text, _password.text);
+      await auth.resetPassword(_email.text.trim(), _otp.text, _password.text);
       Navigator.pop(context);
       Fluttertoast.showToast(
           msg: "Password Updated",
@@ -434,6 +435,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                             setState(() {
                                               emailerror =
                                                   'Please Enter your Email';
+                                            });
+                                            return '';
+                                          } else if(!EmailValidator.validate(val.trim())){
+                                            setState(() {
+                                              emailerror = 'Please enter valid email';
                                             });
                                             return '';
                                           } else {
