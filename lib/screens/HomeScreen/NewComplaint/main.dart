@@ -925,7 +925,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
   }
 
   getImageFormat(String filename) {
-    String ext = filename.split(".").last;
+    String ext = filename.split(".").last.toLowerCase();
     switch (ext) {
       case ("png"):
         {
@@ -947,6 +947,9 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
         {
           return CompressFormat.heic;
         }
+      default: {
+        return CompressFormat.png;
+      }
     }
   }
 }

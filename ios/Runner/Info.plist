@@ -19,9 +19,15 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Access to camera is needed to take instantaneous pictures of the uncleanly place to upload in the complaint</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Location access is needed to add the instantaneous location of the uncleanly place being reported</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Access to photo library is needed to upload saved pictures of the uncleanly place that the individual needs to complain about</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -41,9 +47,5 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
-	<key>NSPhotoLibraryUsageDescription</key>
-    <string>Example usage description</string>
-    <key>NSCameraUsageDescription</key>
-    <string>Example usage description</string>
 </dict>
 </plist>
