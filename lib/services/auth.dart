@@ -102,11 +102,11 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  Future updateProfile({String name, String email}) async {
+  Future updateProfile({String name}) async {
     await _loadToken();
     try {
       await _setUser(
-          await http.updateProfile(_token, name: name, email: email));
+          await http.updateProfile(_token, name: name, email: _user.email));
     } catch (e) {
       throw (e);
     }

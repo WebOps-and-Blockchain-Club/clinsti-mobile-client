@@ -86,7 +86,7 @@ class Server {
   ///Edit Profile
   Future updateProfile(String token, {String name, String email}) async {
     await init();
-    if (name == null && email == null) {
+    if (name == null) {
       return;
     }
     var headers = {
@@ -94,19 +94,13 @@ class Server {
       'Content-Type': 'application/json'
     };
     var request = http.Request('PATCH', Uri.parse('$baseUrl/client/accounts'));
-    if (name == null) {
-      request.body = '{"email":"$email"}';
-    } else if (email == null) {
-      request.body = '{"name":"$name"}';
-    } else {
-      request.body = '{"name":"$name", "email":"$email"}';
-    }
+    request.body = '{"name":"$name"}';
     request.headers.addAll(headers);
 
     try {
       http.StreamedResponse response = await request.send();
       if (response.statusCode == 200) {
-        User user = User(token: token, email: email, name: name);
+        User user = User(token: token, name: name, email: email);
         return user;
       } else {
         throw (await response.stream.bytesToString());
