@@ -54,9 +54,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         loading = false;
       });
       final snackBar = SnackBar(
-        content: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text(error)]),
+        content: Text(error, textAlign: TextAlign.center,),
         backgroundColor: Colors.red,
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -82,9 +80,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         error = e.toString();
       });
       final snackBar = SnackBar(
-        content: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text(error)]),
+        content: Text(error, textAlign: TextAlign.center,),
         backgroundColor: Colors.red,
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);

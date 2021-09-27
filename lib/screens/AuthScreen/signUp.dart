@@ -39,9 +39,7 @@ class _SignUpState extends State<SignUp> {
         error = e;
       });
       final snackBar = SnackBar(
-        content: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text(error)]),
+        content: Text(error, textAlign: TextAlign.center,),
         backgroundColor: Colors.red,
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);

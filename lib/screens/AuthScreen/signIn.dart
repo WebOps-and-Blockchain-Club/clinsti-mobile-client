@@ -38,9 +38,10 @@ class _SignInState extends State<SignIn> {
         error = e.toString();
       });
       final snackBar = SnackBar(
-        content: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text(error)]),
+        content: Text(
+          error,
+          textAlign: TextAlign.center
+          ),
         backgroundColor: Colors.red,
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -71,7 +72,7 @@ class _SignInState extends State<SignIn> {
                               child: Column(
                                 children: [
                                   SizedBox(
-                                    height: 90,
+                                    height: 30,
                                   ),
                                   Container(
                                     height: MediaQuery.of(context).size.height *
@@ -189,14 +190,15 @@ class _SignInState extends State<SignIn> {
                                                                   'Please Enter your Email';
                                                             });
                                                             return '';
-                                                          } 
-                                                          else if(!EmailValidator.validate(val.trim())){
+                                                          } else if (!EmailValidator
+                                                              .validate(
+                                                                  val.trim())) {
                                                             setState(() {
-                                                              emailerror = 'Please enter valid email';
+                                                              emailerror =
+                                                                  'Please enter valid email';
                                                             });
                                                             return '';
-                                                          }
-                                                          else {
+                                                          } else {
                                                             setState(() {
                                                               emailerror = null;
                                                             });

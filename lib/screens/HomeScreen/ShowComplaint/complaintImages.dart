@@ -38,9 +38,7 @@ class _ComplaintImagesState extends State<ComplaintImages> {
         error = e.toString();
       });
       final snackBar = SnackBar(
-        content: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text(error)]),
+        content: Text(error, textAlign: TextAlign.center,),
         backgroundColor: Colors.red,
       );
       error != null

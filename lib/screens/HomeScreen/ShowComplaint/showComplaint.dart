@@ -55,9 +55,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
         error = e.toString();
       });
       final snackBar = SnackBar(
-        content: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text(error)]),
+        content: Text(error, textAlign: TextAlign.center,),
         backgroundColor: Colors.red,
       );
       error != null
@@ -70,14 +68,33 @@ class _ShowComplaintState extends State<ShowComplaint> {
   }
 
   _deleteComplaint() async {
-    await widget.db.deleteRequest(widget.complaint['complaint_id']);
-    Fluttertoast.showToast(
-        msg: "Request Removed",
-        toastLength: Toast.LENGTH_LONG,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 14.0);
-    Navigator.pop(context);
+    setState(() {
+      loading = true;
+    });
+    try {
+      await widget.db.deleteRequest(widget.complaint['complaint_id']);
+      Fluttertoast.showToast(
+          msg: "Request Removed",
+          toastLength: Toast.LENGTH_LONG,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 14.0);
+      Navigator.pop(context);
+    } catch (e) {
+      setState(() {
+        error = e.toString();
+      });
+      final snackBar = SnackBar(
+        content: Text(error, textAlign: TextAlign.center,),
+        backgroundColor: Colors.red,
+      );
+      error != null
+          ? ScaffoldMessenger.of(context).showSnackBar(snackBar)
+          : SizedBox();
+    }
+    setState(() {
+      loading = false;
+    });
   }
 
   _postComplaintFeedback() async {
@@ -96,6 +113,11 @@ class _ShowComplaintState extends State<ShowComplaint> {
         showSubmitButton = true;
         loading = false;
       });
+      final snackBar = SnackBar(
+        content: Text(feedbackRequestError, textAlign: TextAlign.center,),
+        backgroundColor: Colors.red,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
     setState(() {
       showSubmitButton = false;

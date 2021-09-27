@@ -187,6 +187,11 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
       setState(() {
         error = e.toString();
       });
+      final snackBar = SnackBar(
+        content: Text(error, textAlign: TextAlign.center,),
+        backgroundColor: Colors.red,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
     setState(() {
       loading = false;
@@ -726,17 +731,17 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
                         onPressed: clearImages,
                       ),
                   ]),
-                  if (error != null)
-                    SizedBox(
-                      height: 10,
-                    ),
-                  if (error != null)
-                    Center(
-                      child: Text(
-                        error,
-                        style: TextStyle(color: Colors.red),
-                      ),
-                    ),
+                  // if (error != null)
+                  //   SizedBox(
+                  //     height: 10,
+                  //   ),
+                  // if (error != null)
+                  //   Center(
+                  //     child: Text(
+                  //       error,
+                  //       style: TextStyle(color: Colors.red),
+                  //     ),
+                  //   ),
                   SizedBox(
                     height: 5,
                   ),
