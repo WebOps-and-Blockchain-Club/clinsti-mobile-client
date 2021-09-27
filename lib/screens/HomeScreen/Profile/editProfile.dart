@@ -1,7 +1,6 @@
 import 'package:app_client/models/user.dart';
 import 'package:app_client/services/auth.dart';
 import 'package:app_client/widgets/formErrorMessage.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -50,7 +49,7 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
       loading = true;
     });
     try {
-      await auth.updateProfile(email: email.trim(), name: name);
+      await auth.updateProfile(name: name);
       Navigator.pop(context);
       Fluttertoast.showToast(
           msg: "Profile Updated",
@@ -63,9 +62,7 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
         error = e.toString();
       });
       final snackBar = SnackBar(
-        content: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text(error)]),
+        content: Text(error, textAlign: TextAlign.center,),
         backgroundColor: Colors.red,
       );
       error != null
@@ -164,63 +161,6 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
                                       ),
                                     ),
                                     errorMessages(nameerror),
-                                    SizedBox(height: 20),
-                                    Material(
-                                      elevation: 20.0,
-                                      shadowColor: Colors.white,
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      child: TextFormField(
-                                        decoration: InputDecoration(
-                                            errorStyle: TextStyle(height: 0),
-                                            hintText: "Email",
-                                            prefixIcon: Icon(
-                                              Icons.email,
-                                              color: Colors.green,
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10.0)),
-                                              borderSide: BorderSide(
-                                                  color: Colors.green,
-                                                  width: 2.0),
-                                            ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(10.0)),
-                                              borderSide: BorderSide(
-                                                  color: Colors.white,
-                                                  width: 0.0),
-                                            ),
-                                            border: OutlineInputBorder(
-                                                borderRadius: BorderRadius.all(
-                                                    Radius.circular(10.0)))),
-                                        readOnly: false,
-                                        controller: _email,
-                                        maxLines: null,
-                                        validator: (val) {
-                                          if (val.isEmpty) {
-                                            setState(() {
-                                              emailerror = "Please Enter Email";
-                                            });
-                                            return '';
-                                          }
-                                          else if(!EmailValidator.validate(val.trim())){
-                                            setState(() {
-                                              emailerror = 'Please enter valid Email';
-                                            });
-                                            return '';
-                                          }
-                                          else {
-                                            setState(() {
-                                              emailerror = null;
-                                            });
-                                            return null;
-                                          }
-                                        },
-                                      ),
-                                    ),
-                                    errorMessages(emailerror),
                                     SizedBox(height: 20),
                                     Center(
                                       child: ElevatedButton.icon(
