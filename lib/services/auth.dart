@@ -8,16 +8,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 class AuthService extends ChangeNotifier {
   SharedPreferences _prefs;
   String _token;
+  String _verified;
   Server http = new Server();
   User _user;
 
   String get tokeN => _token ?? null;
+  String get verifieD => _verified ?? null;
   User get useR => _user ?? null;
 
   AuthService() {
     notifyListeners();
     _token = null;
+    _verified = null;
     _loadToken();
+    _loadVerified();
   }
 
   _initAuth() async {
@@ -44,6 +48,32 @@ class AuthService extends ChangeNotifier {
     notifyListeners();
   }
 
+  _loadVerified() async {
+    await _initAuth();
+    _verified = _prefs.getString('verified') ?? null;
+    notifyListeners();
+  }
+
+  _setVerified(bool isVerified) async {
+    await _initAuth();
+    if(isVerified) {
+      _prefs.setString('verified', 'true');
+      _verified = 'true';
+    }
+    else {
+      _prefs.setString('verified', 'false');
+      _verified = 'false';
+    }
+    notifyListeners();
+  }
+
+  _resetVerified() async {
+    await _initAuth();
+    _prefs.remove('verified');
+    _verified = null;
+    notifyListeners();
+  }
+
   _setUser(User user) async {
     await _setToken(user.token);
     _user = user;
@@ -52,6 +82,7 @@ class AuthService extends ChangeNotifier {
 
   _resetUser() async {
     await _resetToken();
+    await _resetVerified();
     _user = null;
     notifyListeners();
   }
@@ -60,6 +91,7 @@ class AuthService extends ChangeNotifier {
     try {
       dynamic obj = await http.signIn(email, password);
       _setToken(obj['userjwtToken']);
+      _setVerified(obj["isVerified"]);
     } catch (e) {
       print(e);
       throw (e);
@@ -70,6 +102,18 @@ class AuthService extends ChangeNotifier {
     try {
       dynamic obj = await http.signUp(email, password, name);
       _setToken(obj['userjwtToken']);
+      _setVerified(obj["isVerified"]);
+    } catch (e) {
+      print(e);
+      throw (e);
+    }
+  }
+
+  Future resendVerificationMail() async {
+    await _loadToken();
+    try {
+      dynamic obj = await http.resendVerificationMail(_token);
+      return obj["message"];
     } catch (e) {
       print(e);
       throw (e);
@@ -94,7 +138,9 @@ class AuthService extends ChangeNotifier {
   Future<User> getUserInfo() async {
     await _loadToken();
     try {
-      _setUser(await http.getUserInfo(_token));
+      dynamic obj = await http.getUserInfo(_token);
+      _setUser(obj);
+      _setVerified(obj.isVerified);
       return _user;
     } catch (e) {
       print(e);
@@ -136,7 +182,6 @@ class AuthService extends ChangeNotifier {
   Future resetPassword(String email, String otp, String password) async {
     try{
       dynamic obj = await http.resetPassword(email, otp, password);
-      print('My password reset by janithmsmm19b035'+obj.toString());
       _setToken(obj['message']);
     }
     catch(e) {

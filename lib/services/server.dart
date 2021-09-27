@@ -41,6 +41,27 @@ class Server {
     }
   }
 
+  ///Resend Verification Mail
+  Future<dynamic> resendVerificationMail(String token) async {
+    await init();
+    var headers = {'Authorization': 'Bearer $token'};
+    var request = http.Request('GET', Uri.parse('$baseUrl/client/accounts/resend-verification-mail'));
+    request.headers.addAll(headers);
+
+    try {
+      http.StreamedResponse response = await request.send();
+      if (response.statusCode == 200) {
+        return jsonDecode(await response.stream.bytesToString());
+      } else {
+        throw (await response.stream.bytesToString());
+      }
+    } on SocketException {
+      throw ('server error');
+    } catch (e) {
+      throw (e);
+    }
+  }
+
   ///SignIn
   Future<dynamic> signIn(String email, String password) async {
     await init();
