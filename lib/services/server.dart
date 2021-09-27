@@ -347,9 +347,9 @@ class Server {
     }
   }
 
-  Future<dynamic> postFeedback(String type, String feedback) async {
+  Future<dynamic> postFeedback(String token, String type, String feedback) async {
     await init();
-    var headers = {'Content-Type': 'application/json'};
+    var headers = {'Authorization': 'Bearer $token','Content-Type': 'application/json'};
     var request = http.Request('POST', Uri.parse('$baseUrl/client/feedback'));
     request.body = '''{"feedback":"$feedback","feedback_type":"$type"}''';
     request.headers.addAll(headers);

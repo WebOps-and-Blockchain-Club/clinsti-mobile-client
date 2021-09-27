@@ -93,7 +93,7 @@ class DatabaseService extends ChangeNotifier {
           skip: _skip,
           limit: _limit);
 
-      if(arr == "No Complaint Registered yet!") {
+      if (arr == "No Complaint Registered yet!") {
         _complaints = [];
         _count = 0;
         return;
@@ -166,16 +166,14 @@ class DatabaseService extends ChangeNotifier {
     }
   }
 
-  // Future postFeedback(String type, String feedback) async{
-  //   print('uess');
-  //   await _loadToken();
-  //   try{
-  //     print(_token);
-  //     print(type);
-  //     print(feedback);
-  //     var response = await http.postFeedback(type, feedback);
-  //   }catch(e) {}
-  // }
+  Future postFeedback(String type, String feedback) async {
+    await _loadToken();
+    try {
+      await http.postFeedback(_token, type, feedback);
+    } catch (e) {
+      throw (e);
+    }
+  }
 
   Future synC() async {
     try {

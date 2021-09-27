@@ -1,7 +1,21 @@
-import 'package:app_client/services/server.dart';
+import 'package:app_client/services/database.dart';
 import 'package:app_client/widgets/formErrorMessage.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
+
+class FeedbackWrapper extends StatefulWidget {
+  @override
+  _FeedbackWrapperState createState() => _FeedbackWrapperState();
+}
+
+class _FeedbackWrapperState extends State<FeedbackWrapper> {
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+        create: (_) => DatabaseService(), child: FeedbackScreen());
+  }
+}
 
 class FeedbackScreen extends StatefulWidget {
   @override
@@ -9,10 +23,10 @@ class FeedbackScreen extends StatefulWidget {
 }
 
 class _FeedbackScreenState extends State<FeedbackScreen> {
+  DatabaseService _db;
   final TextEditingController _feedbackText = TextEditingController();
   String _feedbackTo;
   final _formKey = GlobalKey<FormState>();
-  Server _server = Server();
   bool loading = false;
   String error;
   String errormessagefselect;
@@ -23,6 +37,9 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _db = Provider.of<DatabaseService>(context, listen: false);
+    });
     _node = FocusNode();
     _node.addListener(_handleFocusChange);
   }
@@ -48,7 +65,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       loading = true;
     });
     try {
-      await _server.postFeedback(_feedbackTo, _feedbackText.text);
+      await _db.postFeedback(_feedbackTo, _feedbackText.text);
       Navigator.pop(context);
       Fluttertoast.showToast(
           msg: "Thank you for your feedback",
@@ -61,9 +78,10 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
         error = e;
       });
       final snackBar = SnackBar(
-        content: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text(error)]),
+        content: Text(
+          error,
+          textAlign: TextAlign.center,
+        ),
         backgroundColor: Colors.red,
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
