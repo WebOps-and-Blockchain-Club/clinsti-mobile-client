@@ -182,7 +182,7 @@ class AuthService extends ChangeNotifier {
   Future resetPassword(String email, String otp, String password) async {
     try{
       dynamic obj = await http.resetPassword(email, otp, password);
-      _setToken(obj['message']);
+      return obj["message"];
     }
     catch(e) {
       throw(e);
