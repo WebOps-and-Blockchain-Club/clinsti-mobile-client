@@ -142,7 +142,7 @@ class _VerifyState extends State<Verify> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            "Don't get verfication email ? ",
+                            "Haven't received verification email ? ",
                             style: TextStyle(fontSize: 15.0),
                           ),
                           GestureDetector(
@@ -150,7 +150,7 @@ class _VerifyState extends State<Verify> {
                               await _resendVerificationMail(auth);
                             },
                             child: Text(
-                              "Click here",
+                              "Resend mail",
                               style: TextStyle(
                                   color: Colors.green, fontSize: 15.0),
                             ),
