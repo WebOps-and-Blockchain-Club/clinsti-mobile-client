@@ -7,6 +7,9 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Verify extends StatefulWidget {
+  final String email;
+
+  const Verify({Key? key, required this.email}) : super(key: key);
   @override
   _VerifyState createState() => _VerifyState();
 }
@@ -99,7 +102,7 @@ class _VerifyState extends State<Verify> {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Text(
-                          "Verification mail has been sent to your registered email. Please verify your email to continue!",
+                          "Verification mail has been sent to your registered email.${widget.email.isNotEmpty ? "<${widget.email}>" : ""} Please verify your email to continue!",
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 19,

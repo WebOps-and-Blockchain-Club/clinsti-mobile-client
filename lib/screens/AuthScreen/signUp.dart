@@ -8,7 +8,8 @@ import 'package:url_launcher/url_launcher.dart';
 
 class SignUp extends StatefulWidget {
   final Function toggleView;
-  SignUp(this.toggleView);
+  final Function setEmail;
+  SignUp(this.toggleView, this.setEmail);
   @override
   _SignUpState createState() => _SignUpState();
 }
@@ -567,6 +568,7 @@ class _SignUpState extends State<SignUp> {
                                                     _formKey.currentState!
                                                         .validate()) {
                                                   await _signUp(auth);
+                                                  widget.setEmail(_email.text);
                                                 }
                                               },
                                             ),

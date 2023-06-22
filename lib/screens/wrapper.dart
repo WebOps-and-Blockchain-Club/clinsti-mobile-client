@@ -12,17 +12,29 @@ class Wrapper extends StatefulWidget {
 }
 
 class _WrapperState extends State<Wrapper> {
+  String? email;
+
+  setEmail(mail) {
+    setState(() {
+      email = mail;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
         create: (_) => AuthService(),
         child: Consumer<AuthService>(builder: (context, auth, child) {
           return auth.tokeN == null
-              ? Authenticate()
-              : ( auth.verifieD == 'true'
-                ? ChangeNotifierProvider(
-                  create: (_) => DatabaseService(), child: HomeScreen())
-                : Verify());
+              ? Authenticate(
+                  setEmail: setEmail,
+                )
+              : (auth.verifieD == 'true'
+                  ? ChangeNotifierProvider(
+                      create: (_) => DatabaseService(), child: HomeScreen())
+                  : Verify(
+                      email: email ?? "",
+                    ));
         }));
   }
 }
