@@ -11,7 +11,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 class ShowComplaint extends StatefulWidget {
   final dynamic complaint;
   final DatabaseService db;
-  ShowComplaint({this.complaint, this.db});
+  ShowComplaint({this.complaint, required this.db});
 
   @override
   _ShowComplaintState createState() => _ShowComplaintState();
@@ -23,8 +23,8 @@ class _ShowComplaintState extends State<ShowComplaint> {
   TextEditingController feedback = TextEditingController();
   Map<String, dynamic> complaint = {};
   bool loading = false;
-  String error;
-  String feedbackRequestError;
+  String? error;
+  String? feedbackRequestError;
   List<Color> statusColors = []..length = 7;
   List<bool> lineBools = [false, false, false, false];
 
@@ -54,13 +54,18 @@ class _ShowComplaintState extends State<ShowComplaint> {
       setState(() {
         error = e.toString();
       });
-      final snackBar = SnackBar(
-        content: Text(error, textAlign: TextAlign.center,),
-        backgroundColor: Colors.red,
-      );
-      error != null
-          ? ScaffoldMessenger.of(context).showSnackBar(snackBar)
-          : SizedBox();
+      if (error != null) {
+        final snackBar = SnackBar(
+          content: Text(
+            error!,
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.red,
+        );
+        error != null
+            ? ScaffoldMessenger.of(context).showSnackBar(snackBar)
+            : SizedBox();
+      }
     }
     setState(() {
       loading = false;
@@ -84,13 +89,18 @@ class _ShowComplaintState extends State<ShowComplaint> {
       setState(() {
         error = e.toString();
       });
-      final snackBar = SnackBar(
-        content: Text(error, textAlign: TextAlign.center,),
-        backgroundColor: Colors.red,
-      );
-      error != null
-          ? ScaffoldMessenger.of(context).showSnackBar(snackBar)
-          : SizedBox();
+      if (error != null) {
+        final snackBar = SnackBar(
+          content: Text(
+            error!,
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.red,
+        );
+        error != null
+            ? ScaffoldMessenger.of(context).showSnackBar(snackBar)
+            : SizedBox();
+      }
     }
     setState(() {
       loading = false;
@@ -113,11 +123,16 @@ class _ShowComplaintState extends State<ShowComplaint> {
         showSubmitButton = true;
         loading = false;
       });
-      final snackBar = SnackBar(
-        content: Text(feedbackRequestError, textAlign: TextAlign.center,),
-        backgroundColor: Colors.red,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      if (feedbackRequestError != null) {
+        final snackBar = SnackBar(
+          content: Text(
+            feedbackRequestError!,
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.red,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
     }
     setState(() {
       showSubmitButton = false;
@@ -127,14 +142,14 @@ class _ShowComplaintState extends State<ShowComplaint> {
 
   _setIconStatus(String currentStatus) {
     if (currentStatus == "Pending transmission") {
-      statusColors[0] = Colors.green[300];
+      statusColors[0] = Colors.green[300]!;
       for (int i = 1; i < 7; i++) {
         statusColors[i] = Colors.grey;
       }
       lineBools[0] = true;
     } else if (currentStatus == "Work is pending") {
       for (int i = 0; i < 3; i++) {
-        statusColors[i] = Colors.green[300];
+        statusColors[i] = Colors.green[300]!;
       }
       for (int i = 3; i < 7; i++) {
         statusColors[i] = Colors.grey;
@@ -142,20 +157,20 @@ class _ShowComplaintState extends State<ShowComplaint> {
       lineBools[1] = true;
     } else if (currentStatus == "Work in progress") {
       for (int i = 0; i < 5; i++) {
-        statusColors[i] = Colors.green[300];
+        statusColors[i] = Colors.green[300]!;
       }
       statusColors[5] = Colors.grey;
       statusColors[6] = Colors.grey;
       lineBools[2] = true;
     } else if (currentStatus == "Work completed") {
       for (int i = 0; i < 7; i++) {
-        statusColors[i] = Colors.green[300];
+        statusColors[i] = Colors.green[300]!;
       }
       lineBools[3] = true;
     } else if (currentStatus == "Closed with due justification") {
-      statusColors[0] = Colors.green[300];
-      statusColors[1] = Colors.green[300];
-      statusColors[2] = Colors.green[300];
+      statusColors[0] = Colors.green[300]!;
+      statusColors[1] = Colors.green[300]!;
+      statusColors[2] = Colors.green[300]!;
     }
   }
 
@@ -413,7 +428,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    _buildProgressIcon(Colors.green[300],
+                    _buildProgressIcon(Colors.green[300]!,
                         iconData: MdiIcons.lockCheckOutline),
                     _buildProgressText(
                         Colors.black,
@@ -430,7 +445,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
     );
   }
 
-  _buildProgressIcon(Color color, {IconData iconData}) {
+  _buildProgressIcon(Color color, {IconData? iconData}) {
     return SizedBox(
       width: 60,
       height: 40,
@@ -490,7 +505,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
     );
   }
 
-  _buildRequestDetail(String description, String heading) {
+  _buildRequestDetail(String? description, String heading) {
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
@@ -657,7 +672,8 @@ class _ShowComplaintState extends State<ShowComplaint> {
                   style: TextStyle(fontSize: 18, color: Colors.white),
                 ),
                 onPressed: () {
-                  if (_formKey.currentState.validate()) {
+                  if (_formKey.currentState != null &&
+                      _formKey.currentState!.validate()) {
                     _postComplaintFeedback();
                   }
                 },

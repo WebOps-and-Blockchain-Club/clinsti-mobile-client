@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class ComplaintImages extends StatefulWidget {
   final List<dynamic> imgNames;
   final DatabaseService db;
-  ComplaintImages({this.imgNames, this.db});
+  ComplaintImages({required this.imgNames, required this.db});
 
   @override
   _ComplaintImagesState createState() => _ComplaintImagesState();
@@ -14,7 +14,7 @@ class ComplaintImages extends StatefulWidget {
 class _ComplaintImagesState extends State<ComplaintImages> {
   List<String> imageString = [];
   bool loading = false;
-  String error;
+  String? error;
 
   @override
   initState() {
@@ -37,13 +37,18 @@ class _ComplaintImagesState extends State<ComplaintImages> {
       setState(() {
         error = e.toString();
       });
-      final snackBar = SnackBar(
-        content: Text(error, textAlign: TextAlign.center,),
-        backgroundColor: Colors.red,
-      );
-      error != null
-          ? ScaffoldMessenger.of(context).showSnackBar(snackBar)
-          : SizedBox();
+      if (error != null) {
+        final snackBar = SnackBar(
+          content: Text(
+            error!,
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.red,
+        );
+        error != null
+            ? ScaffoldMessenger.of(context).showSnackBar(snackBar)
+            : SizedBox();
+      }
     }
     setState(() {
       loading = false;

@@ -6,20 +6,20 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MapSelect extends StatefulWidget {
   final bool select;
-  final String loc;
-  MapSelect({this.loc, this.select = true});
+  final String? loc;
+  MapSelect({required this.loc, this.select = true});
   @override
   State<MapSelect> createState() => MapSelectState();
 }
 
 class MapSelectState extends State<MapSelect> {
-  LatLng _currentLocation;
-  Marker _markerCurrent;
-  LatLng _selectedLocation;
-  Marker _markerSelected;
-  Set<Marker> _markers;
+  late LatLng _currentLocation;
+  late Marker _markerCurrent;
+  late LatLng? _selectedLocation;
+  late Marker _markerSelected;
+  late Set<Marker> _markers;
 
-  BitmapDescriptor locationIcon;
+  late BitmapDescriptor locationIcon;
 
   MapType _mapType = MapType.normal;
   Completer<GoogleMapController> _controller = Completer();
@@ -30,9 +30,12 @@ class MapSelectState extends State<MapSelect> {
 
   void initState() {
     super.initState();
-    setState(() {
-      _selectedLocation = _getLocation(widget.loc);
-    });
+    if (widget.loc != null) {
+      setState(() {
+        _selectedLocation = _getLocation(widget.loc!);
+      });
+    }
+
     init();
   }
 
@@ -58,8 +61,8 @@ class MapSelectState extends State<MapSelect> {
     setState(() {
       _markerCurrent = Marker(markerId: MarkerId('current'));
       if (_selectedLocation != null) {
-        _markerSelected =
-            Marker(markerId: MarkerId('selected'), position: _selectedLocation);
+        _markerSelected = Marker(
+            markerId: MarkerId('selected'), position: _selectedLocation!);
       } else {
         _markerSelected = Marker(markerId: MarkerId('selected'));
       }
@@ -72,7 +75,7 @@ class MapSelectState extends State<MapSelect> {
     });
   }
 
-  LatLng _getLocation(String loc) {
+  LatLng? _getLocation(String loc) {
     try {
       var obj = jsonDecode(loc);
       return new LatLng(obj['Latitude'], obj['Longitude']);
@@ -101,7 +104,7 @@ class MapSelectState extends State<MapSelect> {
               icon: locationIcon);
           Marker tempMarker = _markers.firstWhere(
               (marker) => marker.markerId.value == "current",
-              orElse: () => null);
+              orElse: () => Marker(markerId: MarkerId('Random')));
           _markers.remove(tempMarker);
           _markers.add(_markerCurrent);
         });
@@ -126,12 +129,12 @@ class MapSelectState extends State<MapSelect> {
   Future gotoSelectedLocation() async {
     if (_controller != null && _selectedLocation != null) {
       final GoogleMapController controller = await _controller.future;
-      controller.animateCamera(CameraUpdate.newCameraPosition(
-          CameraPosition(target: _selectedLocation, zoom: 16)));
+      controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+          target: _selectedLocation ?? _currentLocation, zoom: 16)));
     }
   }
 
-  void _onTap(LatLng latLng) {
+  void _onTap(LatLng? latLng) {
     if (widget.select && latLng != null) {
       setState(() {
         _selectedLocation = latLng;
@@ -139,7 +142,7 @@ class MapSelectState extends State<MapSelect> {
             Marker(markerId: MarkerId("selected"), position: latLng);
         Marker tempMarker = _markers.firstWhere(
             (marker) => marker.markerId.value == "selected",
-            orElse: () => null);
+            orElse: () => Marker(markerId: MarkerId('Random')));
         _markers.remove(tempMarker);
         _markers.add(_markerSelected);
       });
@@ -165,8 +168,8 @@ class MapSelectState extends State<MapSelect> {
         _selectedLocation == null
             ? ""
             : jsonEncode({
-                "Latitude": _selectedLocation.latitude,
-                "Longitude": _selectedLocation.longitude
+                "Latitude": _selectedLocation?.latitude,
+                "Longitude": _selectedLocation?.longitude
               }).toString());
   }
 

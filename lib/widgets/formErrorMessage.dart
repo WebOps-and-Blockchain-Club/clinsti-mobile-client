@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget errorMessages(String errMessage) {
+Widget errorMessages(String? errMessage) {
   if (errMessage != null) {
     return Container(
       margin: EdgeInsets.only(left: 20, top: 7),

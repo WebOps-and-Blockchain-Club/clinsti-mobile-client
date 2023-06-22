@@ -5,11 +5,11 @@ import 'package:flutter/rendering.dart';
 import 'package:app_client/widgets/formErrorMessage.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:timer_button/timer_button.dart';
+import 'package:timer_button_fork/timer_button_fork.dart';
 
 class ForgotPassword extends StatefulWidget {
   final AuthService auth;
-  ForgotPassword({this.auth});
+  ForgotPassword({required this.auth});
   @override
   _ForgotPasswordState createState() => _ForgotPasswordState();
 }
@@ -24,11 +24,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   bool _obscureText1 = true;
   bool _obscureText2 = true;
   bool loading = false;
-  String error;
-  String emailerror;
-  String otperror;
-  String passerror;
-  String confirmpasserror;
+  late String? error;
+  late String? emailerror;
+  late String? otperror;
+  late String? passerror;
+  late String? confirmpasserror;
   final _formKey = GlobalKey<FormState>();
 
   _getOTP(AuthService auth) async {
@@ -53,11 +53,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         error = e.toString();
         loading = false;
       });
-      final snackBar = SnackBar(
-        content: Text(error, textAlign: TextAlign.center,),
-        backgroundColor: Colors.red,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      if (error != null) {
+        final snackBar = SnackBar(
+          content: Text(
+            error!,
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.red,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
     }
   }
 
@@ -79,11 +84,16 @@ class _ForgotPasswordState extends State<ForgotPassword> {
       setState(() {
         error = e.toString();
       });
-      final snackBar = SnackBar(
-        content: Text(error, textAlign: TextAlign.center,),
-        backgroundColor: Colors.red,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      if (error != null) {
+        final snackBar = SnackBar(
+          content: Text(
+            error!,
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.red,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
     }
     setState(() {
       loading = false;
@@ -226,7 +236,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                             )),
                                         controller: _password,
                                         validator: (val) {
-                                          if (val.length < 7) {
+                                          if (val != null && val.length < 7) {
                                             setState(() {
                                               passerror =
                                                   'Password must be atleast 8 characters long';
@@ -304,14 +314,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                             )),
                                         controller: _confirmpass,
                                         validator: (val) {
-                                          if (val.isEmpty) {
+                                          if (val != null && val.isEmpty) {
                                             setState(() {
                                               confirmpasserror =
                                                   'Please Re-Enter New Password';
                                             });
 
                                             return '';
-                                          } else if (val.length < 7) {
+                                          } else if (val != null &&
+                                              val.length < 7) {
                                             setState(() {
                                               confirmpasserror =
                                                   'Password must be 8 characters long';
@@ -351,8 +362,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                         ),
                                         child: Text('Submit'),
                                         onPressed: () async {
-                                          if (_formKey.currentState
-                                              .validate()) {
+                                          if (_formKey.currentState != null &&
+                                              _formKey.currentState!
+                                                  .validate()) {
                                             await _resetPassword(widget.auth);
                                           }
                                         },
@@ -361,7 +373,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                     SizedBox(height: 6.0),
                                     error != null
                                         ? Text(
-                                            error,
+                                            error!,
                                             style: TextStyle(color: Colors.red),
                                             textAlign: TextAlign.center,
                                           )
@@ -427,15 +439,18 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                         maxLines: null,
                                         controller: _email,
                                         validator: (val) {
-                                          if (val.isEmpty) {
+                                          if (val != null && val.isEmpty) {
                                             setState(() {
                                               emailerror =
                                                   'Please Enter your Email';
                                             });
                                             return '';
-                                          } else if(!EmailValidator.validate(val.trim())){
+                                          } else if (val != null &&
+                                              !EmailValidator.validate(
+                                                  val.trim())) {
                                             setState(() {
-                                              emailerror = 'Please enter valid email';
+                                              emailerror =
+                                                  'Please enter valid email';
                                             });
                                             return '';
                                           } else {
@@ -510,7 +525,8 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                                   maxLines: null,
                                                   controller: _otp,
                                                   validator: (val) {
-                                                    if (val.isEmpty) {
+                                                    if (val != null &&
+                                                        val.isEmpty) {
                                                       setState(() {
                                                         otperror =
                                                             'Please Enter OTP';
@@ -539,11 +555,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                                   TimerButton(
                                                     label: "Resend OTP",
                                                     timeOutInSeconds: 30,
-                                                    color: null,
+                                                    color: Colors.transparent,
                                                     activeTextStyle: TextStyle(
                                                         color: Colors.green),
                                                     buttonType:
-                                                        ButtonType.FlatButton,
+                                                        ButtonType.TextButton,
                                                     onPressed: () async {
                                                       await _getOTP(
                                                           widget.auth);
@@ -566,8 +582,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                                   ),
                                                   child: Text('Submit OTP'),
                                                   onPressed: () {
-                                                    if (_formKey.currentState
-                                                        .validate()) {
+                                                    if (_formKey.currentState !=
+                                                            null &&
+                                                        _formKey.currentState!
+                                                            .validate()) {
                                                       setState(() {
                                                         otpsubmit = true;
                                                       });
@@ -593,8 +611,10 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                                     color: Colors.white),
                                               ),
                                               onPressed: () async {
-                                                if (_formKey.currentState
-                                                    .validate()) {
+                                                if (_formKey.currentState !=
+                                                        null &&
+                                                    _formKey.currentState!
+                                                        .validate()) {
                                                   await _getOTP(widget.auth);
                                                 }
                                               },

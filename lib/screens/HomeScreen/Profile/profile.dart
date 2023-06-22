@@ -10,20 +10,20 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 class MyProfileScreen extends StatefulWidget {
   final AuthService auth;
-  MyProfileScreen({this.auth});
+  MyProfileScreen({required this.auth});
   @override
   _MyProfileScreenState createState() => _MyProfileScreenState();
 }
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
-  String name;
-  String email;
-  String error;
+  String? name;
+  String? email;
+  String? error;
   bool loading = false;
   bool isEditable = false;
   final GlobalKey<FormState> _formKeyEditName = GlobalKey<FormState>();
 
-  _updateUserProfile({AuthService auth, String name}) async {
+  _updateUserProfile({required AuthService auth, required String name}) async {
     Navigator.pop(context);
     setState(() {
       error = null;
@@ -42,16 +42,18 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
       setState(() {
         error = e.toString();
       });
-      final snackBar = SnackBar(
-        content: Text(
-          error,
-          textAlign: TextAlign.center,
-        ),
-        backgroundColor: Colors.red,
-      );
-      error != null
-          ? ScaffoldMessenger.of(context).showSnackBar(snackBar)
-          : SizedBox();
+      if (error != null) {
+        final snackBar = SnackBar(
+          content: Text(
+            error!,
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.red,
+        );
+        error != null
+            ? ScaffoldMessenger.of(context).showSnackBar(snackBar)
+            : SizedBox();
+      }
     }
     setState(() {
       loading = false;
@@ -65,9 +67,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
   }
 
   getUser() {
-    User user = widget.auth.useR;
-    name = user.name;
-    email = user.email;
+    User? user = widget.auth.useR;
+    name = user?.name ?? "";
+    email = user?.email ?? "";
   }
 
   void _logout() async {
@@ -79,9 +81,9 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
         context: context,
         builder: (context) {
           TextEditingController _name = TextEditingController();
-          String nameerror;
+          String? nameerror;
           return StatefulBuilder(builder: (context, setState) {
-            _name.text = name;
+            _name.text = name ?? "";
             return AlertDialog(
               scrollable: true,
               content: Form(
@@ -127,7 +129,7 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                             controller: _name,
                             maxLines: null,
                             validator: (val) {
-                              if (val.isEmpty) {
+                              if (val != null && val.isEmpty) {
                                 setState(() {
                                   nameerror = "Please Enter Name";
                                 });
@@ -150,7 +152,8 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                                       MaterialStateProperty.all(Colors.green),
                                   elevation: MaterialStateProperty.all(10)),
                               onPressed: () async {
-                                if (_formKeyEditName.currentState.validate())
+                                if (_formKeyEditName.currentState != null &&
+                                    _formKeyEditName.currentState!.validate())
                                   await _updateUserProfile(
                                     auth: widget.auth,
                                     name: _name.text,
@@ -232,22 +235,24 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
                           ),
                         ),
                         SizedBox(height: 20.0),
-                        Center(
-                          child: Text(
-                            name,
-                            style: TextStyle(
-                                fontSize: 25, fontWeight: FontWeight.w600),
-                            textAlign: TextAlign.center,
+                        if (name != null)
+                          Center(
+                            child: Text(
+                              name!,
+                              style: TextStyle(
+                                  fontSize: 25, fontWeight: FontWeight.w600),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                        ),
                         SizedBox(height: 5),
-                        Center(
-                          child: Text(
-                            email,
-                            style: TextStyle(color: Colors.grey[800]),
-                            textAlign: TextAlign.center,
+                        if (name != null)
+                          Center(
+                            child: Text(
+                              email!,
+                              style: TextStyle(color: Colors.grey[800]),
+                              textAlign: TextAlign.center,
+                            ),
                           ),
-                        ),
                         SizedBox(height: 30.0),
                         Container(
                           height: 45,

@@ -6,7 +6,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 class EditPasswordScreen extends StatefulWidget {
   final AuthService auth;
-  EditPasswordScreen({this.auth});
+  EditPasswordScreen({required this.auth});
 
   @override
   _EditPasswordScreenState createState() => _EditPasswordScreenState();
@@ -17,10 +17,10 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
   TextEditingController newPassword = TextEditingController();
   TextEditingController confirmPassword = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  String error;
-  String passError;
-  String newPassError;
-  String confirmPassError;
+  String? error;
+  String? passError;
+  String? newPassError;
+  String? confirmPassError;
 
   bool loading = false;
   bool _obscureText1 = false;
@@ -28,7 +28,9 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
   bool _obscureText3 = false;
 
   _updateUserPassword(
-      {AuthService auth, String oldPassword, String newPassword}) async {
+      {required AuthService auth,
+      required String oldPassword,
+      required String newPassword}) async {
     setState(() {
       loading = true;
     });
@@ -45,13 +47,16 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
       setState(() {
         error = e.toString();
       });
-      final snackBar = SnackBar(
-        content: Text(error, textAlign: TextAlign.center,),
-        backgroundColor: Colors.red,
-      );
-      error != null
-          ? ScaffoldMessenger.of(context).showSnackBar(snackBar)
-          : SizedBox();
+      if (error != null) {
+        final snackBar = SnackBar(
+          content: Text(
+            error!,
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.red,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
     }
     setState(() {
       loading = false;
@@ -143,7 +148,7 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                                         readOnly: false,
                                         controller: oldPassword,
                                         validator: (val) {
-                                          if (val.isEmpty) {
+                                          if (val != null && val.isEmpty) {
                                             setState(() {
                                               passError =
                                                   "Please enter your current password";
@@ -208,7 +213,7 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                                         readOnly: false,
                                         controller: newPassword,
                                         validator: (val) {
-                                          if (val.isEmpty) {
+                                          if (val != null && val.isEmpty) {
                                             setState(() {
                                               newPassError =
                                                   "Please enter your new password";
@@ -273,7 +278,7 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                                         controller: confirmPassword,
                                         readOnly: false,
                                         validator: (val) {
-                                          if (val.isEmpty) {
+                                          if (val != null && val.isEmpty) {
                                             setState(() {
                                               confirmPassError =
                                                   "Please enter your Confirm Password";
@@ -307,8 +312,9 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                                                   MaterialStateProperty.all(
                                                       10)),
                                           onPressed: () async {
-                                            if (_formKey.currentState
-                                                .validate())
+                                            if (_formKey.currentState != null &&
+                                                _formKey.currentState!
+                                                    .validate())
                                               await _updateUserPassword(
                                                   auth: widget.auth,
                                                   oldPassword: oldPassword.text,
@@ -324,7 +330,7 @@ class _EditPasswordScreenState extends State<EditPasswordScreen> {
                                     SizedBox(height: 20.0),
                                     error != null
                                         ? Text(
-                                            error,
+                                            error!,
                                             style: TextStyle(color: Colors.red),
                                           )
                                         : SizedBox()

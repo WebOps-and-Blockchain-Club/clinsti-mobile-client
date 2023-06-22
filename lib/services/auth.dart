@@ -6,15 +6,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService extends ChangeNotifier {
-  SharedPreferences _prefs;
-  String _token;
-  String _verified;
+  SharedPreferences? _prefs;
+  String? _token;
+  String? _verified;
   Server http = new Server();
-  User _user;
+  User? _user;
 
-  String get tokeN => _token ?? null;
-  String get verifieD => _verified ?? null;
-  User get useR => _user ?? null;
+  String? get tokeN => _token ?? null;
+  String? get verifieD => _verified ?? null;
+  User? get useR => _user ?? null;
 
   AuthService() {
     notifyListeners();
@@ -30,38 +30,37 @@ class AuthService extends ChangeNotifier {
 
   _loadToken() async {
     await _initAuth();
-    _token = _prefs.getString('token') ?? null;
+    _token = _prefs?.getString('token') ?? null;
     notifyListeners();
   }
 
   _setToken(String token) async {
     await _initAuth();
-    _prefs.setString('token', token);
+    _prefs?.setString('token', token);
     _token = token;
     notifyListeners();
   }
 
   _resetToken() async {
     await _initAuth();
-    _prefs.remove('token');
+    _prefs?.remove('token');
     _token = null;
     notifyListeners();
   }
 
   _loadVerified() async {
     await _initAuth();
-    _verified = _prefs.getString('verified') ?? null;
+    _verified = _prefs?.getString('verified') ?? null;
     notifyListeners();
   }
 
   _setVerified(bool isVerified) async {
     await _initAuth();
-    if(isVerified) {
-      _prefs.setString('verified', 'true');
+    if (isVerified) {
+      _prefs?.setString('verified', 'true');
       _verified = 'true';
-    }
-    else {
-      _prefs.setString('verified', 'false');
+    } else {
+      _prefs?.setString('verified', 'false');
       _verified = 'false';
     }
     notifyListeners();
@@ -69,7 +68,7 @@ class AuthService extends ChangeNotifier {
 
   _resetVerified() async {
     await _initAuth();
-    _prefs.remove('verified');
+    _prefs?.remove('verified');
     _verified = null;
     notifyListeners();
   }
@@ -112,18 +111,20 @@ class AuthService extends ChangeNotifier {
   Future resendVerificationMail() async {
     await _loadToken();
     try {
-      dynamic obj = await http.resendVerificationMail(_token);
-      return obj["message"];
+      if (_token != null) {
+        dynamic obj = await http.resendVerificationMail(_token!);
+        return obj["message"];
+      }
     } catch (e) {
       print(e);
       throw (e);
     }
   }
 
-  Future<User> verifyToken() async {
+  Future<User?> verifyToken() async {
     await _loadToken();
     try {
-      User user = await getUserInfo();
+      User? user = await getUserInfo();
       return user;
     } on SocketException {
       print('connection');
@@ -135,12 +136,14 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  Future<User> getUserInfo() async {
+  Future<User?> getUserInfo() async {
     await _loadToken();
     try {
-      dynamic obj = await http.getUserInfo(_token);
-      _setUser(obj);
-      _setVerified(obj.isVerified);
+      if (_token != null) {
+        dynamic obj = await http.getUserInfo(_token!);
+        _setUser(obj);
+        _setVerified(obj.isVerified);
+      }
       return _user;
     } catch (e) {
       print(e);
@@ -148,44 +151,46 @@ class AuthService extends ChangeNotifier {
     }
   }
 
-  Future updateProfile({String name}) async {
+  Future updateProfile({required String name}) async {
     await _loadToken();
     try {
-      await _setUser(
-          await http.updateProfile(_token, name: name, email: _user.email));
+      if (_token != null && _user != null)
+        await _setUser(
+            await http.updateProfile(_token!, name: name, email: _user!.email));
     } catch (e) {
       throw (e);
     }
   }
 
-  Future changePassword(String oldPassword, String newPassword) async{
+  Future changePassword(String oldPassword, String newPassword) async {
     await _loadToken();
-    try{
-      dynamic obj = await http.changePassword(_token, oldPassword, newPassword);
-      _setToken(obj['userjwtToken']);
-      _user.token = _token;
-    }
-    catch(e) {
-      throw(e);
+    try {
+      if (_token != null) {
+        dynamic obj =
+            await http.changePassword(_token!, oldPassword, newPassword);
+        _setToken(obj['userjwtToken']);
+        _user?.token = _token!;
+      }
+    } catch (e) {
+      throw (e);
     }
   }
 
-  Future<String> getOTP( String email) async {
+  Future<String> getOTP(String email) async {
     try {
       dynamic obj = await http.getOtp(email);
       return obj["message"];
     } catch (e) {
-      throw(e);
+      throw (e);
     }
   }
 
   Future resetPassword(String email, String otp, String password) async {
-    try{
+    try {
       dynamic obj = await http.resetPassword(email, otp, password);
       return obj["message"];
-    }
-    catch(e) {
-      throw(e);
+    } catch (e) {
+      throw (e);
     }
   }
 

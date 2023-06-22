@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class NewRequestStore {
-  SharedPreferences _prefs;
+  SharedPreferences? _prefs;
   Object storedComplaint = {};
   init() async {
     if (_prefs == null) _prefs = await SharedPreferences.getInstance();
@@ -12,8 +12,8 @@ class NewRequestStore {
   getStoredRequest() async {
     try {
       await init();
-      String jsonString = _prefs.getString('storedRequest');
-      storedComplaint = await jsonDecode(jsonString);
+      String? jsonString = _prefs?.getString('storedRequest');
+      if (jsonString != null) storedComplaint = await jsonDecode(jsonString);
       return storedComplaint;
     } catch (e) {
       return null;
@@ -24,14 +24,14 @@ class NewRequestStore {
     try {
       await init();
       String jsonString = jsonEncode(newRequest);
-      _prefs.setString('storedRequest', jsonString);
+      _prefs?.setString('storedRequest', jsonString);
     } catch (e) {}
   }
 
   deleteRequest() async {
     try {
       await init();
-      _prefs.remove('storedRequest');
+      _prefs?.remove('storedRequest');
     } catch (e) {}
   }
 }

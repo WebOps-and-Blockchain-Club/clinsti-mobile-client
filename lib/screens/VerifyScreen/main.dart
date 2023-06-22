@@ -12,8 +12,7 @@ class Verify extends StatefulWidget {
 }
 
 class _VerifyState extends State<Verify> {
-
-  String error;
+  String? error;
   bool loading = false;
 
   _getUserInfo(AuthService auth) async {
@@ -54,11 +53,13 @@ class _VerifyState extends State<Verify> {
       setState(() {
         error = e.toString();
       });
-      final snackBar = SnackBar(
-        content: Text(error, textAlign: TextAlign.center),
-        backgroundColor: Colors.red,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      if (error != null) {
+        final snackBar = SnackBar(
+          content: Text(error!, textAlign: TextAlign.center),
+          backgroundColor: Colors.red,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
     }
     setState(() {
       loading = false;

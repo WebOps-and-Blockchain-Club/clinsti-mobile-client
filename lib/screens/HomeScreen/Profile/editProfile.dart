@@ -7,7 +7,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 class MyEditProfileScreen extends StatefulWidget {
   final AuthService auth;
-  MyEditProfileScreen({this.auth});
+  MyEditProfileScreen({required this.auth});
   @override
   _MyEditProfileScreenState createState() => _MyEditProfileScreenState();
 }
@@ -16,12 +16,12 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
   TextEditingController _name = TextEditingController();
   TextEditingController _email = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  String error;
+  String? error;
   bool loading = false;
-  String nameerror;
-  String emailerror;
+  String? nameerror;
+  String? emailerror;
 
-  FocusNode nameFocusNode;
+  FocusNode? nameFocusNode;
 
   @override
   void initState() {
@@ -33,17 +33,20 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
 
   @override
   void dispose() {
-    nameFocusNode.dispose();
+    nameFocusNode?.dispose();
     super.dispose();
   }
 
   getUser() {
-    User user = widget.auth.useR;
-    _name.text = user.name;
-    _email.text = user.email;
+    User? user = widget.auth.useR;
+    _name.text = user?.name ?? "";
+    _email.text = user?.email ?? "";
   }
 
-  _updateUserProfile({AuthService auth, String email, String name}) async {
+  _updateUserProfile(
+      {required AuthService auth,
+      required String email,
+      required String name}) async {
     setState(() {
       error = null;
       loading = true;
@@ -61,13 +64,18 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
       setState(() {
         error = e.toString();
       });
-      final snackBar = SnackBar(
-        content: Text(error, textAlign: TextAlign.center,),
-        backgroundColor: Colors.red,
-      );
-      error != null
-          ? ScaffoldMessenger.of(context).showSnackBar(snackBar)
-          : SizedBox();
+      if (error != null) {
+        final snackBar = SnackBar(
+          content: Text(
+            error!,
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.red,
+        );
+        error != null
+            ? ScaffoldMessenger.of(context).showSnackBar(snackBar)
+            : SizedBox();
+      }
     }
     setState(() {
       loading = false;
@@ -146,7 +154,7 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
                                         controller: _name,
                                         maxLines: null,
                                         validator: (val) {
-                                          if (val.isEmpty) {
+                                          if (val != null && val.isEmpty) {
                                             setState(() {
                                               nameerror = "Please Enter Name";
                                             });
@@ -172,8 +180,9 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
                                                   MaterialStateProperty.all(
                                                       10)),
                                           onPressed: () async {
-                                            if (_formKey.currentState
-                                                .validate())
+                                            if (_formKey.currentState != null &&
+                                                _formKey.currentState!
+                                                    .validate())
                                               await _updateUserProfile(
                                                   auth: widget.auth,
                                                   name: _name.text,
@@ -191,7 +200,7 @@ class _MyEditProfileScreenState extends State<MyEditProfileScreen> {
                                     ),
                                     error != null
                                         ? Text(
-                                            error,
+                                            error!,
                                             style: TextStyle(color: Colors.red),
                                           )
                                         : SizedBox()

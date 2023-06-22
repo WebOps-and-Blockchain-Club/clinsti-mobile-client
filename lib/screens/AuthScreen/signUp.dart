@@ -18,14 +18,14 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController _password = TextEditingController();
   final TextEditingController _name = TextEditingController();
   final TextEditingController _confirmpass = TextEditingController();
-  String error;
+  String? error;
   bool loading = false;
   bool _obscureText1 = true;
   bool _obscureText2 = true;
-  String nameerror;
-  String emailerror;
-  String passerror;
-  String confirmpasserror;
+  String? nameerror;
+  String? emailerror;
+  String? passerror;
+  String? confirmpasserror;
   final _formKey = GlobalKey<FormState>();
   _signUp(AuthService auth) async {
     setState(() {
@@ -36,13 +36,18 @@ class _SignUpState extends State<SignUp> {
       await auth.signUp(_email.text.trim(), _password.text, _name.text);
     } catch (e) {
       setState(() {
-        error = e;
+        error = e.toString();
       });
-      final snackBar = SnackBar(
-        content: Text(error, textAlign: TextAlign.center,),
-        backgroundColor: Colors.red,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      if (error != null) {
+        final snackBar = SnackBar(
+          content: Text(
+            error!,
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.red,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
     }
     setState(() {
       loading = false;
@@ -179,7 +184,8 @@ class _SignUpState extends State<SignUp> {
                                                       maxLines: null,
                                                       controller: _name,
                                                       validator: (val) {
-                                                        if (val.isEmpty) {
+                                                        if (val != null &&
+                                                            val.isEmpty) {
                                                           setState(() {
                                                             nameerror =
                                                                 'Please enter your name';
@@ -264,20 +270,23 @@ class _SignUpState extends State<SignUp> {
                                                     maxLines: null,
                                                     controller: _email,
                                                     validator: (val) {
-                                                      if (val.isEmpty) {
+                                                      if (val != null &&
+                                                          val.isEmpty) {
                                                         setState(() {
                                                           emailerror =
                                                               'Please enter your email';
                                                         });
                                                         return '';
-                                                      }
-                                                      else if(!EmailValidator.validate(val.trim())){
-                                                            setState(() {
-                                                              emailerror = 'Please enter valid email';
-                                                            });
-                                                            return '';
-                                                        } 
-                                                      else {
+                                                      } else if (val != null &&
+                                                          !EmailValidator
+                                                              .validate(
+                                                                  val.trim())) {
+                                                        setState(() {
+                                                          emailerror =
+                                                              'Please enter valid email';
+                                                        });
+                                                        return '';
+                                                      } else {
                                                         setState(() {
                                                           emailerror = null;
                                                         });
@@ -378,7 +387,8 @@ class _SignUpState extends State<SignUp> {
                                                               )),
                                                       controller: _password,
                                                       validator: (val) {
-                                                        if (val.length < 7) {
+                                                        if (val != null &&
+                                                            val.length < 7) {
                                                           setState(() {
                                                             passerror =
                                                                 'Password must be atleast 8 characters long';
@@ -488,14 +498,16 @@ class _SignUpState extends State<SignUp> {
                                                               )),
                                                       controller: _confirmpass,
                                                       validator: (val) {
-                                                        if (val.isEmpty) {
+                                                        if (val != null &&
+                                                            val.isEmpty) {
                                                           setState(() {
                                                             confirmpasserror =
                                                                 'Please Re-Enter New Password';
                                                           });
                                                           return '';
-                                                        } else if (val.length <
-                                                            7) {
+                                                        } else if (val !=
+                                                                null &&
+                                                            val.length < 7) {
                                                           setState(() {
                                                             confirmpasserror =
                                                                 'Password must be 8 characters long';
@@ -550,8 +562,10 @@ class _SignUpState extends State<SignUp> {
                                                     color: Colors.white),
                                               ),
                                               onPressed: () async {
-                                                if (_formKey.currentState
-                                                    .validate()) {
+                                                if (_formKey.currentState !=
+                                                        null &&
+                                                    _formKey.currentState!
+                                                        .validate()) {
                                                   await _signUp(auth);
                                                 }
                                               },
@@ -568,7 +582,8 @@ class _SignUpState extends State<SignUp> {
                                               Text(
                                                   "Already have an Account ? "),
                                               GestureDetector(
-                                                onTap: widget.toggleView,
+                                                onTap: () =>
+                                                    widget.toggleView(),
                                                 child: Text(
                                                   "Sign in",
                                                   style: TextStyle(

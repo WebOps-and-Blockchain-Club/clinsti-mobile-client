@@ -23,16 +23,16 @@ class FeedbackScreen extends StatefulWidget {
 }
 
 class _FeedbackScreenState extends State<FeedbackScreen> {
-  DatabaseService _db;
+  late DatabaseService _db;
   final TextEditingController _feedbackText = TextEditingController();
-  String _feedbackTo;
+  late String _feedbackTo;
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
-  String error;
-  String errormessagefselect;
-  String errormessagefeedback;
+  String? error;
+  String? errormessagefselect;
+  String? errormessagefeedback;
   bool errorbox = false;
-  FocusNode _node;
+  late FocusNode _node;
   bool _focused = false;
   @override
   void initState() {
@@ -75,16 +75,18 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
           fontSize: 14.0);
     } catch (e) {
       setState(() {
-        error = e;
+        error = e.toString();
       });
-      final snackBar = SnackBar(
-        content: Text(
-          error,
-          textAlign: TextAlign.center,
-        ),
-        backgroundColor: Colors.red,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      if (error != null) {
+        final snackBar = SnackBar(
+          content: Text(
+            error!,
+            textAlign: TextAlign.center,
+          ),
+          backgroundColor: Colors.red,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
     }
     setState(() {
       loading = false;
@@ -162,10 +164,12 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                         elevation: 16,
                         isExpanded: true,
                         style: const TextStyle(color: Colors.black),
-                        onChanged: (String v) {
-                          setState(() {
-                            _feedbackTo = v;
-                          });
+                        onChanged: (String? v) {
+                          if (v != null) {
+                            setState(() {
+                              _feedbackTo = v;
+                            });
+                          }
                         },
                         items: <String>[
                           "Engineering Unit",
@@ -241,7 +245,7 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                           maxLines: 5,
                           controller: _feedbackText,
                           validator: (val) {
-                            if (val.length < 10) {
+                            if (val != null && val.length < 10) {
                               setState(() {
                                 errorbox = true;
                                 errormessagefeedback =
@@ -275,7 +279,8 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
                               elevation: MaterialStateProperty.all(5),
                             ),
                             onPressed: () async {
-                              if (_formKey.currentState.validate()) {
+                              if (_formKey.currentState != null &&
+                                  _formKey.currentState!.validate()) {
                                 _submitFeedback();
                               }
                             },

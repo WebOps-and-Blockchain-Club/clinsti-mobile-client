@@ -23,33 +23,33 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
   TextEditingController compLocation = TextEditingController();
   TextEditingController compDescription = TextEditingController();
   TextEditingController compLandmark = TextEditingController();
-  String zoneValue;
-  String typeValue;
+  String? zoneValue;
+  String? typeValue;
   List<Asset> images = [];
   List<String> compressedImagesPath = [];
   String error = "";
-  String error1;
-  String errormessagedesc;
-  String errormessagelocation;
-  String errormessagelandmark;
-  String errormessagezoneselect;
-  String errormessagewasteselect;
-  DatabaseService _db;
+  String? error1;
+  String? errormessagedesc;
+  String? errormessagelocation;
+  String? errormessagelandmark;
+  String? errormessagezoneselect;
+  String? errormessagewasteselect;
+  late DatabaseService _db;
   bool errorboxdesc = false;
   bool errorboxloc = false;
   bool errorboxland = false;
   bool loading = false;
   bool imgLoading = false;
   bool geoLoc = false;
-  FocusNode _descnode;
-  FocusNode _locationnode;
-  FocusNode _landmarknode;
-  FocusNode _zonenode;
-  FocusNode _wastenode;
+  late FocusNode _descnode;
+  late FocusNode _locationnode;
+  late FocusNode _landmarknode;
+  late FocusNode _zonenode;
+  late FocusNode _wastenode;
   bool _descfocused = false;
   bool _locationfocused = false;
   bool _landmarkfocused = false;
-  NewRequestStore _storage;
+  late NewRequestStore _storage;
 
   final _formKey = GlobalKey<FormState>();
   final List<String> zones = [
@@ -75,15 +75,14 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
     final result = await Navigator.push(
         context,
         MaterialPageRoute(
-            builder: (context) => MapSelect(
-                loc: compLocation.text == "" ? null : compLocation.text)));
+            builder: (context) => MapSelect(loc: compLocation.text)));
     if (result != null) {
       var obj = jsonDecode(result);
       List<Placemark> placemarks =
           await placemarkFromCoordinates(obj['Latitude'], obj['Longitude']);
       setState(() {
         compLocation.text = result;
-        compLandmark.text = placemarks[0].name;
+        compLandmark.text = placemarks[0].name ?? "";
         geoLoc = true;
       });
     }
@@ -188,7 +187,10 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
         error = e.toString();
       });
       final snackBar = SnackBar(
-        content: Text(error, textAlign: TextAlign.center,),
+        content: Text(
+          error,
+          textAlign: TextAlign.center,
+        ),
         backgroundColor: Colors.red,
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -310,7 +312,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
                                         : Colors.green)
                                     : Colors.grey)),
                         validator: (val) {
-                          if (val.length < 10) {
+                          if (val != null && val.length < 10) {
                             setState(() {
                               errorboxdesc = true;
                               errormessagedesc =
@@ -413,7 +415,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
                                     },
                                   )),
                         validator: (val) {
-                          if (val.length < 5) {
+                          if (val != null && val.length < 5) {
                             setState(() {
                               errorboxloc = true;
                               errormessagelocation =
@@ -489,7 +491,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
                                     : Colors.grey),
                           ),
                           validator: (val) {
-                            if (val.length < 2) {
+                            if (val != null && val.length < 2) {
                               setState(() {
                                 errorboxland = true;
                                 errormessagelandmark =
@@ -556,7 +558,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
                             elevation: 16,
                             isExpanded: true,
                             style: const TextStyle(color: Colors.black87),
-                            onChanged: (String newValue) {
+                            onChanged: (String? newValue) {
                               setState(() {
                                 zoneValue = newValue;
                                 //storeRequest();
@@ -649,7 +651,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
                                   return null;
                                 }
                               },
-                              onChanged: (String newValue) {
+                              onChanged: (String? newValue) {
                                 setState(() {
                                   typeValue = newValue;
                                   //storeRequest();
@@ -758,7 +760,8 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
                             style: TextStyle(fontSize: 18)),
                       ),
                       onPressed: () async {
-                        if (_formKey.currentState.validate()) {
+                        if (_formKey.currentState != null &&
+                            _formKey.currentState!.validate()) {
                           await postRequest();
                         }
                       },
@@ -793,8 +796,8 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
                 img,
                 width: 300,
                 height: 300,
-                errorBuilder: (BuildContext context, Object exception,
-                    StackTrace stackTrace) {
+                errorBuilder: (BuildContext? context, Object? exception,
+                    StackTrace? stackTrace) {
                   return Container();
                 },
               ),
@@ -857,15 +860,17 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
       setState(() {
         error1 = e.toString();
       });
-      final snackBar = SnackBar(
-        content: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [Text(error1)]),
-        backgroundColor: Colors.red,
-      );
-      error != null
-          ? ScaffoldMessenger.of(context).showSnackBar(snackBar)
-          : SizedBox();
+      if (error1 != null) {
+        final snackBar = SnackBar(
+          content: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [Text(error1!)]),
+          backgroundColor: Colors.red,
+        );
+        error != ""
+            ? ScaffoldMessenger.of(context).showSnackBar(snackBar)
+            : SizedBox();
+      }
     }
 
     if (!mounted) return;
@@ -926,7 +931,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
         minWidth: 1000,
         minHeight: 1000,
         format: getImageFormat(fileName));
-    return result;
+    return result as File;
   }
 
   getImageFormat(String filename) {
@@ -952,9 +957,10 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
         {
           return CompressFormat.heic;
         }
-      default: {
-        return CompressFormat.png;
-      }
+      default:
+        {
+          return CompressFormat.png;
+        }
     }
   }
 }

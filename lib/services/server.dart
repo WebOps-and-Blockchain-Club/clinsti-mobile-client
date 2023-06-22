@@ -5,13 +5,14 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Server {
-  String baseUrl = "https://clinsti-server.herokuapp.com"; //TODO: Add server URI here
+  String baseUrl =
+      "https://clinsti-server.herokuapp.com"; //TODO: Add server URI here
   final String signup = "/client/accounts/signup";
   final String signin = '/client/accounts/signin';
   var jsonHead = {'Content-Type': 'application/json'};
-  SharedPreferences _prefs;
+  SharedPreferences? prefs;
 
-  Server() {
+  Server({this.prefs}) {
     init();
   }
 
@@ -45,7 +46,8 @@ class Server {
   Future<dynamic> resendVerificationMail(String token) async {
     await init();
     var headers = {'Authorization': 'Bearer $token'};
-    var request = http.Request('GET', Uri.parse('$baseUrl/client/accounts/resend-verification-mail'));
+    var request = http.Request(
+        'GET', Uri.parse('$baseUrl/client/accounts/resend-verification-mail'));
     request.headers.addAll(headers);
 
     try {
@@ -105,7 +107,8 @@ class Server {
   }
 
   ///Edit Profile
-  Future updateProfile(String token, {String name, String email}) async {
+  Future updateProfile(String token,
+      {String? name, required String email}) async {
     await init();
     if (name == null) {
       return;
@@ -213,7 +216,7 @@ class Server {
 
   ///post request
   Future<dynamic> postRequest(String token, String description, String location,
-      String type, String zone, List<String> imagesPath) async {
+      String? type, String? zone, List<String>? imagesPath) async {
     await init();
     var headers = {'Authorization': 'Bearer $token'};
     var request =
@@ -221,11 +224,11 @@ class Server {
     request.fields.addAll({
       'description': description,
       'location': location,
-      'wasteType': type,
-      'zone': zone
+      'wasteType': type ?? "",
+      'zone': zone ?? ""
     });
 
-    if (imagesPath.length != null) {
+    if (imagesPath != null) {
       for (int i = 0; i < imagesPath.length; i++) {
         request.files
             .add(await http.MultipartFile.fromPath('images', imagesPath[i]));
@@ -252,12 +255,12 @@ class Server {
 
   ///get all complaints
   Future<dynamic> getComplaints(String token,
-      {String zoneFilter,
-      String statusFilter,
-      int skip,
-      int limit,
-      String dateFrom,
-      String dateTo}) async {
+      {String? zoneFilter,
+      String? statusFilter,
+      int? skip,
+      int? limit,
+      String? dateFrom,
+      String? dateTo}) async {
     await init();
     String url = "$baseUrl/client/complaints";
     List<String> querys = [];
@@ -268,7 +271,7 @@ class Server {
     if (dateFrom != null) querys.add('dateFrom=$dateFrom');
     if (dateTo != null) querys.add('dateFrom=$dateTo');
     String query = querys.join('&');
-    if (query != null) url += '?$query';
+    url += '?$query';
 
     var headers = {'Authorization': 'Bearer $token'};
     var request = http.Request('GET', Uri.parse(url));
@@ -368,9 +371,13 @@ class Server {
     }
   }
 
-  Future<dynamic> postFeedback(String token, String type, String feedback) async {
+  Future<dynamic> postFeedback(
+      String token, String type, String feedback) async {
     await init();
-    var headers = {'Authorization': 'Bearer $token','Content-Type': 'application/json'};
+    var headers = {
+      'Authorization': 'Bearer $token',
+      'Content-Type': 'application/json'
+    };
     var request = http.Request('POST', Uri.parse('$baseUrl/client/feedback'));
     request.body = '''{"feedback":"$feedback","feedback_type":"$type"}''';
     request.headers.addAll(headers);

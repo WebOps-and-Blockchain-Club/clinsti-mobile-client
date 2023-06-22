@@ -14,14 +14,14 @@ class DatabaseService extends ChangeNotifier {
   //   const reqSkip = req.query.skip?.toString()
 
   Server http = new Server();
-  SharedPreferences _prefs;
-  String _token;
-  String _statusFilter;
-  String _zoneFilter;
+  SharedPreferences? _prefs;
+  String? _token;
+  String? _statusFilter;
+  String? _zoneFilter;
   int _skip = 0;
   int _limit = 10;
   List<dynamic> _complaints = <dynamic>[];
-  int _count;
+  int? _count;
 
   List<dynamic> get complaintS => _complaints ?? [];
   int get nextCounts => (_count ?? 0) - _skip - _limit ?? 0;
@@ -46,7 +46,7 @@ class DatabaseService extends ChangeNotifier {
 
   Future _loadToken() async {
     await _initDB();
-    _token = _prefs.getString('token') ?? null;
+    _token = _prefs?.getString('token') ?? null;
     notifyListeners();
   }
 
@@ -87,11 +87,13 @@ class DatabaseService extends ChangeNotifier {
   Future _fetchComplaints() async {
     await _loadToken();
     try {
-      dynamic arr = await http.getComplaints(_token,
-          statusFilter: _statusFilter,
-          zoneFilter: _zoneFilter,
-          skip: _skip,
-          limit: _limit);
+      dynamic arr;
+      if (_token != null)
+        arr = await http.getComplaints(_token!,
+            statusFilter: _statusFilter,
+            zoneFilter: _zoneFilter,
+            skip: _skip,
+            limit: _limit);
 
       if (arr == "No Complaint Registered yet!") {
         _complaints = [];
@@ -112,7 +114,8 @@ class DatabaseService extends ChangeNotifier {
   Future getComplaint(int id) async {
     await _loadToken();
     try {
-      dynamic complaint = await http.getComplaint(_token, id);
+      dynamic complaint;
+      if (_token != null) complaint = await http.getComplaint(_token!, id);
       return complaint;
     } catch (e) {
       throw (e);
@@ -145,12 +148,13 @@ class DatabaseService extends ChangeNotifier {
     }
   }
 
-  Future postRequest(String description, String location, String type,
-      String zone, List<String> imgagesPath) async {
+  Future postRequest(String description, String location, String? type,
+      String? zone, List<String> imgagesPath) async {
     await _loadToken();
     try {
-      await http.postRequest(
-          _token, description, location, type, zone, imgagesPath);
+      if (_token != null)
+        await http.postRequest(
+            _token!, description, location, type, zone, imgagesPath);
     } catch (e) {
       throw (e);
     }
@@ -159,7 +163,8 @@ class DatabaseService extends ChangeNotifier {
   Future postRequestFeedback(int id, int rating, String review) async {
     await _loadToken();
     try {
-      await http.postRequestFeedback(_token, id, rating, review);
+      if (_token != null)
+        await http.postRequestFeedback(_token!, id, rating, review);
     } catch (e) {
       print("Error " + e.toString());
       throw (e);
@@ -169,7 +174,7 @@ class DatabaseService extends ChangeNotifier {
   Future postFeedback(String type, String feedback) async {
     await _loadToken();
     try {
-      await http.postFeedback(_token, type, feedback);
+      if (_token != null) await http.postFeedback(_token!, type, feedback);
     } catch (e) {
       throw (e);
     }
@@ -184,7 +189,7 @@ class DatabaseService extends ChangeNotifier {
   Future deleteRequest(int id) async {
     await _loadToken();
     try {
-      await http.deleteRequest(_token, id);
+      if (_token != null) await http.deleteRequest(_token!, id);
     } catch (e) {
       print("Error " + e.toString());
       throw (e);
@@ -194,7 +199,8 @@ class DatabaseService extends ChangeNotifier {
   Future getImage(String img) async {
     await _loadToken();
     try {
-      dynamic imgData = await http.getImage(_token, img);
+      dynamic imgData;
+      if (_token != null) imgData = await http.getImage(_token!, img);
       return base64Encode(imgData);
     } catch (e) {
       throw (e.toString());

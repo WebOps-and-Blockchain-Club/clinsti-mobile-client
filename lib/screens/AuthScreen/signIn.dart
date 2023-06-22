@@ -18,12 +18,12 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   final TextEditingController _email = TextEditingController();
   final TextEditingController _password = TextEditingController();
-  String error;
+  String? error;
 
   bool loading = false;
   bool _obscureText = true;
-  String emailerror;
-  String passerror;
+  String? emailerror;
+  String? passerror;
 
   final _formKey = GlobalKey<FormState>();
   _signIn(AuthService auth) async {
@@ -37,14 +37,13 @@ class _SignInState extends State<SignIn> {
       setState(() {
         error = e.toString();
       });
-      final snackBar = SnackBar(
-        content: Text(
-          error,
-          textAlign: TextAlign.center
-          ),
-        backgroundColor: Colors.red,
-      );
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      if (error != null) {
+        final snackBar = SnackBar(
+          content: Text(error!, textAlign: TextAlign.center),
+          backgroundColor: Colors.red,
+        );
+        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+      }
     }
     setState(() {
       loading = false;
@@ -184,15 +183,19 @@ class _SignInState extends State<SignIn> {
                                                         maxLines: null,
                                                         controller: _email,
                                                         validator: (val) {
-                                                          if (val.isEmpty) {
+                                                          if (val != null &&
+                                                              val.isEmpty) {
                                                             setState(() {
                                                               emailerror =
                                                                   'Please Enter your Email';
                                                             });
                                                             return '';
-                                                          } else if (!EmailValidator
-                                                              .validate(
-                                                                  val.trim())) {
+                                                          } else if (val !=
+                                                                  null &&
+                                                              val.isEmpty &&
+                                                              !EmailValidator
+                                                                  .validate(val
+                                                                      .trim())) {
                                                             setState(() {
                                                               emailerror =
                                                                   'Please enter valid email';
@@ -304,7 +307,8 @@ class _SignInState extends State<SignIn> {
                                                                   )),
                                                           controller: _password,
                                                           validator: (val) {
-                                                            if (val.isEmpty) {
+                                                            if (val != null &&
+                                                                val.isEmpty) {
                                                               setState(() {
                                                                 passerror =
                                                                     'Enter your Password';
@@ -382,8 +386,10 @@ class _SignInState extends State<SignIn> {
                                                         color: Colors.white),
                                                   ),
                                                   onPressed: () async {
-                                                    if (_formKey.currentState
-                                                        .validate()) {
+                                                    if (_formKey.currentState !=
+                                                            null &&
+                                                        _formKey.currentState!
+                                                            .validate()) {
                                                       await _signIn(auth);
                                                     }
                                                   },
@@ -400,7 +406,8 @@ class _SignInState extends State<SignIn> {
                                                   Text(
                                                       "Don't have an Account ? "),
                                                   GestureDetector(
-                                                    onTap: widget.toggleView,
+                                                    onTap: () =>
+                                                        widget.toggleView(),
                                                     child: Text(
                                                       "Sign Up",
                                                       style: TextStyle(

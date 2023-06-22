@@ -15,9 +15,9 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _index = 0;
-  PageController _pageController;
+  late PageController _pageController;
 
-  AuthService _auth;
+  late AuthService _auth;
   void _onItemTap(int i) {
     _pageController.animateToPage(i,
         duration: Duration(milliseconds: 500), curve: Curves.easeIn);
