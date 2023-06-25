@@ -25,15 +25,7 @@ class _ShowComplaintState extends State<ShowComplaint> {
   bool loading = false;
   String? error;
   String? feedbackRequestError;
-  List<Color> statusColors = [
-    Colors.green[300]!,
-    Colors.green[300]!,
-    Colors.green[300]!,
-    Colors.green[300]!,
-    Colors.green[300]!,
-    Colors.green[300]!,
-    Colors.green[300]!
-  ];
+  List<Color> statusColors = []..length = 7;
   List<bool> lineBools = [false, false, false, false];
 
   @override
@@ -56,7 +48,6 @@ class _ShowComplaintState extends State<ShowComplaint> {
       setState(() {
         complaint = result;
       });
-      print(complaint['status']);
       _setIconStatus(complaint['status'].toString());
       feedback.text = complaint['feedback_remark'] ?? "";
     } catch (e) {
@@ -185,7 +176,6 @@ class _ShowComplaintState extends State<ShowComplaint> {
 
   @override
   Widget build(BuildContext context) {
-    print(statusColors);
     double width = MediaQuery.of(context).size.width;
     if (error != null)
       return Scaffold(

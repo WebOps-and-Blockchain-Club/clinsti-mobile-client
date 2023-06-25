@@ -14,24 +14,18 @@ class ViewComplaintScreen extends StatefulWidget {
 
 class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
   String filterBy = 'all';
-  late DatabaseService? _db;
+  late DatabaseService _db;
   late final ScrollController _scrollController;
-  bool _isDbInitialized = false;
 
   @override
   void initState() {
     super.initState();
     _scrollController = ScrollController();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      _initializeDatabase();
-    });
-  }
-
-  Future<void> _initializeDatabase() async {
-    _db = Provider.of<DatabaseService>(context, listen: false);
-    await _db?.synC();
-    setState(() {
-      _isDbInitialized = true;
+      setState(() {
+        _db = Provider.of<DatabaseService>(context, listen: false);
+        _db.synC();
+      });
     });
   }
 
@@ -51,14 +45,14 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
     setState(() {
       filterBy = filt;
     });
-    _db?.setStatusFilter(filt);
+    _db.setStatusFilter(filt);
   }
 
   @override
   Widget build(BuildContext context) {
-    return (!_isDbInitialized)
+    return (_db == null)
         ? CircularProgressIndicator()
-        : ((_db?.complaintS.length == 0)
+        : ((_db.complaintS.length == 0)
             ? Scaffold(
                 body: Center(
                   child: Text(
@@ -78,34 +72,32 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
                   children: <Widget>[
                     Expanded(
                       child: ListView.builder(
-                        itemCount: _db?.complaintS.length,
+                        itemCount: _db.complaintS.length,
                         controller: _scrollController,
                         itemBuilder: (context, i) {
                           return InkWell(
-                            child: ComplaintTile(complaint: _db?.complaintS[i]),
+                            child: ComplaintTile(complaint: _db.complaintS[i]),
                             onTap: () async {
-                              if (_db != null)
-                                await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ShowComplaint(
-                                              complaint: _db?.complaintS[i],
-                                              db: _db!,
-                                            )));
-                              await _db?.synC();
+                              await Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ShowComplaint(
+                                            complaint: _db.complaintS[i],
+                                            db: _db,
+                                          )));
+                              await _db.synC();
                               setState(() {});
                             },
                           );
                         },
                       ),
                     ),
-                    if ((_db != null && _db!.nextCounts > 0) ||
-                        (_db != null && _db!.prevCounts > 0))
+                    if (_db.nextCounts > 0 || _db.prevCounts > 0)
                       Container(
                         margin: EdgeInsets.only(bottom: 6.0),
                         child: Row(
                           children: [
-                            (_db != null && _db!.prevCounts > 0)
+                            (_db.prevCounts > 0)
                                 ? Expanded(
                                     child: Padding(
                                     padding: const EdgeInsets.all(8.0),
@@ -114,7 +106,7 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
                                       color: Colors.green,
                                       onPressed: () async {
                                         try {
-                                          await _db?.prev();
+                                          await _db.prev();
                                           setState(() {});
                                           _scrollToTop();
                                         } catch (e) {
@@ -147,7 +139,7 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
                             //     );
                             //   }).toList(),
                             // )),
-                            (_db != null && _db!.prevCounts > 0)
+                            (_db.nextCounts > 0)
                                 ? Expanded(
                                     child: Padding(
                                     padding: const EdgeInsets.all(8.0),
@@ -156,7 +148,7 @@ class _ViewComplaintScreenState extends State<ViewComplaintScreen> {
                                       iconSize: 35,
                                       onPressed: () async {
                                         try {
-                                          await _db?.next();
+                                          await _db.next();
                                           setState(() {});
                                           _scrollToTop();
                                         } catch (e) {

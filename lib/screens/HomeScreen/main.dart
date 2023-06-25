@@ -15,7 +15,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _index = 0;
-  PageController _pageController = PageController(initialPage: 0);
+  late PageController _pageController;
 
   late AuthService _auth;
   void _onItemTap(int i) {
@@ -45,6 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   void initState() {
+    _pageController = PageController(initialPage: _index);
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       _auth = Provider.of<AuthService>(context, listen: false);

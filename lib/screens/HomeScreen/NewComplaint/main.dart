@@ -931,7 +931,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
         minWidth: 1000,
         minHeight: 1000,
         format: getImageFormat(fileName));
-    return File(result!.path);
+    return result as File;
   }
 
   getImageFormat(String filename) {
