@@ -109,6 +109,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
           if (stored["imgPath"] != "") {
             compressedImagesPath = [];
             compressedImagesPath = (stored["imgPath"].toString()).split(",");
+            compressedImagesPath.removeWhere((element) => element == "null");
           }
         });
       }
@@ -686,12 +687,12 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
                       "Image Loading...",
                       style: TextStyle(fontSize: 16.0),
                     )),
-                  if (compressedImagesPath.length != 0) dispImages(),
-                  if (compressedImagesPath.length != 0)
+                  if (compressedImagesPath.isNotEmpty) dispImages(),
+                  if (compressedImagesPath.isNotEmpty)
                     SizedBox(
                       height: 20,
                     ),
-                  if (compressedImagesPath.length != 0)
+                  if (compressedImagesPath.isNotEmpty)
                     Center(
                       child: Text("Long press the image to delete"),
                     ),

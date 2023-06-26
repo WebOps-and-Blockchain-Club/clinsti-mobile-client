@@ -5,8 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Server {
-  String baseUrl =
-      "https://dca9-157-47-93-218.ngrok-free.app"; //TODO: Add server URI here
+  String baseUrl = "http://localhost:3000"; //TODO: Add server URI here
   final String signup = "/client/accounts/signup";
   final String signin = '/client/accounts/signin';
   var jsonHead = {'Content-Type': 'application/json'};
