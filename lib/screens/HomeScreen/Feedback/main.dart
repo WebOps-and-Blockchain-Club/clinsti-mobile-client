@@ -25,7 +25,7 @@ class FeedbackScreen extends StatefulWidget {
 class _FeedbackScreenState extends State<FeedbackScreen> {
   late DatabaseService _db;
   final TextEditingController _feedbackText = TextEditingController();
-  late String _feedbackTo;
+  String? _feedbackTo;
   final _formKey = GlobalKey<FormState>();
   bool loading = false;
   String? error;
@@ -65,14 +65,16 @@ class _FeedbackScreenState extends State<FeedbackScreen> {
       loading = true;
     });
     try {
-      await _db.postFeedback(_feedbackTo, _feedbackText.text);
-      Navigator.pop(context);
-      Fluttertoast.showToast(
-          msg: "Thank you for your feedback",
-          toastLength: Toast.LENGTH_LONG,
-          backgroundColor: Colors.green,
-          textColor: Colors.black,
-          fontSize: 14.0);
+      if (_feedbackTo != null) {
+        await _db.postFeedback(_feedbackTo!, _feedbackText.text);
+        Navigator.pop(context);
+        Fluttertoast.showToast(
+            msg: "Thank you for your feedback",
+            toastLength: Toast.LENGTH_LONG,
+            backgroundColor: Colors.green,
+            textColor: Colors.black,
+            fontSize: 14.0);
+      }
     } catch (e) {
       setState(() {
         error = e.toString();

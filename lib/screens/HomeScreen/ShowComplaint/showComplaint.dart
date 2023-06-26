@@ -25,7 +25,15 @@ class _ShowComplaintState extends State<ShowComplaint> {
   bool loading = false;
   String? error;
   String? feedbackRequestError;
-  List<Color> statusColors = []..length = 7;
+  List<Color> statusColors = [
+    Colors.green[300]!,
+    Colors.green[300]!,
+    Colors.green[300]!,
+    Colors.green[300]!,
+    Colors.green[300]!,
+    Colors.green[300]!,
+    Colors.green[300]!
+  ];
   List<bool> lineBools = [false, false, false, false];
 
   @override

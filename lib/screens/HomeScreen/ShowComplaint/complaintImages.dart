@@ -18,7 +18,6 @@ class _ComplaintImagesState extends State<ComplaintImages> {
 
   @override
   initState() {
-    print(widget.imgNames);
     super.initState();
     _fetchImages();
   }

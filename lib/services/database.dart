@@ -65,7 +65,6 @@ class DatabaseService extends ChangeNotifier {
   // }
 
   Future setStatusFilter(String filt) async {
-    print(filt);
     if (filt == "all") {
       _statusFilter = null;
       await _fetchComplaints();
@@ -150,6 +149,8 @@ class DatabaseService extends ChangeNotifier {
 
   Future postRequest(String description, String location, String? type,
       String? zone, List<String> imgagesPath) async {
+    print(imgagesPath);
+    imgagesPath.removeWhere((element) => element == "null");
     await _loadToken();
     try {
       if (_token != null)

@@ -163,7 +163,6 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
       } catch (e) {
         compFinalLoc = compLocation.text;
       }
-      print(compFinalLoc);
       await _db.postRequest(compDescription.text, compFinalLoc, typeValue,
           zoneValue, compressedImagesPath);
       Fluttertoast.showToast(
@@ -183,6 +182,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
       clearImages();
       _storage.deleteRequest();
     } catch (e) {
+      print(e);
       setState(() {
         error = e.toString();
       });
@@ -789,7 +789,7 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
                   compressedImagesPath.removeAt(index);
                 });
                 //storeRequest();
-                print(img);
+
                 deleteImageFile(img);
               },
               child: Image.file(
@@ -904,11 +904,11 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
   }
 
   Future<void> compressImages() async {
-    File temp;
+    File? temp;
     for (int i = 0; i < images.length; i++) {
       temp = await getImageFileFromAssets(images[i]);
       temp = await compressImage(temp);
-      compressedImagesPath.add(temp.path);
+      if (temp != null) compressedImagesPath.add(temp.path);
     }
     //storeRequest();
     setState(() {
@@ -917,21 +917,21 @@ class _NewComplaintScreenState extends State<NewComplaintScreen>
     });
   }
 
-  Future<File> compressImage(File file) async {
+  Future<File?> compressImage(File file) async {
     final filePath = file.absolute.path;
     final fileName = (filePath.split("/")).last;
     final lastIndex = fileName.lastIndexOf(".");
     final String path = (await getApplicationDocumentsDirectory()).path;
     final splitted = fileName.substring(0, (lastIndex));
     final outPath = "$path/$splitted${fileName.substring(lastIndex)}";
-    print(outPath);
-    var result = await FlutterImageCompress.compressAndGetFile(
+    XFile? result = await FlutterImageCompress.compressAndGetFile(
         filePath, outPath,
         quality: 70,
         minWidth: 1000,
         minHeight: 1000,
         format: getImageFormat(fileName));
-    return result as File;
+    if (result != null) return File(result.path);
+    return null;
   }
 
   getImageFormat(String filename) {

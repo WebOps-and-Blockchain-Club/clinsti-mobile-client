@@ -6,7 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class Server {
   String baseUrl =
-      "https://clinsti-server.herokuapp.com"; //TODO: Add server URI here
+      "https://dca9-157-47-93-218.ngrok-free.app"; //TODO: Add server URI here
   final String signup = "/client/accounts/signup";
   final String signin = '/client/accounts/signin';
   var jsonHead = {'Content-Type': 'application/json'};
@@ -68,22 +68,22 @@ class Server {
   Future<dynamic> signIn(String email, String password) async {
     await init();
     var headers = {...jsonHead};
-    var request =
-        http.Request('POST', Uri.parse('$baseUrl/client/accounts/signin'));
-    request.body = '{"email": "$email",   "password": "$password"}';
-    request.headers.addAll(headers);
+    var url = Uri.parse('$baseUrl/client/accounts/signin');
+    var body = {'email': email, 'password': password};
 
     try {
-      http.StreamedResponse response = await request.send();
+      http.Response response =
+          await http.post(url, headers: headers, body: json.encode(body));
+
       if (response.statusCode == 200) {
-        return jsonDecode(await response.stream.bytesToString());
+        return jsonDecode(response.body);
       } else {
-        throw (await response.stream.bytesToString());
+        throw response.body;
       }
     } on SocketException {
-      throw ('server error');
+      throw 'server error';
     } catch (e) {
-      throw (e);
+      throw e;
     }
   }
 
@@ -232,7 +232,6 @@ class Server {
       for (int i = 0; i < imagesPath.length; i++) {
         request.files
             .add(await http.MultipartFile.fromPath('images', imagesPath[i]));
-        print(imagesPath[i]);
       }
     }
 

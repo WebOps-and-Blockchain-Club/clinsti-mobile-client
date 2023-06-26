@@ -87,7 +87,6 @@ class MapSelectState extends State<MapSelect> {
   Future getCurrentLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
-      print("HERE");
       await Geolocator.requestPermission();
     }
     permission = await Geolocator.checkPermission();

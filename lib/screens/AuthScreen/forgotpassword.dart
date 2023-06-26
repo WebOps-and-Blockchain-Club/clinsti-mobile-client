@@ -24,11 +24,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   bool _obscureText1 = true;
   bool _obscureText2 = true;
   bool loading = false;
-  late String? error;
-  late String? emailerror;
-  late String? otperror;
-  late String? passerror;
-  late String? confirmpasserror;
+  String? error;
+  String? emailerror = null;
+  String? otperror;
+  String? passerror;
+  String? confirmpasserror;
   final _formKey = GlobalKey<FormState>();
 
   _getOTP(AuthService auth) async {
